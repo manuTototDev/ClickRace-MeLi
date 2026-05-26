@@ -1,6 +1,7 @@
 /**
  * ClickRace - TRÓPICA · Mercado Ads
  * Client-side game logic with Socket.io + GSAP
+ * Layout: 9:16 vertical nativo
  */
 
 const socket = io();
@@ -109,7 +110,7 @@ function animateButtonPress(player) {
 function updatePlayerUI(player, data) {
   const pct = data.progress * 100;
 
-  // Animate progress bar
+  // Animate progress bar — vertical (height, crece de abajo)
   gsap.to(DOM.fill[player], {
     height: `${pct}%`,
     duration: 0.2,
@@ -123,28 +124,39 @@ function updatePlayerUI(player, data) {
     { scale: 1, color: player === 1 ? '#FFE600' : '#00D4FF', duration: 0.25, ease: 'back.out(2)' }
   );
 
-  // Move level badge
-  gsap.to(DOM.badge[player], {
-    bottom: `${pct}%`,
-    duration: 0.2,
-    ease: 'power2.out',
-  });
-
-  // Update level text
-  const levels = CONFIG.LEVELS;
+  // Update level text & badge
+  const levelNames = [
+    'Lv.1 · Inicio',
+    'Lv.2 · Comunidad',
+    'Lv.3 · Leales',
+    'Lv.4 · ¡CIMA!',
+  ];
   const levelIndex = data.level;
-  if (levels[levelIndex]) {
-    const levelNames = [
-      'Punto de Partida',
-      'Comunidad Creciente',
-      'Seguidores Leales',
-      '¡CIMA!',
-    ];
-    DOM.badgeText[player].innerHTML = `Nivel ${levelIndex + 1}:<br/>${levelNames[levelIndex] || levels[levelIndex].label}`;
+  if (DOM.badgeText[player]) {
+    DOM.badgeText[player].textContent = levelNames[levelIndex] || `Lv.${levelIndex + 1}`;
+  }
+
+  // Iluminar dots de nivel (bar-dot en bar-level-markers)
+  const zoneEl = document.getElementById(`totem-${player}`);
+  if (zoneEl) {
+    // Los markers están ordenados top→bottom en DOM pero bottom→top en porcentaje
+    // Revertimos para que índice 0 = marker de abajo (Inicio)
+    const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
+    dots.forEach((dot, i) => {
+      if (i <= levelIndex) {
+        dot.style.background = player === 1 ? '#FFE600' : '#00D4FF';
+        dot.style.borderColor = player === 1 ? '#FFE600' : '#00D4FF';
+        dot.style.boxShadow = `0 0 2vmin ${player === 1 ? '#FFE600' : '#00D4FF'}`;
+      } else {
+        dot.style.background = '';
+        dot.style.borderColor = '';
+        dot.style.boxShadow = '';
+      }
+    });
   }
 
   // Spawn particles on level up
-  if (data.level > 0 && data.clicks % Math.floor(CONFIG.CLICKS_TO_WIN * CONFIG.LEVELS[data.level]?.threshold || 99) === 0) {
+  if (data.level > 0 && data.clicks % Math.floor(CONFIG.CLICKS_TO_WIN * (CONFIG.LEVELS[data.level]?.threshold || 1)) === 0) {
     spawnParticles(player);
   }
 }
@@ -211,9 +223,8 @@ function startGame() {
   DOM.startArea.classList.add('hidden');
   DOM.statusArea.classList.remove('hidden');
 
-  // Reset bar heights
+  // Reset bar heights (vertical)
   gsap.set([DOM.fill[1], DOM.fill[2]], { height: '0%' });
-  gsap.set([DOM.badge[1], DOM.badge[2]], { bottom: '0%' });
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
 
@@ -266,6 +277,17 @@ function resetUI() {
 
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
+
+  // Reset bar dots
+  document.querySelectorAll('.bar-dot').forEach(dot => {
+    dot.style.background = '';
+    dot.style.borderColor = '';
+    dot.style.boxShadow = '';
+  });
+
+  // Reset badges
+  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Inicio';
+  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Inicio';
 }
 
 // ─── Apply server state (on reconnect) ────────────────────────

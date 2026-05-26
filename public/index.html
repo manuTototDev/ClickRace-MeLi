@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="The Click Race — Desafío interactivo de Mercado Ads en TRÓPICA Regional Tour" />
   <title>The Click Race — TRÓPICA · Mercado Ads</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,6 +15,7 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
+<div id="viewport-shell">
 
   <!-- OVERLAY: Countdown / Winner -->
   <div id="overlay" class="overlay hidden">
@@ -35,152 +37,164 @@
     </div>
   </div>
 
-  <!-- Test badge -->
-  <div class="test-badge">🧪 MODO TEST — 2 TÓTEMS</div>
-
   <!-- ARENA -->
   <main class="arena">
+    <div class="totem-screen">
 
-    <!-- ── TOTEM 1 ── -->
-    <div class="totem totem--1" id="totem-1">
-      <div class="totem-screen">
-
-        <div class="totem-header">
-          <div class="logo-lockup">
-            <svg class="logo-icon" viewBox="0 0 40 24" fill="none">
-              <path d="M0 12C0 5.373 5.373 0 12 0h16c6.627 0 12 5.373 12 12s-5.373 12-12 12H12C5.373 24 0 18.627 0 12z" fill="#FFE600"/>
-              <path d="M10 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
-              <path d="M22 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <span class="logo-text">mercado<strong>ads</strong></span>
-          </div>
-          <div class="player-tag">JUGADOR 1</div>
+      <!-- ── HEADER ── -->
+      <div class="totem-header">
+        <div class="logo-lockup">
+          <svg class="logo-icon" viewBox="0 0 40 24" fill="none">
+            <path d="M0 12C0 5.373 5.373 0 12 0h16c6.627 0 12 5.373 12 12s-5.373 12-12 12H12C5.373 24 0 18.627 0 12z" fill="#FFE600"/>
+            <path d="M10 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
+            <path d="M22 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="logo-text">mercado<strong>ads</strong></span>
         </div>
 
         <div class="challenge-title">
-          DESAFÍO DE SEGUIDORES<br/>
-          <span>NIVEL MÁXIMO DE CIMA</span>
+          DESAFÍO DE SEGUIDORES &nbsp;·&nbsp; <span>NIVEL MÁXIMO</span>
         </div>
 
-        <div class="progress-arena">
-          <div class="progress-track">
-            <div class="level-marker level-marker--top" style="bottom:100%">
-              <span class="level-dot level-dot--top"></span>
-              <span class="level-label">Cima de<br/>Seguidores</span>
+        <div id="start-area">
+          <button id="btn-start" class="btn-start">▶ INICIAR</button>
+        </div>
+        <div id="status-area" class="status-area hidden">
+          <div class="live-dot"></div>
+          <span id="status-text">EN JUEGO</span>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════
+           MAIN GAME AREA
+           [BARRA P1] — [CENTRO: counters + VS] — [BARRA P2]
+      ══════════════════════════════════════════════════════ -->
+      <div class="game-area">
+
+        <!-- ── COLUMNA IZQUIERDA: barra P1 ── -->
+        <div class="bar-column bar-column--1" id="totem-1">
+          <!-- Markers de nivel (puntos en la barra) -->
+          <div class="bar-level-markers">
+            <div class="bar-marker" style="bottom: 100%">
+              <span class="bar-dot bar-dot--top"></span>
+              <span class="bar-marker-label">CIMA</span>
             </div>
-            <div class="level-marker" style="bottom:55%">
-              <span class="level-dot"></span>
-              <span class="level-label">Seguidores<br/>Leales</span>
+            <div class="bar-marker" style="bottom: 55%">
+              <span class="bar-dot"></span>
+              <span class="bar-marker-label">LEALES</span>
             </div>
-            <div class="level-marker" style="bottom:25%">
-              <span class="level-dot"></span>
-              <span class="level-label">Comunidad<br/>Creciente</span>
+            <div class="bar-marker" style="bottom: 25%">
+              <span class="bar-dot"></span>
+              <span class="bar-marker-label">COMUNIDAD</span>
             </div>
-            <div class="level-marker level-marker--bottom" style="bottom:0%">
-              <span class="level-dot"></span>
-              <span class="level-label">Punto de<br/>Partida</span>
+            <div class="bar-marker bar-marker--start" style="bottom: 0%">
+              <span class="bar-dot"></span>
             </div>
-            <div class="progress-fill" id="fill-1">
-              <div class="progress-glow"></div>
+          </div>
+
+          <!-- Track vertical -->
+          <div class="bar-track">
+            <div class="bar-fill" id="fill-1">
+              <div class="bar-glow"></div>
               <div class="particle-container" id="particles-1"></div>
             </div>
+          </div>
+
+          <!-- Etiqueta jugador abajo -->
+          <div class="bar-player-label">
+            <div class="player-tag">J1</div>
+          </div>
+        </div>
+
+        <!-- ── CENTRO: info de ambos jugadores ── -->
+        <div class="center-zone">
+
+          <!-- Jugador 1 info (arriba) -->
+          <div class="player-info player-info--1">
+            <div class="player-name">JUGADOR 1</div>
+            <div class="click-counter" id="counter-1">0</div>
             <div class="level-badge" id="badge-1">
-              <span id="badge-text-1">Nivel 1:<br/>Conexión</span>
+              <span id="badge-text-1">Lv.1 · Inicio</span>
             </div>
           </div>
-          <div class="click-counter" id="counter-1">0</div>
-        </div>
 
-        <div class="cta-bar">¡HAZ CLICK Y SUMA SEGUIDORES!</div>
-
-        <!-- Button inside screen -->
-        <div class="button-zone">
-          <button id="btn-player-1" class="big-button" aria-label="Botón Jugador 1" data-player="1">
-            <span class="button-label">P1</span>
-          </button>
-        </div>
-
-      </div>
-    </div><!-- /totem-1 -->
-
-
-    <!-- ── CENTER DIVIDER ── -->
-    <div class="center-divider">
-      <div class="vs-badge">VS</div>
-      <div id="start-area">
-        <button id="btn-start" class="btn-start">▶ INICIAR<br/>PARTIDA</button>
-        <p class="start-hint">Presiona para comenzar</p>
-      </div>
-      <div id="status-area" class="status-area hidden">
-        <div class="live-dot"></div>
-        <span id="status-text">EN JUEGO</span>
-      </div>
-    </div>
-
-
-    <!-- ── TOTEM 2 ── -->
-    <div class="totem totem--2" id="totem-2">
-      <div class="totem-screen">
-
-        <div class="totem-header">
-          <div class="logo-lockup">
-            <svg class="logo-icon" viewBox="0 0 40 24" fill="none">
-              <path d="M0 12C0 5.373 5.373 0 12 0h16c6.627 0 12 5.373 12 12s-5.373 12-12 12H12C5.373 24 0 18.627 0 12z" fill="#FFE600"/>
-              <path d="M10 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
-              <path d="M22 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <span class="logo-text">mercado<strong>ads</strong></span>
+          <!-- VS divider -->
+          <div class="vs-divider">
+            <div class="vs-line"></div>
+            <div class="vs-badge">VS</div>
+            <div class="vs-line"></div>
           </div>
-          <div class="player-tag player-tag--2">JUGADOR 2</div>
-        </div>
 
-        <div class="challenge-title">
-          DESAFÍO DE SEGUIDORES<br/>
-          <span>NIVEL MÁXIMO DE CIMA</span>
-        </div>
+          <!-- Jugador 2 info (abajo) -->
+          <div class="player-info player-info--2">
+            <div class="level-badge level-badge--2" id="badge-2">
+              <span id="badge-text-2">Lv.1 · Inicio</span>
+            </div>
+            <div class="click-counter click-counter--2" id="counter-2">0</div>
+            <div class="player-name player-name--2">JUGADOR 2</div>
+          </div>
 
-        <div class="progress-arena">
-          <div class="progress-track">
-            <div class="level-marker level-marker--top" style="bottom:100%">
-              <span class="level-dot level-dot--top"></span>
-              <span class="level-label">Cima de<br/>Seguidores</span>
+        </div><!-- /center-zone -->
+
+        <!-- ── COLUMNA DERECHA: barra P2 ── -->
+        <div class="bar-column bar-column--2" id="totem-2">
+          <!-- Markers (espejados, labels a la izquierda) -->
+          <div class="bar-level-markers bar-level-markers--right">
+            <div class="bar-marker bar-marker--right" style="bottom: 100%">
+              <span class="bar-marker-label">CIMA</span>
+              <span class="bar-dot bar-dot--top bar-dot--p2"></span>
             </div>
-            <div class="level-marker" style="bottom:55%">
-              <span class="level-dot"></span>
-              <span class="level-label">Seguidores<br/>Leales</span>
+            <div class="bar-marker bar-marker--right" style="bottom: 55%">
+              <span class="bar-marker-label">LEALES</span>
+              <span class="bar-dot"></span>
             </div>
-            <div class="level-marker" style="bottom:25%">
-              <span class="level-dot"></span>
-              <span class="level-label">Comunidad<br/>Creciente</span>
+            <div class="bar-marker bar-marker--right" style="bottom: 25%">
+              <span class="bar-marker-label">COMUNIDAD</span>
+              <span class="bar-dot"></span>
             </div>
-            <div class="level-marker level-marker--bottom" style="bottom:0%">
-              <span class="level-dot"></span>
-              <span class="level-label">Punto de<br/>Partida</span>
+            <div class="bar-marker bar-marker--right bar-marker--start" style="bottom: 0%">
+              <span class="bar-dot"></span>
             </div>
-            <div class="progress-fill progress-fill--2" id="fill-2">
-              <div class="progress-glow"></div>
+          </div>
+
+          <div class="bar-track">
+            <div class="bar-fill bar-fill--2" id="fill-2">
+              <div class="bar-glow"></div>
               <div class="particle-container" id="particles-2"></div>
             </div>
-            <div class="level-badge level-badge--2" id="badge-2">
-              <span id="badge-text-2">Nivel 1:<br/>Conexión</span>
-            </div>
           </div>
-          <div class="click-counter click-counter--2" id="counter-2">0</div>
+
+          <div class="bar-player-label">
+            <div class="player-tag player-tag--2">J2</div>
+          </div>
         </div>
 
-        <div class="cta-bar">¡HAZ CLICK Y SUMA SEGUIDORES!</div>
+      </div><!-- /game-area -->
 
-        <div class="button-zone">
-          <button id="btn-player-2" class="big-button big-button--2" aria-label="Botón Jugador 2" data-player="2">
-            <span class="button-label">P2</span>
-          </button>
-        </div>
+      <!-- ── CTA BAR ── -->
+      <div class="cta-bar">¡HAZ CLICK Y SUMA SEGUIDORES!</div>
 
+      <!-- ── BOTONES: P1 izquierda · P2 derecha ── -->
+      <div class="button-zone">
+        <button id="btn-player-1" class="big-button" aria-label="Botón Jugador 1" data-player="1">
+          <span class="button-label">
+            TAP
+            <span class="button-label-sub">JUGADOR 1</span>
+          </span>
+        </button>
+        <button id="btn-player-2" class="big-button big-button--2" aria-label="Botón Jugador 2" data-player="2">
+          <span class="button-label">
+            TAP
+            <span class="button-label-sub">JUGADOR 2</span>
+          </span>
+        </button>
       </div>
-    </div><!-- /totem-2 -->
 
+    </div><!-- /totem-screen -->
   </main>
 
-  <script src="/js/game.js"></script>
+</div><!-- /#viewport-shell -->
+
+<script src="/js/game.js"></script>
 </body>
 </html>
