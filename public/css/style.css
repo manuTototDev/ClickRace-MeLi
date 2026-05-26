@@ -196,8 +196,8 @@ body {
   position: relative;
 }
 
-.bar-column--1 { border-right: 1px solid var(--border); }
-.bar-column--2 { border-left: 1px solid var(--border); }
+.bar-column--1 { }
+.bar-column--2 { }
 
 /* ── Markers de nivel ───────────────────────────────────────── */
 .bar-level-markers {
