@@ -1,12 +1,19 @@
 /**
  * ClickRace - TRÓPICA · Mercado Ads
- * WIREFRAME MODE — sin animaciones, updates directos al DOM
+ * WIREFRAME MODE — serverless, sin socket.io, sin animaciones.
+ * Estado 100% en el navegador. Compatible con Vercel estático.
  */
 
-const socket = io();
-
 // ─── Config ───────────────────────────────────────────────────
-let CONFIG = { CLICKS_TO_WIN: 50, LEVELS: [] };
+const GAME_CONFIG = {
+  CLICKS_TO_WIN: 50,
+  LEVELS: [
+    { label: 'Punto de Partida',    threshold: 0    },
+    { label: 'Comunidad Creciente', threshold: 0.25 },
+    { label: 'Seguidores Leales',   threshold: 0.55 },
+    { label: 'Cima de Seguidores',  threshold: 1.0  },
+  ],
+};
 
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -37,27 +44,29 @@ const DOM = {
 };
 
 // ─── State ────────────────────────────────────────────────────
-let gameActive = false;
-
-// ─── Socket Events ────────────────────────────────────────────
-socket.on('state:sync',    ({ gameState, config }) => { CONFIG = config; applyState(gameState); });
-socket.on('game:countdown',({ seconds }) => showCountdown(seconds));
-socket.on('game:start',    ({ config }) => { CONFIG = config; startGame(); });
-socket.on('player:update', ({ player, data }) => updatePlayerUI(player, data));
-socket.on('game:finished', ({ winner, players }) => finishGame(winner, players));
-socket.on('game:reset',    () => resetUI());
+function freshState() {
+  return {
+    status: 'waiting',
+    players: {
+      1: { clicks: 0, progress: 0, level: 0 },
+      2: { clicks: 0, progress: 0, level: 0 },
+    },
+    winner: null,
+  };
+}
+let gameState = freshState();
 
 // ─── Event Listeners ──────────────────────────────────────────
-DOM.btnStart.addEventListener('click',     () => socket.emit('game:start', { market: 'MX' }));
-DOM.btnPlayAgain.addEventListener('click', () => socket.emit('game:reset'));
-DOM.btnReset.addEventListener('click',     () => socket.emit('game:reset'));
-DOM.btnPlayer1.addEventListener('click',   () => emitClick(1));
-DOM.btnPlayer2.addEventListener('click',   () => emitClick(2));
+DOM.btnStart.addEventListener('click',     () => actionStart());
+DOM.btnPlayAgain.addEventListener('click', () => actionReset());
+DOM.btnReset.addEventListener('click',     () => actionReset());
+DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
+DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
 
 document.addEventListener('keydown', e => {
   if (e.repeat) return;
-  if (e.key === 'f' || e.key === 'F') emitClick(1);
-  if (e.key === 'j' || e.key === 'J') emitClick(2);
+  if (e.key === 'f' || e.key === 'F') actionClick(1);
+  if (e.key === 'j' || e.key === 'J') actionClick(2);
 });
 
 // Hint teclado
@@ -66,10 +75,52 @@ hint.className = 'key-hint';
 hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
 document.body.appendChild(hint);
 
-// ─── Actions ──────────────────────────────────────────────────
-function emitClick(player) {
-  if (!gameActive) return;
-  socket.emit('player:click', { player });
+// ─── Game Actions ─────────────────────────────────────────────
+function actionStart() {
+  if (gameState.status !== 'waiting') return;
+  gameState.status = 'countdown';
+
+  let count = 3;
+  showCountdown(count);
+  const timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      showCountdown(count);
+    } else {
+      clearInterval(timer);
+      showCountdown(0);
+      setTimeout(() => {
+        gameState.status = 'playing';
+        startGame();
+      }, 700);
+    }
+  }, 1000);
+}
+
+function actionClick(player) {
+  if (gameState.status !== 'playing') return;
+
+  const p = gameState.players[player];
+  p.clicks   = Math.min(p.clicks + 1, GAME_CONFIG.CLICKS_TO_WIN);
+  p.progress = p.clicks / GAME_CONFIG.CLICKS_TO_WIN;
+
+  const levels = GAME_CONFIG.LEVELS;
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (p.progress >= levels[i].threshold) { p.level = i; break; }
+  }
+
+  updatePlayerUI(player, p);
+
+  if (p.clicks >= GAME_CONFIG.CLICKS_TO_WIN) {
+    gameState.status = 'finished';
+    gameState.winner = player;
+    finishGame(player, gameState.players);
+  }
+}
+
+function actionReset() {
+  gameState = freshState();
+  resetUI();
 }
 
 // ─── Followers: 0 → 500K exponencial ─────────────────────────
@@ -87,7 +138,7 @@ function formatFollowers(n) {
   return n.toLocaleString();
 }
 
-// ─── UI: sin animaciones, todo instantáneo ────────────────────
+// ─── UI: todo instantáneo, sin animaciones ────────────────────
 function updatePlayerUI(player, data) {
   const display = formatFollowers(progressToFollowers(data.progress));
 
@@ -100,13 +151,13 @@ function updatePlayerUI(player, data) {
   DOM.counter[player].style.fontSize =
     len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
-  // Badge de nivel — texto corto estilo wireframe
+  // Badge de nivel
   const levelNames = ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡Cima!'];
   if (DOM.badgeText[player]) {
     DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
 
-  // Dots: ON/OFF instantáneo, sin color
+  // Dots: ON/OFF instantáneo, sin color ni glow
   const zoneEl = document.getElementById(`totem-${player}`);
   if (zoneEl) {
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
@@ -119,7 +170,7 @@ function updatePlayerUI(player, data) {
   // Sin partículas en wireframe
 }
 
-// ─── Countdown: texto directo, sin fade ───────────────────────
+// ─── Countdown: texto directo ─────────────────────────────────
 function showCountdown(seconds) {
   DOM.overlay.classList.remove('hidden');
   DOM.overlayCountdown.classList.remove('hidden');
@@ -135,10 +186,8 @@ function showCountdown(seconds) {
 
 // ─── Game Start ───────────────────────────────────────────────
 function startGame() {
-  gameActive = true;
   DOM.startArea.classList.add('hidden');
   DOM.statusArea.classList.remove('hidden');
-
   DOM.fill[1].style.height = '0%';
   DOM.fill[2].style.height = '0%';
   DOM.counter[1].textContent = '0';
@@ -147,7 +196,6 @@ function startGame() {
 
 // ─── Game Finish ──────────────────────────────────────────────
 function finishGame(winner, players) {
-  gameActive = false;
   updatePlayerUI(1, players[1]);
   updatePlayerUI(2, players[2]);
 
@@ -157,10 +205,8 @@ function finishGame(winner, players) {
   DOM.winnerName.textContent = `JUGADOR ${winner}`;
 }
 
-// ─── Reset ────────────────────────────────────────────────────
+// ─── Reset UI ─────────────────────────────────────────────────
 function resetUI() {
-  gameActive = false;
-
   DOM.overlay.classList.add('hidden');
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
@@ -178,18 +224,4 @@ function resetUI() {
 
   if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Inicio';
   if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Inicio';
-}
-
-// ─── Apply state on reconnect ─────────────────────────────────
-function applyState(gs) {
-  if (!gs) return;
-  if (gs.status === 'playing') {
-    gameActive = true;
-    DOM.startArea.classList.add('hidden');
-    DOM.statusArea.classList.remove('hidden');
-    updatePlayerUI(1, gs.players[1]);
-    updatePlayerUI(2, gs.players[2]);
-  } else if (gs.status === 'finished') {
-    finishGame(gs.winner, gs.players);
-  }
 }
