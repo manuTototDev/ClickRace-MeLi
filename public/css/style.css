@@ -1,24 +1,25 @@
 /* ═══════════════════════════════════════════════════════════════
-   ClickRace - TRÓPICA · Mercado Ads
-   Layout: 16:9 landscape — dos tótems 9:16 a full height
+   ClickRace - WIREFRAME MODE
+   Layout: 9:16 VERTICAL NATIVO
+   Estructura: [BARRA P1] | [CENTRO] | [BARRA P2]
 ═══════════════════════════════════════════════════════════════ */
 
 /* ── Tokens ─────────────────────────────────────────────────── */
 :root {
-  --meli-yellow:  #FFE600;
-  --meli-yellow-d:#F0D800;
-  --meli-blue:    #1C2B3A;
-  --meli-blue-m:  #2C4A6A;
+  --p1-color:     #ffffff;
+  --p2-color:     #ffffff;
 
-  --p1-color:     #FFE600;
-  --p2-color:     #00D4FF;
+  --bg:           #ffffff;
+  --surface:      #f0f0f0;
+  --surface-2:    #e0e0e0;
 
-  --bg:           #0D1621;
-  --surface:      #1A2535;
-  --surface-2:    #243040;
+  --border:       #cccccc;
+  --border-strong:#999999;
 
-  --text:         #FFFFFF;
-  --text-muted:   rgba(255,255,255,0.55);
+  --text:         #111111;
+  --text-muted:   #888888;
+
+  --bar-w:        22%;
 
   --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
@@ -29,7 +30,7 @@
 html, body { width: 100%; height: 100%; overflow: hidden; }
 
 body {
-  background: var(--bg);
+  background: #ffffff;
   font-family: 'Inter', system-ui, sans-serif;
   color: var(--text);
   display: flex;
@@ -37,287 +38,439 @@ body {
   justify-content: center;
 }
 
-/* Background grid */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,230,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,230,0,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
+/* ══════════════════════════════════════════════════════════════
+   VIEWPORT SHELL — 9:16 portrait-first
+══════════════════════════════════════════════════════════════ */
+#viewport-shell {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  z-index: 1;
+  height: 100vh;
+  width: min(100vw, calc(100vh * 9 / 16));
 }
 
-/* ── Test Badge ─────────────────────────────────────────────── */
-.test-badge {
-  position: fixed;
-  top: 10px; left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,230,0,0.1);
-  border: 1px solid rgba(255,230,0,0.3);
-  color: var(--meli-yellow);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  padding: 4px 14px;
-  border-radius: 99px;
-  z-index: 50;
+@media (orientation: landscape) {
+  #viewport-shell {
+    height: min(100vh, calc(100vw * 16 / 9));
+    width: calc(min(100vh, calc(100vw * 16 / 9)) * 9 / 16);
+  }
 }
+
+.overlay { position: absolute !important; }
 
 /* ── Arena ──────────────────────────────────────────────────── */
 .arena {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  gap: 0;
-  padding: 8px 12px;
-}
-
-/* ── Totem wrapper ──────────────────────────────────────────── */
-.totem {
-  /* Explicit dimensions from viewport height */
-  height: calc(100vh - 16px);
-  width: calc((100vh - 16px) * 9 / 16);
-  flex-shrink: 0;
-  overflow: hidden; /* belt-and-suspenders clip */
-}
-
-/* ── Totem Screen ───────────────────────────────────────── */
-.totem-screen {
   width: 100%;
-  height: 100%;      /* 100% of .totem which has explicit calc height */
-  background: var(--meli-blue);
-  border-radius: 2.5vh;
-  overflow: hidden;  /* clips button-zone and all children inside rounded corners */
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+/* ── Totem Screen ───────────────────────────────────────────── */
+.totem-screen {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  border: 2px solid rgba(255,255,255,0.08);
-  box-shadow:
-    0 0 0 1px rgba(255,230,0,0.1),
-    0 24px 60px rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,255,255,0.1);
+  border: none;
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════ */
 .totem-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.8vh 2vh 1.4vh;
-  background: rgba(0,0,0,0.25);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 2vmin 3vmin;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  gap: 2vmin;
 }
 
 .logo-lockup {
   display: flex;
   align-items: center;
-  gap: 1vh;
+  gap: 1vmin;
+  flex-shrink: 0;
 }
 
-.logo-icon { width: 3.5vh; }
+.logo-icon { width: 5.5vmin; opacity: 0.25; }
 
 .logo-text {
-  font-size: 1.4vh;
+  font-size: 1.8vmin;
   font-weight: 400;
-  color: rgba(255,255,255,0.8);
+  color: var(--text-muted);
   line-height: 1.1;
 }
 .logo-text strong {
   display: block;
   font-weight: 900;
-  font-size: 1.7vh;
-  color: #fff;
+  font-size: 2.3vmin;
+  color: var(--text);
   letter-spacing: -0.02em;
 }
 
-.player-tag {
-  background: var(--meli-yellow);
-  color: var(--meli-blue);
-  font-size: 1.1vh;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  padding: 0.5vh 1.2vh;
-  border-radius: 99px;
-}
-.player-tag--2 { background: var(--p2-color); }
-
-/* ── Challenge Title ────────────────────────────────────────── */
 .challenge-title {
-  padding: 1.6vh 2vh 1.2vh;
-  font-size: 1.5vh;
+  flex: 1;
+  font-size: 1.8vmin;
   font-weight: 900;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #fff;
-  line-height: 1.3;
+  color: var(--text);
   text-align: center;
-  background: rgba(255,230,0,0.06);
-  border-bottom: 1px solid rgba(255,230,0,0.12);
-  flex-shrink: 0;
+  line-height: 1.3;
 }
 .challenge-title span {
-  font-size: 1.2vh;
+  font-size: 1.5vmin;
   font-weight: 600;
-  color: var(--meli-yellow);
-  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  letter-spacing: 0.07em;
 }
 
-/* ── Progress Arena ─────────────────────────────────────────── */
-.progress-arena {
-  flex: 1;
-  min-height: 0;
+.btn-start {
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  border-radius: 1.5vmin;
+  padding: 1.5vmin 2.5vmin;
+  font-size: 1.8vmin;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.1s;
+}
+.btn-start:hover  { opacity: 0.75; }
+.btn-start:active { opacity: 0.5; }
+
+.status-area {
+  display: flex;
+  align-items: center;
+  gap: 1vmin;
+  font-size: 1.6vmin;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.live-dot {
+  width: 1.1vmin;
+  height: 1.1vmin;
+  border-radius: 50%;
+  background: var(--text);
+  animation: pulse-dot 1s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* ── Botón Reiniciar ─────────────────────────────────────────── */
+.btn-reset {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  width: 4vmin;
+  height: 4vmin;
+  font-size: 1.8vmin;
+  cursor: pointer;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3vh;
-  padding: 2vh 2.5vh;
-  position: relative;
-}
-
-/* ── Progress Track ─────────────────────────────────────────── */
-.progress-track {
-  position: relative;
-  width: 6.5vh;
-  height: 100%;
-  background: rgba(0,0,0,0.35);
-  border-radius: 99px;
-  border: 1px solid rgba(255,255,255,0.1);
-  overflow: visible;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
   flex-shrink: 0;
+  margin-left: 1vmin;
+}
+.btn-reset:hover  { background: var(--surface); color: var(--text); }
+.btn-reset:active { opacity: 0.6; }
+
+/* ══════════════════════════════════════════════════════════════
+   GAME AREA — 3 columnas
+══════════════════════════════════════════════════════════════ */
+.game-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
-/* ── Progress Fill ──────────────────────────────────────────── */
-.progress-fill {
+/* ══════════════════════════════════════════════════════════════
+   BAR COLUMN
+══════════════════════════════════════════════════════════════ */
+.bar-column {
+  width: var(--bar-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2vmin 0 1.5vmin;
+  position: relative;
+  overflow: hidden;          /* evita que el contenido central se cuele */
+}
+
+.bar-column--1 { }
+.bar-column--2 { }
+
+/* ── Markers de nivel ───────────────────────────────────────── */
+.bar-level-markers {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 0%;
-  background: linear-gradient(to top, var(--meli-yellow), #FFF176);
-  border-radius: 99px;
-  overflow: hidden;
-  will-change: height;
-}
-.progress-fill--2 {
-  background: linear-gradient(to top, var(--p2-color), #80EEFF);
+  top: 2vmin;
+  bottom: 7vmin;
+  left: 0;
+  right: 0;
+  pointer-events: none;
 }
 
-.progress-glow {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6vh;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
-  border-radius: 99px 99px 0 0;
-}
-
-/* ── Level Markers ──────────────────────────────────────────── */
-.level-marker {
+.bar-marker {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 50%);
   display: flex;
   align-items: center;
-  gap: 0.8vh;
-  pointer-events: none;
+  gap: 0.5vmin;
   z-index: 5;
 }
 
-.level-dot {
-  width: 1.1vh;
-  height: 1.1vh;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.3);
-  border: 2px solid rgba(255,255,255,0.5);
-  flex-shrink: 0;
-}
-.level-dot--top {
-  background: var(--meli-yellow);
-  border-color: var(--meli-yellow);
-  box-shadow: 0 0 1.5vh var(--meli-yellow);
-}
-
-.level-label {
-  font-size: 0.9vh;
+.bar-marker-label {
+  font-size: 1.1vmin;
   font-weight: 700;
-  color: rgba(255,255,255,0.55);
+  color: var(--text-muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 1;
   white-space: nowrap;
 }
 
-/* ── Level Badge ────────────────────────────────────────────── */
-.level-badge {
+.bar-column--1 .bar-marker { flex-direction: row; }
+.bar-column--1 .bar-marker-label { order: 2; }
+.bar-column--2 .bar-marker { flex-direction: row-reverse; }
+.bar-column--2 .bar-marker-label { order: 2; }
+
+/* ── Dots de nivel ───────────────────────────────────────────── */
+.bar-dot {
+  width: 1.6vmin;
+  height: 1.6vmin;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border-strong);
+  flex-shrink: 0;
+  transition: background 0.3s, border-color 0.3s;
+}
+.bar-dot--top,
+.bar-dot--p2 {
+  background: var(--text);
+  border-color: var(--text);
+}
+
+/* ── Track vertical ─────────────────────────────────────────── */
+.bar-track {
+  flex: 1;
+  width: 7vmin;
+  background: var(--surface);
+  border-radius: 99px;
+  border: none;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 1vmin;
+}
+
+/* ── Fill (crece de abajo hacia arriba) ─────────────────────── */
+.bar-fill {
   position: absolute;
-  right: calc(100% + 1vh);
-  bottom: 0%;
-  background: rgba(255,230,0,0.15);
-  border: 1px solid rgba(255,230,0,0.5);
-  border-radius: 0.8vh;
-  padding: 0.7vh 1.1vh;
-  font-size: 1vh;
+  bottom: 0; left: 0; right: 0;
+  height: 0%;
+  background: var(--border-strong);  /* gris wireframe, no negro */
+  border-radius: 99px;
+  will-change: height;
+  overflow: hidden;
+}
+.bar-fill--2 {
+  background: var(--border-strong);
+}
+
+.bar-glow { display: none; } /* sin glow en wireframe */
+
+/* ── Etiqueta jugador ───────────────────────────────────────── */
+.bar-player-label {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 1.5vmin;
+}
+
+.player-tag {
+  background: transparent;
+  color: var(--text);
+  font-size: 2vmin;
   font-weight: 700;
-  color: var(--meli-yellow);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  line-height: 1.3;
-  white-space: nowrap;
+  letter-spacing: 0.08em;
+  padding: 0.7vmin 2vmin;
+  border-radius: 99px;
+  border: 1.5px solid var(--border-strong);
+}
+.player-tag--2 {
+  background: transparent;
+  border-color: var(--border-strong);
+}
+
+/* ── Partículas ─────────────────────────────────────────────── */
+.particle-container {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
+  overflow: hidden;
 }
-.level-badge--2 {
-  right: auto;
-  left: calc(100% + 1vh);
-  border-color: rgba(0,212,255,0.5);
-  color: var(--p2-color);
-  background: rgba(0,212,255,0.1);
+.particle {
+  position: absolute;
+  width: 0.8vmin;
+  height: 0.8vmin;
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   CENTRO
+══════════════════════════════════════════════════════════════ */
+.center-zone {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2vmin 2vmin;
+  overflow: hidden;          /* el texto grande no se derrama sobre las barras */
+}
+
+.player-info {
+  flex: 1;                   /* ambos toman igual espacio */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vmin;
+  width: 100%;
+}
+
+.player-name {
+  font-size: 2vmin;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.player-name--2 { color: var(--text-muted); }
 
 /* ── Click Counter ──────────────────────────────────────────── */
 .click-counter {
-  font-size: 9vh;
+  font-size: 11vmin;
   font-weight: 900;
-  color: var(--meli-yellow);
-  letter-spacing: -0.03em;
+  color: var(--text);
+  letter-spacing: -0.02em;
   line-height: 1;
-  text-shadow: 0 0 4vh rgba(255,230,0,0.4);
   text-align: center;
-  min-width: 10vh;
+  width: 100%;
+  overflow: hidden;
 }
-.click-counter--2 {
-  color: var(--p2-color);
-  text-shadow: 0 0 4vh rgba(0,212,255,0.4);
+.click-counter--2 { color: var(--text); }
+
+/* ── Level Badge ────────────────────────────────────────────── */
+.level-badge {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 1vmin;
+  padding: 0.8vmin 2vmin;
+  font-size: 1.6vmin;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  white-space: nowrap;
+}
+.level-badge--2 {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--text);
 }
 
-/* ── CTA Bar ────────────────────────────────────────────────── */
+/* ── VS Divider ─────────────────────────────────────────────── */
+.vs-divider {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* centrado horizontal garantizado */
+  gap: 2vmin;
+  padding: 2vmin 0;
+}
+.vs-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 30%;            /* limita las líneas para no empujar el badge */
+}
+.vs-badge {
+  width: 9vmin;
+  height: 9vmin;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5vmin;
+  font-weight: 900;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CTA BAR
+══════════════════════════════════════════════════════════════ */
 .cta-bar {
-  padding: 1.6vh 2vh;
-  background: var(--meli-yellow);
-  color: var(--meli-blue);
-  font-size: 1.15vh;
+  padding: 2vmin 3vmin;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 2.2vmin;
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
   flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
-/* ── Button Zone (inside screen) ────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   BUTTON ZONE
+══════════════════════════════════════════════════════════════ */
 .button-zone {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2.5vh 2vh 2.8vh;
-  background: rgba(0,0,0,0.2);
-  border-top: 1px solid rgba(255,255,255,0.06);
+  align-items: stretch;
   flex-shrink: 0;
+  height: 16vmin;
 }
 
 .big-button {
-  width: 13vh;
-  height: 13vh;
-  border-radius: 50%;
+  flex: 1;
   border: none;
+  border-top: 1px solid var(--border);
   cursor: pointer;
   position: relative;
   user-select: none;
@@ -325,122 +478,43 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 35% 30%, #FFF176, #FFE600 50%, #D4BB00);
-  box-shadow:
-    0 0.7vh 0 #9A8900,
-    0 1vh 2.5vh rgba(0,0,0,0.5),
-    0 0 5vh rgba(255,230,0,0.2);
-  transition: transform 0.08s var(--ease-bounce), box-shadow 0.08s;
+  background: var(--surface);
+  transition: background 0.08s;
 }
 .big-button--2 {
-  background: radial-gradient(circle at 35% 30%, #80EEFF, #00D4FF 50%, #0098B8);
-  box-shadow:
-    0 0.7vh 0 #006A80,
-    0 1vh 2.5vh rgba(0,0,0,0.5),
-    0 0 5vh rgba(0,212,255,0.2);
+  background: var(--surface-2);
+  border-left: 1px solid var(--border);
 }
 
-.big-button:active {
-  transform: translateY(0.5vh);
-  box-shadow: 0 0.2vh 0 #9A8900, 0 0.5vh 1vh rgba(0,0,0,0.4);
-}
-.big-button--2:active {
-  box-shadow: 0 0.2vh 0 #006A80, 0 0.5vh 1vh rgba(0,0,0,0.4);
-}
+.big-button:active { background: var(--border); }
 
 .button-label {
-  font-size: 3vh;
+  font-size: 4vmin;
   font-weight: 900;
-  color: var(--meli-blue);
+  color: var(--text);
   letter-spacing: 0.05em;
   pointer-events: none;
-}
-
-/* ── Center Divider ─────────────────────────────────────────── */
-.center-divider {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 3vh;
-  width: 10vh;
-  flex-shrink: 0;
+  gap: 0.5vmin;
+  line-height: 1.2;
 }
-
-.vs-badge {
-  width: 6vh;
-  height: 6vh;
-  border-radius: 50%;
-  background: var(--surface-2);
-  border: 2px solid rgba(255,255,255,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6vh;
-  font-weight: 900;
-  color: rgba(255,255,255,0.35);
-}
-
-.btn-start {
-  background: var(--meli-yellow);
-  color: var(--meli-blue);
-  border: none;
-  border-radius: 1.5vh;
-  padding: 2vh 2.5vh;
-  font-size: 1.4vh;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  line-height: 1.4;
-  text-align: center;
-  box-shadow: 0 0.5vh 0 #9A8900, 0 1vh 4vh rgba(255,230,0,0.3);
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-.btn-start:hover {
-  transform: translateY(-0.3vh);
-  box-shadow: 0 0.8vh 0 #9A8900, 0 1.5vh 5vh rgba(255,230,0,0.4);
-}
-.btn-start:active {
-  transform: translateY(0.2vh);
-  box-shadow: 0 0.2vh 0 #9A8900;
-}
-
-.start-hint {
-  font-size: 1vh;
-  color: var(--text-muted);
-  text-align: center;
-  letter-spacing: 0.05em;
-}
-
-.status-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1vh;
-  font-size: 1.1vh;
+.button-label-sub {
+  font-size: 1.6vmin;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--meli-yellow);
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
 }
 
-.live-dot {
-  width: 0.9vh;
-  height: 0.9vh;
-  border-radius: 50%;
-  background: #FF4444;
-  animation: pulse-dot 1s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.6); }
-}
-
-/* ── Overlay ────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   OVERLAY
+══════════════════════════════════════════════════════════════ */
 .overlay {
-  position: fixed; inset: 0;
-  background: rgba(13,22,33,0.9);
-  backdrop-filter: blur(16px);
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -453,122 +527,170 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2vh;
+  gap: 3vmin;
 }
 .overlay-content.hidden { display: none; }
 
 .overlay-label {
-  font-size: 2vh;
+  font-size: 3vmin;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .countdown-number {
-  font-size: 25vh;
+  font-size: 32vmin;
   font-weight: 900;
   line-height: 1;
-  color: var(--meli-yellow);
+  color: var(--text);
   letter-spacing: -0.05em;
-  text-shadow: 0 0 10vh rgba(255,230,0,0.5);
 }
 
 .winner-badge svg {
-  width: 10vh;
-  height: 10vh;
+  width: 16vmin;
+  height: 16vmin;
   animation: spin-in 0.6s var(--ease-bounce) both;
 }
+/* Recolor el SVG a blanco/negro */
+.winner-badge svg circle { fill: var(--text); }
+.winner-badge svg path  { stroke: var(--bg); }
+
 @keyframes spin-in {
   from { transform: rotate(-180deg) scale(0); opacity: 0; }
   to   { transform: rotate(0deg) scale(1);   opacity: 1; }
 }
 
 .winner-label {
-  font-size: 1.8vh;
+  font-size: 3vmin;
   font-weight: 700;
   letter-spacing: 0.25em;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .winner-name {
-  font-size: 7vh;
+  font-size: 11vmin;
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: var(--meli-yellow);
-  text-shadow: 0 0 8vh rgba(255,230,0,0.5);
+  color: var(--text);
 }
 
 .btn-play-again {
   background: transparent;
-  border: 2px solid var(--meli-yellow);
-  color: var(--meli-yellow);
-  border-radius: 1.5vh;
-  padding: 1.8vh 4vh;
-  font-size: 1.6vh;
+  border: 2px solid var(--text);
+  color: var(--text);
+  border-radius: 2vmin;
+  padding: 2.5vmin 6vmin;
+  font-size: 2.5vmin;
   font-weight: 700;
   letter-spacing: 0.1em;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .btn-play-again:hover {
-  background: var(--meli-yellow);
-  color: var(--meli-blue);
+  background: var(--text);
+  color: var(--bg);
 }
 
-/* ── Particles ──────────────────────────────────────────────── */
-.particle-container {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.particle {
-  position: absolute;
-  width: 0.5vh;
-  height: 0.5vh;
-  border-radius: 50%;
-  background: white;
-  opacity: 0;
-}
-
-/* ── Utility ────────────────────────────────────────────────── */
+/* ── Utilidades ─────────────────────────────────────────────── */
 .hidden { display: none !important; }
 
 /* ── Win state ──────────────────────────────────────────────── */
-.totem--winner .totem-screen {
-  box-shadow:
-    0 0 0 2px var(--meli-yellow),
-    0 0 6vh rgba(255,230,0,0.5),
-    0 24px 60px rgba(0,0,0,0.6);
-}
-.totem--2.totem--winner .totem-screen {
-  box-shadow:
-    0 0 0 2px var(--p2-color),
-    0 0 6vh rgba(0,212,255,0.5),
-    0 24px 60px rgba(0,0,0,0.6);
-}
+.bar-column.totem--winner { background: var(--surface) !important; }
 
-/* ── Keyboard hint ──────────────────────────────────────────── */
+/* ── Keyboard hint — FUERA del viewport-shell ───────────────── */
+/* Solo visible en landscape/desktop, oculto en portrait        */
 .key-hint {
   position: fixed;
-  bottom: 10px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1vh;
-  color: var(--text-muted);
-  letter-spacing: 0.08em;
-  z-index: 50;
+  font-size: 12px;
+  color: #999;
+  letter-spacing: 0.07em;
+  z-index: 0;           /* debajo del shell, no encima */
+  white-space: nowrap;
+  pointer-events: none;
 }
 .key-hint kbd {
   display: inline-block;
-  background: var(--surface-2);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 0.4vh;
-  padding: 0.2vh 0.6vh;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 2px 6px;
   font-family: monospace;
-  font-size: 1vh;
-  color: #fff;
-  margin: 0 0.2vh;
+  font-size: 11px;
+  color: #333;
+  margin: 0 2px;
 }
+
+/* En portrait: ocultar completamente */
+@media (orientation: portrait) {
+  .key-hint { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WIREFRAME OVERRIDE — aplana todo al esqueleto
+   Quita curvas, animaciones y efectos para modo prototipo
+══════════════════════════════════════════════════════════════ */
+
+/* Cero curvas en todo el documento */
+*, *::before, *::after {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Barra rectangular con borde visible */
+.bar-track {
+  border: 1.5px solid var(--border-strong) !important;
+  background: transparent !important;
+}
+.bar-fill {
+  background: #888888 !important;
+}
+
+/* Overlay plano, sin blur */
+.overlay {
+  background: rgba(255,255,255,0.96) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Botón INICIAR: rectángulo plano */
+.btn-start, .btn-play-again {
+  border: 2px solid var(--text) !important;
+}
+
+/* Botones de tap: borde visible */
+.big-button {
+  border: 1.5px solid var(--border) !important;
+}
+.big-button:active { background: var(--border-strong) !important; }
+
+/* VS box cuadrado */
+.vs-badge {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--border-strong) !important;
+}
+
+/* Dot de barra: cuadrado con borde */
+.bar-dot {
+  border-radius: 0 !important;
+  border: 1.5px solid var(--border-strong) !important;
+}
+
+/* Live dot estático (sin pulso) */
+.live-dot {
+  border-radius: 0 !important;
+  background: var(--text) !important;
+}
+
+/* Badges rectangulares con borde */
+.level-badge {
+  border: 1px solid var(--border-strong) !important;
+  background: transparent !important;
+}
+
