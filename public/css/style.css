@@ -599,35 +599,39 @@ body {
 /* ── Win state ──────────────────────────────────────────────── */
 .bar-column.totem--winner { background: var(--surface) !important; }
 
-/* ── Keyboard hint — FUERA del viewport-shell ───────────────── */
-/* Solo visible en landscape/desktop, oculto en portrait        */
+/* ── Keyboard hint — visible siempre en show ─────────────────── */
 .key-hint {
   position: fixed;
-  bottom: 8px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 12px;
-  color: #999;
-  letter-spacing: 0.07em;
-  z-index: 0;           /* debajo del shell, no encima */
+  font-size: 13px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #555;
+  letter-spacing: 0.05em;
+  z-index: 200;
   white-space: nowrap;
   pointer-events: none;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 99px;
+  padding: 6px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 .key-hint kbd {
   display: inline-block;
-  background: #eee;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  padding: 2px 6px;
+  background: #f5f5f5;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  padding: 2px 8px;
   font-family: monospace;
-  font-size: 11px;
-  color: #333;
-  margin: 0 2px;
-}
-
-/* En portrait: ocultar completamente */
-@media (orientation: portrait) {
-  .key-hint { display: none !important; }
+  font-size: 12px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 3px;
+  box-shadow: 0 1px 0 #aaa;
 }
 
 
