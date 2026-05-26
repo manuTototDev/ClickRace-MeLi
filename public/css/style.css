@@ -325,12 +325,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 2.5vmin 2vmin;
+  justify-content: center;   /* centrar todo verticalmente */
+  padding: 2vmin 2vmin;
+  gap: 0;                    /* sin gap, cada sección controla su propio espacio */
 }
 
 .player-info {
-  flex: 1;
+  flex: 1;                   /* ambos toman igual espacio */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -390,7 +391,7 @@ body {
   gap: 2vmin;
   flex-shrink: 0;
   width: 100%;
-  padding: 1vmin 0;
+  padding: 2vmin 0;          /* espacio fijo arriba/abajo */
 }
 .vs-line {
   flex: 1;
@@ -572,16 +573,16 @@ body {
 .bar-column.totem--winner { background: var(--surface) !important; }
 
 /* ── Keyboard hint — FUERA del viewport-shell ───────────────── */
-/* Solo visible en landscape/desktop, se oculta en vertical     */
+/* Solo visible en landscape/desktop, oculto en portrait        */
 .key-hint {
   position: fixed;
-  bottom: 12px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 12px;
   color: #999;
   letter-spacing: 0.07em;
-  z-index: 200;
+  z-index: 0;           /* debajo del shell, no encima */
   white-space: nowrap;
   pointer-events: none;
 }
@@ -596,3 +597,9 @@ body {
   color: #333;
   margin: 0 2px;
 }
+
+/* En portrait: ocultar completamente */
+@media (orientation: portrait) {
+  .key-hint { display: none !important; }
+}
+
