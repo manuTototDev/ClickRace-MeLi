@@ -196,8 +196,8 @@ body {
   position: relative;
 }
 
-.bar-column--1 { border-right: 1px solid var(--border); }
-.bar-column--2 { border-left: 1px solid var(--border); }
+.bar-column--1 { }
+.bar-column--2 { }
 
 /* ── Markers de nivel ───────────────────────────────────────── */
 .bar-level-markers {
@@ -256,7 +256,7 @@ body {
   width: 5vmin;
   background: var(--surface);
   border-radius: 99px;
-  border: 1.5px solid var(--border-strong);
+  border: none;
   overflow: hidden;
   position: relative;
   margin: 0 auto;
@@ -322,15 +322,15 @@ body {
 .center-zone {
   flex: 1;
   min-width: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2.5vmin 2vmin;
+  align-items: stretch;
+  padding: 2vmin 2vmin;
 }
 
 .player-info {
-  flex: 1;
+  flex: 1;                   /* ambos toman igual espacio */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -345,6 +345,10 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .player-name--2 { color: var(--text-muted); }
 
@@ -381,17 +385,18 @@ body {
 
 /* ── VS Divider ─────────────────────────────────────────────── */
 .vs-divider {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: center;   /* centrado horizontal garantizado */
   gap: 2vmin;
-  flex-shrink: 0;
-  width: 100%;
-  padding: 1vmin 0;
+  padding: 2vmin 0;
 }
 .vs-line {
   flex: 1;
   height: 1px;
   background: var(--border);
+  max-width: 30%;            /* limita las líneas para no empujar el badge */
 }
 .vs-badge {
   width: 9vmin;
@@ -448,7 +453,6 @@ body {
   justify-content: center;
   background: var(--surface);
   transition: background 0.08s;
-  overflow: hidden;
 }
 .big-button--2 {
   background: var(--surface-2);
@@ -458,7 +462,7 @@ body {
 .big-button:active { background: var(--border); }
 
 .button-label {
-  font-size: 5vmin;
+  font-size: 4vmin;
   font-weight: 900;
   color: var(--text);
   letter-spacing: 0.05em;
@@ -467,12 +471,13 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.5vmin;
+  line-height: 1.2;
 }
 .button-label-sub {
-  font-size: 1.7vmin;
+  font-size: 1.6vmin;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -567,26 +572,34 @@ body {
 /* ── Win state ──────────────────────────────────────────────── */
 .bar-column.totem--winner { background: var(--surface) !important; }
 
-/* ── Keyboard hint ──────────────────────────────────────────── */
+/* ── Keyboard hint — FUERA del viewport-shell ───────────────── */
+/* Solo visible en landscape/desktop, oculto en portrait        */
 .key-hint {
-  position: absolute;
-  bottom: 1.5vmin;
+  position: fixed;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1.4vmin;
-  color: var(--text-muted);
+  font-size: 12px;
+  color: #999;
   letter-spacing: 0.07em;
-  z-index: 50;
+  z-index: 0;           /* debajo del shell, no encima */
   white-space: nowrap;
+  pointer-events: none;
 }
 .key-hint kbd {
   display: inline-block;
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: 0.5vmin;
-  padding: 0.3vmin 0.8vmin;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 2px 6px;
   font-family: monospace;
-  font-size: 1.4vmin;
-  color: var(--text);
-  margin: 0 0.3vmin;
+  font-size: 11px;
+  color: #333;
+  margin: 0 2px;
 }
+
+/* En portrait: ocultar completamente */
+@media (orientation: portrait) {
+  .key-hint { display: none !important; }
+}
+
