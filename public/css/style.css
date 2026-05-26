@@ -150,6 +150,96 @@ body {
 .btn-start:hover  { opacity: 0.75; }
 .btn-start:active { opacity: 0.5; }
 
+/* ── Botón Engrane (mercado) ─────────────────────────────────── */
+.btn-market {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  width: 4vmin;
+  height: 4vmin;
+  font-size: 2vmin;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.btn-market:hover  { background: var(--surface); }
+.btn-market:active { opacity: 0.6; }
+
+/* ── Market Modal ────────────────────────────────────────────── */
+.market-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.96);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.market-modal.hidden { display: none; }
+
+.market-modal-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vmin;
+  padding: 4vmin;
+  width: 90%;
+}
+
+.market-modal-title {
+  font-size: 2vmin;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.market-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2vmin;
+  width: 100%;
+}
+
+.market-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1vmin;
+  padding: 2.5vmin 1vmin;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 1.5vmin;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.market-btn:hover  { background: var(--surface-2); border-color: var(--border-strong); }
+.market-btn:active { opacity: 0.7; }
+.market-btn.active {
+  border-color: var(--text);
+  background: var(--text);
+}
+.market-btn.active .market-name { color: var(--bg); }
+
+.market-flag {
+  font-size: 6vmin;
+  line-height: 1;
+}
+.market-name {
+  font-size: 1.6vmin;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+
 .status-area {
   display: flex;
   align-items: center;
