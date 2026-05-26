@@ -170,17 +170,15 @@ function updatePlayerUI(player, data) {
     DOM.badgeText[player].textContent = levelNames[levelIndex] || `Lv.${levelIndex + 1}`;
   }
 
-  // Iluminar dots de nivel (bar-dot en bar-level-markers)
+  // Dots de nivel — wireframe: gris oscuro sin glow
   const zoneEl = document.getElementById(`totem-${player}`);
   if (zoneEl) {
-    // Los markers están ordenados top→bottom en DOM pero bottom→top en porcentaje
-    // Revertimos para que índice 0 = marker de abajo (Inicio)
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
     dots.forEach((dot, i) => {
       if (i <= levelIndex) {
-        dot.style.background = player === 1 ? '#FFE600' : '#00D4FF';
-        dot.style.borderColor = player === 1 ? '#FFE600' : '#00D4FF';
-        dot.style.boxShadow = `0 0 2vmin ${player === 1 ? '#FFE600' : '#00D4FF'}`;
+        dot.style.background  = '#555555';
+        dot.style.borderColor = '#555555';
+        dot.style.boxShadow   = '';
       } else {
         dot.style.background = '';
         dot.style.borderColor = '';
@@ -197,7 +195,7 @@ function updatePlayerUI(player, data) {
 
 function spawnParticles(player) {
   const container = DOM.particles[player];
-  const color = player === 1 ? '#FFE600' : '#00D4FF';
+  const color = '#999999'; // wireframe: gris neutro
 
   for (let i = 0; i < 8; i++) {
     const p = document.createElement('div');

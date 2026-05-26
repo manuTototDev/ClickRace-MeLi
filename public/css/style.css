@@ -290,13 +290,13 @@ body {
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 0%;
-  background: var(--text);
+  background: var(--border-strong);  /* gris wireframe, no negro */
   border-radius: 99px;
   will-change: height;
   overflow: hidden;
 }
 .bar-fill--2 {
-  background: var(--text);
+  background: var(--border-strong);
 }
 
 .bar-glow { display: none; } /* sin glow en wireframe */
@@ -310,16 +310,18 @@ body {
 }
 
 .player-tag {
-  background: var(--text);
-  color: var(--bg);
+  background: transparent;
+  color: var(--text);
   font-size: 2vmin;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   padding: 0.7vmin 2vmin;
   border-radius: 99px;
+  border: 1.5px solid var(--border-strong);
 }
 .player-tag--2 {
-  background: var(--text);
+  background: transparent;
+  border-color: var(--border-strong);
 }
 
 /* ── Partículas ─────────────────────────────────────────────── */
