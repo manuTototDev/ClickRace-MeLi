@@ -145,6 +145,14 @@ function updatePlayerUI(player, data) {
 
   // Counter: muestra seguidores formateados
   DOM.counter[player].textContent = display;
+
+  // Fuente dinâmica: más chars → más pequeño para que no se salga
+  const len = display.length;
+  const fontSize = len >= 5 ? '8vmin'
+                 : len >= 4 ? '9.5vmin'
+                 :            '11vmin';
+  DOM.counter[player].style.fontSize = fontSize;
+
   gsap.fromTo(DOM.counter[player],
     { scale: 1.3 },
     { scale: 1, duration: 0.2, ease: 'back.out(2)' }
