@@ -322,15 +322,16 @@ body {
 .center-zone {
   flex: 1;
   min-width: 0;
-  position: relative;        /* anclaje para el VS absoluto */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;   /* centrar todo verticalmente */
   padding: 2vmin 2vmin;
+  gap: 0;                    /* sin gap, cada sección controla su propio espacio */
 }
 
 .player-info {
-  flex: 1;                   /* P1 y P2 toman la mitad cada uno */
+  flex: 1;                   /* ambos toman igual espacio */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -384,19 +385,13 @@ body {
 }
 
 /* ── VS Divider ─────────────────────────────────────────────── */
-/* ── VS Divider — anclado al centro exacto de center-zone ───── */
 .vs-divider {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 2vmin;
-  padding: 0 2vmin;
-  pointer-events: none;
-  z-index: 10;
+  flex-shrink: 0;
+  width: 100%;
+  padding: 2vmin 0;          /* espacio fijo arriba/abajo */
 }
 .vs-line {
   flex: 1;
