@@ -570,10 +570,14 @@ body {
 }
 
 .winner-name {
-  font-size: 11vmin;
+  font-size: 7vmin;
   font-weight: 900;
   letter-spacing: -0.02em;
   color: var(--text);
+  text-align: center;
+  line-height: 1.1;
+  word-break: break-word;
+  padding: 0 4vmin;
 }
 
 .btn-play-again {
