@@ -571,26 +571,28 @@ body {
 /* ── Win state ──────────────────────────────────────────────── */
 .bar-column.totem--winner { background: var(--surface) !important; }
 
-/* ── Keyboard hint ──────────────────────────────────────────── */
+/* ── Keyboard hint — FUERA del viewport-shell ───────────────── */
+/* Solo visible en landscape/desktop, se oculta en vertical     */
 .key-hint {
-  position: absolute;
-  bottom: 1.5vmin;
+  position: fixed;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1.4vmin;
-  color: var(--text-muted);
+  font-size: 12px;
+  color: #999;
   letter-spacing: 0.07em;
-  z-index: 50;
+  z-index: 200;
   white-space: nowrap;
+  pointer-events: none;
 }
 .key-hint kbd {
   display: inline-block;
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: 0.5vmin;
-  padding: 0.3vmin 0.8vmin;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 2px 6px;
   font-family: monospace;
-  font-size: 1.4vmin;
-  color: var(--text);
-  margin: 0 0.3vmin;
+  font-size: 11px;
+  color: #333;
+  margin: 0 2px;
 }

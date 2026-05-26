@@ -86,7 +86,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'j' || e.key === 'J') emitClick(2);
 });
 
-// Add keyboard hint
+// Add keyboard hint — fuera del viewport-shell, solo visible en desktop
 const hint = document.createElement('div');
 hint.className = 'key-hint';
 hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
