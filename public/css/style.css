@@ -290,13 +290,13 @@ body {
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 0%;
-  background: var(--text);
+  background: var(--border-strong);  /* gris wireframe, no negro */
   border-radius: 99px;
   will-change: height;
   overflow: hidden;
 }
 .bar-fill--2 {
-  background: var(--text);
+  background: var(--border-strong);
 }
 
 .bar-glow { display: none; } /* sin glow en wireframe */
@@ -310,16 +310,18 @@ body {
 }
 
 .player-tag {
-  background: var(--text);
-  color: var(--bg);
+  background: transparent;
+  color: var(--text);
   font-size: 2vmin;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.08em;
   padding: 0.7vmin 2vmin;
   border-radius: 99px;
+  border: 1.5px solid var(--border-strong);
 }
 .player-tag--2 {
-  background: var(--text);
+  background: transparent;
+  border-color: var(--border-strong);
 }
 
 /* ── Partículas ─────────────────────────────────────────────── */
@@ -626,5 +628,69 @@ body {
 /* En portrait: ocultar completamente */
 @media (orientation: portrait) {
   .key-hint { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WIREFRAME OVERRIDE — aplana todo al esqueleto
+   Quita curvas, animaciones y efectos para modo prototipo
+══════════════════════════════════════════════════════════════ */
+
+/* Cero curvas en todo el documento */
+*, *::before, *::after {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Barra rectangular con borde visible */
+.bar-track {
+  border: 1.5px solid var(--border-strong) !important;
+  background: transparent !important;
+}
+.bar-fill {
+  background: #888888 !important;
+}
+
+/* Overlay plano, sin blur */
+.overlay {
+  background: rgba(255,255,255,0.96) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Botón INICIAR: rectángulo plano */
+.btn-start, .btn-play-again {
+  border: 2px solid var(--text) !important;
+}
+
+/* Botones de tap: borde visible */
+.big-button {
+  border: 1.5px solid var(--border) !important;
+}
+.big-button:active { background: var(--border-strong) !important; }
+
+/* VS box cuadrado */
+.vs-badge {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--border-strong) !important;
+}
+
+/* Dot de barra: cuadrado con borde */
+.bar-dot {
+  border-radius: 0 !important;
+  border: 1.5px solid var(--border-strong) !important;
+}
+
+/* Live dot estático (sin pulso) */
+.live-dot {
+  border-radius: 0 !important;
+  background: var(--text) !important;
+}
+
+/* Badges rectangulares con borde */
+.level-badge {
+  border: 1px solid var(--border-strong) !important;
+  background: transparent !important;
 }
 
