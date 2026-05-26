@@ -256,7 +256,7 @@ body {
   width: 5vmin;
   background: var(--surface);
   border-radius: 99px;
-  border: 1.5px solid var(--border-strong);
+  border: none;
   overflow: hidden;
   position: relative;
   margin: 0 auto;
@@ -345,6 +345,10 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .player-name--2 { color: var(--text-muted); }
 
@@ -473,6 +477,10 @@ body {
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
 }
 
 /* ══════════════════════════════════════════════════════════════
