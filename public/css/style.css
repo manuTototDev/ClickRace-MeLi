@@ -322,13 +322,10 @@ body {
 .center-zone {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: stretch;      /* hijos toman el ancho completo */
+  align-items: stretch;
   padding: 2vmin 2vmin;
 }
 
@@ -388,18 +385,18 @@ body {
 
 /* ── VS Divider ─────────────────────────────────────────────── */
 .vs-divider {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: center;   /* centrado horizontal garantizado */
   gap: 2vmin;
-  flex-shrink: 0;
-  width: 100%;               /* ocupa todo el ancho */
-  align-self: stretch;       /* fuerza el ancho completo */
   padding: 2vmin 0;
 }
 .vs-line {
   flex: 1;
   height: 1px;
   background: var(--border);
+  max-width: 30%;            /* limita las líneas para no empujar el badge */
 }
 .vs-badge {
   width: 9vmin;
