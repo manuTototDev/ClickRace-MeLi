@@ -101,7 +101,7 @@ function updatePlayerUI(player, data) {
     len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
   // Badge de nivel — texto corto estilo wireframe
-  const levelNames = ['Lv.1 · Sin seguidores', 'Lv.2 · Likes', 'Lv.3 · Fans', 'Lv.4 · ¡VIRAL!'];
+  const levelNames = ['Lv.1 · Sin audiencia', 'Lv.2 · Interés', 'Lv.3 · Lealtad', 'Lv.4 · ¡Comprador!'];
   if (DOM.badgeText[player]) {
     DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
@@ -176,8 +176,8 @@ function resetUI() {
     dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
   });
 
-  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Sin seguidores';
-  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Sin seguidores';
+  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Sin audiencia';
+  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Sin audiencia';
 }
 
 // ─── Apply state on reconnect ─────────────────────────────────
