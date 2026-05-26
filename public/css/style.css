@@ -452,7 +452,6 @@ body {
   justify-content: center;
   background: var(--surface);
   transition: background 0.08s;
-  overflow: hidden;
 }
 .big-button--2 {
   background: var(--surface-2);
@@ -462,7 +461,7 @@ body {
 .big-button:active { background: var(--border); }
 
 .button-label {
-  font-size: 5vmin;
+  font-size: 4vmin;
   font-weight: 900;
   color: var(--text);
   letter-spacing: 0.05em;
@@ -471,16 +470,13 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.5vmin;
+  line-height: 1.2;
 }
 .button-label-sub {
-  font-size: 1.7vmin;
+  font-size: 1.6vmin;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90%;
+  letter-spacing: 0.06em;
 }
 
 /* ══════════════════════════════════════════════════════════════
