@@ -1,19 +1,12 @@
 /**
  * ClickRace - TRÓPICA · Mercado Ads
- * Versión serverless: estado 100% en el navegador, sin servidor.
- * Compatible con Vercel / cualquier CDN estático.
+ * WIREFRAME MODE — sin animaciones, updates directos al DOM
  */
 
+const socket = io();
+
 // ─── Config ───────────────────────────────────────────────────
-const GAME_CONFIG = {
-  CLICKS_TO_WIN: 50,
-  LEVELS: [
-    { label: 'Punto de Partida',    threshold: 0    },
-    { label: 'Comunidad Creciente', threshold: 0.25 },
-    { label: 'Seguidores Leales',   threshold: 0.55 },
-    { label: 'Cima de Seguidores',  threshold: 1.0  },
-  ],
-};
+let CONFIG = { CLICKS_TO_WIN: 50, LEVELS: [] };
 
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -44,93 +37,42 @@ const DOM = {
 };
 
 // ─── State ────────────────────────────────────────────────────
-function freshState() {
-  return {
-    status: 'waiting',  // waiting | countdown | playing | finished
-    players: {
-      1: { clicks: 0, progress: 0, level: 0 },
-      2: { clicks: 0, progress: 0, level: 0 },
-    },
-    winner: null,
-  };
-}
+let gameActive = false;
 
-let gameState = freshState();
+// ─── Socket Events ────────────────────────────────────────────
+socket.on('state:sync',    ({ gameState, config }) => { CONFIG = config; applyState(gameState); });
+socket.on('game:countdown',({ seconds }) => showCountdown(seconds));
+socket.on('game:start',    ({ config }) => { CONFIG = config; startGame(); });
+socket.on('player:update', ({ player, data }) => updatePlayerUI(player, data));
+socket.on('game:finished', ({ winner, players }) => finishGame(winner, players));
+socket.on('game:reset',    () => resetUI());
 
 // ─── Event Listeners ──────────────────────────────────────────
-DOM.btnStart.addEventListener('click',     () => actionStart());
-DOM.btnPlayAgain.addEventListener('click', () => actionReset());
-DOM.btnReset.addEventListener('click',     () => actionReset());
-DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
-DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
+DOM.btnStart.addEventListener('click',     () => socket.emit('game:start', { market: 'MX' }));
+DOM.btnPlayAgain.addEventListener('click', () => socket.emit('game:reset'));
+DOM.btnReset.addEventListener('click',     () => socket.emit('game:reset'));
+DOM.btnPlayer1.addEventListener('click',   () => emitClick(1));
+DOM.btnPlayer2.addEventListener('click',   () => emitClick(2));
 
-// Atajos de teclado (debug/escritorio)
 document.addEventListener('keydown', e => {
   if (e.repeat) return;
-  if (e.key === 'f' || e.key === 'F') actionClick(1);
-  if (e.key === 'j' || e.key === 'J') actionClick(2);
+  if (e.key === 'f' || e.key === 'F') emitClick(1);
+  if (e.key === 'j' || e.key === 'J') emitClick(2);
 });
 
-// Hint teclado (solo visible fuera del área jugable)
+// Hint teclado
 const hint = document.createElement('div');
 hint.className = 'key-hint';
 hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
 document.body.appendChild(hint);
 
-// ─── Game Actions ─────────────────────────────────────────────
-
-function actionStart() {
-  if (gameState.status !== 'waiting') return;
-  gameState.status = 'countdown';
-
-  let count = 3;
-  showCountdown(count);
-
-  const timer = setInterval(() => {
-    count--;
-    if (count > 0) {
-      showCountdown(count);
-    } else {
-      clearInterval(timer);
-      showCountdown(0); // muestra "¡YA!"
-      setTimeout(() => {
-        gameState.status = 'playing';
-        startGame();
-      }, 800);
-    }
-  }, 1000);
+// ─── Actions ──────────────────────────────────────────────────
+function emitClick(player) {
+  if (!gameActive) return;
+  socket.emit('player:click', { player });
 }
 
-function actionClick(player) {
-  if (gameState.status !== 'playing') return;
-
-  const p = gameState.players[player];
-  p.clicks   = Math.min(p.clicks + 1, GAME_CONFIG.CLICKS_TO_WIN);
-  p.progress = p.clicks / GAME_CONFIG.CLICKS_TO_WIN;
-
-  // Actualizar nivel
-  const levels = GAME_CONFIG.LEVELS;
-  for (let i = levels.length - 1; i >= 0; i--) {
-    if (p.progress >= levels[i].threshold) { p.level = i; break; }
-  }
-
-  updatePlayerUI(player, p);
-  animateButtonPress(player);
-
-  // ¿Ganó?
-  if (p.clicks >= GAME_CONFIG.CLICKS_TO_WIN) {
-    gameState.status = 'finished';
-    gameState.winner = player;
-    finishGame(player, gameState.players);
-  }
-}
-
-function actionReset() {
-  gameState = freshState();
-  resetUI();
-}
-
-// ─── Followers: crecimiento exponencial 0 → 500K ──────────────
+// ─── Followers: 0 → 500K exponencial ─────────────────────────
 function progressToFollowers(progress) {
   if (progress <= 0) return 0;
   if (progress >= 1) return 500000;
@@ -145,99 +87,39 @@ function formatFollowers(n) {
   return n.toLocaleString();
 }
 
-// ─── Animations ───────────────────────────────────────────────
-function animateButtonPress(player) {
-  const btn = player === 1 ? DOM.btnPlayer1 : DOM.btnPlayer2;
-  gsap.fromTo(btn,
-    { scale: 0.88 },
-    { scale: 1, duration: 0.3, ease: 'back.out(2)' }
-  );
-}
-
+// ─── UI: sin animaciones, todo instantáneo ────────────────────
 function updatePlayerUI(player, data) {
-  const pct      = data.progress * 100;
-  const followers = progressToFollowers(data.progress);
-  const display   = formatFollowers(followers);
+  const display = formatFollowers(progressToFollowers(data.progress));
 
-  // Barra de progreso
-  gsap.to(DOM.fill[player], {
-    height: `${pct}%`,
-    duration: 0.2,
-    ease: 'power2.out',
-  });
+  // Barra: salto directo
+  DOM.fill[player].style.height = `${data.progress * 100}%`;
 
-  // Contador con tamaño dinámico
+  // Contador con fuente dinámica
   DOM.counter[player].textContent = display;
   const len = display.length;
   DOM.counter[player].style.fontSize =
     len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
-  gsap.fromTo(DOM.counter[player],
-    { scale: 1.3 },
-    { scale: 1, duration: 0.2, ease: 'back.out(2)' }
-  );
-
-  // Badge de nivel
-  const levelNames = [
-    'Lv.1 · Inicio',
-    'Lv.2 · Comunidad',
-    'Lv.3 · Leales',
-    'Lv.4 · ¡CIMA!',
-  ];
+  // Badge de nivel — texto corto estilo wireframe
+  const levelNames = ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡Cima!'];
   if (DOM.badgeText[player]) {
     DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
 
-  // Dots de nivel en la barra
+  // Dots: ON/OFF instantáneo, sin color
   const zoneEl = document.getElementById(`totem-${player}`);
   if (zoneEl) {
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
     dots.forEach((dot, i) => {
-      if (i <= data.level) {
-        dot.style.background  = player === 1 ? '#FFE600' : '#00D4FF';
-        dot.style.borderColor = player === 1 ? '#FFE600' : '#00D4FF';
-        dot.style.boxShadow   = `0 0 2vmin ${player === 1 ? '#FFE600' : '#00D4FF'}`;
-      } else {
-        dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
-      }
+      dot.style.background  = i <= data.level ? '#444' : '';
+      dot.style.borderColor = i <= data.level ? '#444' : '';
+      dot.style.boxShadow   = '';
     });
   }
-
-  // Partículas al subir de nivel
-  const threshold = GAME_CONFIG.LEVELS[data.level]?.threshold ?? 1;
-  if (data.level > 0 && data.clicks === Math.floor(GAME_CONFIG.CLICKS_TO_WIN * threshold)) {
-    spawnParticles(player);
-  }
+  // Sin partículas en wireframe
 }
 
-function spawnParticles(player) {
-  const container = DOM.particles[player];
-  const color     = player === 1 ? '#FFE600' : '#00D4FF';
-
-  for (let i = 0; i < 8; i++) {
-    const p = document.createElement('div');
-    p.className   = 'particle';
-    p.style.background = color;
-    p.style.left  = `${Math.random() * 100}%`;
-    p.style.bottom = '0%';
-    container.appendChild(p);
-
-    gsap.fromTo(p,
-      { y: 0, x: 0, opacity: 1, scale: 1 },
-      {
-        y: -(30 + Math.random() * 60),
-        x: (Math.random() - 0.5) * 30,
-        opacity: 0,
-        scale: 0,
-        duration: 0.6 + Math.random() * 0.4,
-        ease: 'power2.out',
-        onComplete: () => p.remove(),
-      }
-    );
-  }
-}
-
-// ─── Countdown ────────────────────────────────────────────────
+// ─── Countdown: texto directo, sin fade ───────────────────────
 function showCountdown(seconds) {
   DOM.overlay.classList.remove('hidden');
   DOM.overlayCountdown.classList.remove('hidden');
@@ -245,75 +127,48 @@ function showCountdown(seconds) {
 
   if (seconds === 0) {
     DOM.countdownNumber.textContent = '¡YA!';
-    gsap.fromTo(DOM.countdownNumber,
-      { scale: 0.5, opacity: 0 },
-      {
-        scale: 1.2, opacity: 1, duration: 0.3, ease: 'back.out(3)',
-        onComplete: () => {
-          gsap.to(DOM.countdownNumber, {
-            scale: 2, opacity: 0, duration: 0.4,
-            onComplete: () => DOM.overlay.classList.add('hidden'),
-          });
-        },
-      }
-    );
+    setTimeout(() => DOM.overlay.classList.add('hidden'), 700);
   } else {
     DOM.countdownNumber.textContent = seconds;
-    gsap.fromTo(DOM.countdownNumber,
-      { scale: 1.5, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' }
-    );
   }
 }
 
 // ─── Game Start ───────────────────────────────────────────────
 function startGame() {
+  gameActive = true;
   DOM.startArea.classList.add('hidden');
   DOM.statusArea.classList.remove('hidden');
 
-  gsap.set([DOM.fill[1], DOM.fill[2]], { height: '0%' });
+  DOM.fill[1].style.height = '0%';
+  DOM.fill[2].style.height = '0%';
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
-
-  gsap.fromTo([DOM.totem[1], DOM.totem[2]],
-    { scale: 0.96, opacity: 0.7 },
-    { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.5)' }
-  );
 }
 
 // ─── Game Finish ──────────────────────────────────────────────
 function finishGame(winner, players) {
+  gameActive = false;
   updatePlayerUI(1, players[1]);
   updatePlayerUI(2, players[2]);
 
-  const loser = winner === 1 ? 2 : 1;
-  DOM.totem[winner].classList.add('totem--winner');
-  gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0.5 });
-
-  setTimeout(() => {
-    DOM.overlay.classList.remove('hidden');
-    DOM.overlayCountdown.classList.add('hidden');
-    DOM.overlayWinner.classList.remove('hidden');
-    DOM.winnerName.textContent = `JUGADOR ${winner}`;
-
-    gsap.fromTo(DOM.overlayWinner,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)' }
-    );
-  }, 600);
+  DOM.overlay.classList.remove('hidden');
+  DOM.overlayCountdown.classList.add('hidden');
+  DOM.overlayWinner.classList.remove('hidden');
+  DOM.winnerName.textContent = `JUGADOR ${winner}`;
 }
 
-// ─── Reset UI ─────────────────────────────────────────────────
+// ─── Reset ────────────────────────────────────────────────────
 function resetUI() {
+  gameActive = false;
+
   DOM.overlay.classList.add('hidden');
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
   DOM.totem[1].classList.remove('totem--winner');
   DOM.totem[2].classList.remove('totem--winner');
 
-  gsap.to([DOM.totem[1], DOM.totem[2]], { opacity: 1, scale: 1, duration: 0.4 });
-  gsap.to([DOM.fill[1], DOM.fill[2]], { height: '0%', duration: 0.6, ease: 'power2.inOut' });
-
+  DOM.fill[1].style.height = '0%';
+  DOM.fill[2].style.height = '0%';
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
 
@@ -323,4 +178,18 @@ function resetUI() {
 
   if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Inicio';
   if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Inicio';
+}
+
+// ─── Apply state on reconnect ─────────────────────────────────
+function applyState(gs) {
+  if (!gs) return;
+  if (gs.status === 'playing') {
+    gameActive = true;
+    DOM.startArea.classList.add('hidden');
+    DOM.statusArea.classList.remove('hidden');
+    updatePlayerUI(1, gs.players[1]);
+    updatePlayerUI(2, gs.players[2]);
+  } else if (gs.status === 'finished') {
+    finishGame(gs.winner, gs.players);
+  }
 }
