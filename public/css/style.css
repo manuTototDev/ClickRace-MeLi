@@ -172,6 +172,27 @@ body {
   50%       { opacity: 0.3; transform: scale(0.6); }
 }
 
+/* ── Botón Reiniciar ─────────────────────────────────────────── */
+.btn-reset {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  width: 4vmin;
+  height: 4vmin;
+  font-size: 1.8vmin;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  margin-left: 1vmin;
+}
+.btn-reset:hover  { background: var(--surface); color: var(--text); }
+.btn-reset:active { opacity: 0.6; }
+
 /* ══════════════════════════════════════════════════════════════
    GAME AREA — 3 columnas
 ══════════════════════════════════════════════════════════════ */

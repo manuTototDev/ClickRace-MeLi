@@ -27,6 +27,7 @@ const DOM = {
   winnerName:      $('winner-name'),
 
   btnStart:      $('btn-start'),
+  btnReset:      $('btn-reset'),
   startArea:     $('start-area'),
   statusArea:    $('status-area'),
   statusText:    $('status-text'),
@@ -75,6 +76,11 @@ DOM.btnPlayAgain.addEventListener('click', () => {
   socket.emit('game:reset');
 });
 
+// Boton Reiniciar - visible durante la partida
+DOM.btnReset.addEventListener('click', () => {
+  socket.emit('game:reset');
+});
+
 // Big buttons
 DOM.btnPlayer1.addEventListener('click', () => emitClick(1));
 DOM.btnPlayer2.addEventListener('click', () => emitClick(2));
@@ -98,6 +104,22 @@ function emitClick(player) {
   animateButtonPress(player);
 }
 
+// Seguidores exponenciales: progress [0-1] -> 0 a 500K con curva ^1.8
+// Lento al inicio, explosivo al final
+function progressToFollowers(progress) {
+  if (progress <= 0) return 0;
+  if (progress >= 1) return 500000;
+  return Math.round(500000 * Math.pow(progress, 1.8));
+}
+
+function formatFollowers(n) {
+  if (n >= 500000) return '500K';
+  if (n >= 100000) return Math.round(n / 1000) + 'K';
+  if (n >= 10000)  return (n / 1000).toFixed(1) + 'K';
+  if (n >= 1000)   return (n / 1000).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+
 // ─── Animations ───────────────────────────────────────────────
 function animateButtonPress(player) {
   const btn = player === 1 ? DOM.btnPlayer1 : DOM.btnPlayer2;
@@ -110,18 +132,22 @@ function animateButtonPress(player) {
 function updatePlayerUI(player, data) {
   const pct = data.progress * 100;
 
-  // Animate progress bar — vertical (height, crece de abajo)
+  // Seguidores con crecimiento exponencial
+  const followers = progressToFollowers(data.progress);
+  const display   = formatFollowers(followers);
+
+  // Animate progress bar
   gsap.to(DOM.fill[player], {
     height: `${pct}%`,
     duration: 0.2,
     ease: 'power2.out',
   });
 
-  // Counter bounce
-  DOM.counter[player].textContent = data.clicks;
+  // Counter: muestra seguidores formateados
+  DOM.counter[player].textContent = display;
   gsap.fromTo(DOM.counter[player],
-    { scale: 1.4, color: player === 1 ? '#FFF176' : '#80EEFF' },
-    { scale: 1, color: player === 1 ? '#FFE600' : '#00D4FF', duration: 0.25, ease: 'back.out(2)' }
+    { scale: 1.3 },
+    { scale: 1, duration: 0.2, ease: 'back.out(2)' }
   );
 
   // Update level text & badge
