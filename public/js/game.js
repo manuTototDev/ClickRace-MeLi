@@ -1,13 +1,19 @@
 /**
  * ClickRace - TRÓPICA · Mercado Ads
- * Client-side game logic with Socket.io + GSAP
- * Layout: 9:16 vertical nativo
+ * Versión serverless: estado 100% en el navegador, sin servidor.
+ * Compatible con Vercel / cualquier CDN estático.
  */
 
-const socket = io();
-
-// ─── Config (filled from server) ──────────────────────────────
-let CONFIG = { CLICKS_TO_WIN: 50, LEVELS: [] };
+// ─── Config ───────────────────────────────────────────────────
+const GAME_CONFIG = {
+  CLICKS_TO_WIN: 50,
+  LEVELS: [
+    { label: 'Punto de Partida',    threshold: 0    },
+    { label: 'Comunidad Creciente', threshold: 0.25 },
+    { label: 'Seguidores Leales',   threshold: 0.55 },
+    { label: 'Cima de Seguidores',  threshold: 1.0  },
+  ],
+};
 
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -20,92 +26,111 @@ const DOM = {
   totem:      { 1: $('totem-1'),      2: $('totem-2')      },
   particles:  { 1: $('particles-1'),  2: $('particles-2')  },
 
-  overlay:         $('overlay'),
-  overlayCountdown:$('overlay-countdown'),
-  overlayWinner:   $('overlay-winner'),
-  countdownNumber: $('countdown-number'),
-  winnerName:      $('winner-name'),
+  overlay:          $('overlay'),
+  overlayCountdown: $('overlay-countdown'),
+  overlayWinner:    $('overlay-winner'),
+  countdownNumber:  $('countdown-number'),
+  winnerName:       $('winner-name'),
 
-  btnStart:      $('btn-start'),
-  btnReset:      $('btn-reset'),
-  startArea:     $('start-area'),
-  statusArea:    $('status-area'),
-  statusText:    $('status-text'),
+  btnStart:     $('btn-start'),
+  btnReset:     $('btn-reset'),
+  startArea:    $('start-area'),
+  statusArea:   $('status-area'),
+  statusText:   $('status-text'),
 
-  btnPlayer1:    $('btn-player-1'),
-  btnPlayer2:    $('btn-player-2'),
-  btnPlayAgain:  $('btn-play-again'),
+  btnPlayer1:   $('btn-player-1'),
+  btnPlayer2:   $('btn-player-2'),
+  btnPlayAgain: $('btn-play-again'),
 };
 
 // ─── State ────────────────────────────────────────────────────
-let gameActive = false;
+function freshState() {
+  return {
+    status: 'waiting',  // waiting | countdown | playing | finished
+    players: {
+      1: { clicks: 0, progress: 0, level: 0 },
+      2: { clicks: 0, progress: 0, level: 0 },
+    },
+    winner: null,
+  };
+}
 
-// ─── Socket Events ────────────────────────────────────────────
-socket.on('state:sync', ({ gameState, config }) => {
-  CONFIG = config;
-  applyState(gameState);
-});
+let gameState = freshState();
 
-socket.on('game:countdown', ({ seconds }) => {
-  showCountdown(seconds);
-});
+// ─── Event Listeners ──────────────────────────────────────────
+DOM.btnStart.addEventListener('click',     () => actionStart());
+DOM.btnPlayAgain.addEventListener('click', () => actionReset());
+DOM.btnReset.addEventListener('click',     () => actionReset());
+DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
+DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
 
-socket.on('game:start', ({ config }) => {
-  CONFIG = config;
-  startGame();
-});
-
-socket.on('player:update', ({ player, data }) => {
-  updatePlayerUI(player, data);
-});
-
-socket.on('game:finished', ({ winner, players }) => {
-  finishGame(winner, players);
-});
-
-socket.on('game:reset', () => {
-  resetUI();
-});
-
-// ─── UI Actions ───────────────────────────────────────────────
-DOM.btnStart.addEventListener('click', () => {
-  socket.emit('game:start', { market: 'MX' });
-});
-
-DOM.btnPlayAgain.addEventListener('click', () => {
-  socket.emit('game:reset');
-});
-
-// Boton Reiniciar - visible durante la partida
-DOM.btnReset.addEventListener('click', () => {
-  socket.emit('game:reset');
-});
-
-// Big buttons
-DOM.btnPlayer1.addEventListener('click', () => emitClick(1));
-DOM.btnPlayer2.addEventListener('click', () => emitClick(2));
-
-// Keyboard shortcuts for testing: F = P1, J = P2
+// Atajos de teclado (debug/escritorio)
 document.addEventListener('keydown', e => {
   if (e.repeat) return;
-  if (e.key === 'f' || e.key === 'F') emitClick(1);
-  if (e.key === 'j' || e.key === 'J') emitClick(2);
+  if (e.key === 'f' || e.key === 'F') actionClick(1);
+  if (e.key === 'j' || e.key === 'J') actionClick(2);
 });
 
-// Add keyboard hint — fuera del viewport-shell, solo visible en desktop
+// Hint teclado (solo visible fuera del área jugable)
 const hint = document.createElement('div');
 hint.className = 'key-hint';
 hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
 document.body.appendChild(hint);
 
-function emitClick(player) {
-  if (!gameActive) return;
-  socket.emit('player:click', { player });
-  animateButtonPress(player);
+// ─── Game Actions ─────────────────────────────────────────────
+
+function actionStart() {
+  if (gameState.status !== 'waiting') return;
+  gameState.status = 'countdown';
+
+  let count = 3;
+  showCountdown(count);
+
+  const timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      showCountdown(count);
+    } else {
+      clearInterval(timer);
+      showCountdown(0); // muestra "¡YA!"
+      setTimeout(() => {
+        gameState.status = 'playing';
+        startGame();
+      }, 800);
+    }
+  }, 1000);
 }
 
-// Seguidores exponenciales: progress [0-1] -> 0 a 500K con curva ^1.8
-// Lento al inicio, explosivo al final
+function actionClick(player) {
+  if (gameState.status !== 'playing') return;
+
+  const p = gameState.players[player];
+  p.clicks   = Math.min(p.clicks + 1, GAME_CONFIG.CLICKS_TO_WIN);
+  p.progress = p.clicks / GAME_CONFIG.CLICKS_TO_WIN;
+
+  // Actualizar nivel
+  const levels = GAME_CONFIG.LEVELS;
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (p.progress >= levels[i].threshold) { p.level = i; break; }
+  }
+
+  updatePlayerUI(player, p);
+  animateButtonPress(player);
+
+  // ¿Ganó?
+  if (p.clicks >= GAME_CONFIG.CLICKS_TO_WIN) {
+    gameState.status = 'finished';
+    gameState.winner = player;
+    finishGame(player, gameState.players);
+  }
+}
+
+function actionReset() {
+  gameState = freshState();
+  resetUI();
+}
+
+// ─── Followers: crecimiento exponencial 0 → 500K ──────────────
 function progressToFollowers(progress) {
   if (progress <= 0) return 0;
   if (progress >= 1) return 500000;
@@ -130,81 +155,71 @@ function animateButtonPress(player) {
 }
 
 function updatePlayerUI(player, data) {
-  const pct = data.progress * 100;
-
-  // Seguidores con crecimiento exponencial
+  const pct      = data.progress * 100;
   const followers = progressToFollowers(data.progress);
   const display   = formatFollowers(followers);
 
-  // Animate progress bar
+  // Barra de progreso
   gsap.to(DOM.fill[player], {
     height: `${pct}%`,
     duration: 0.2,
     ease: 'power2.out',
   });
 
-  // Counter: muestra seguidores formateados
+  // Contador con tamaño dinámico
   DOM.counter[player].textContent = display;
-
-  // Fuente dinâmica: más chars → más pequeño para que no se salga
   const len = display.length;
-  const fontSize = len >= 5 ? '8vmin'
-                 : len >= 4 ? '9.5vmin'
-                 :            '11vmin';
-  DOM.counter[player].style.fontSize = fontSize;
+  DOM.counter[player].style.fontSize =
+    len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
   gsap.fromTo(DOM.counter[player],
     { scale: 1.3 },
     { scale: 1, duration: 0.2, ease: 'back.out(2)' }
   );
 
-  // Update level text & badge
+  // Badge de nivel
   const levelNames = [
     'Lv.1 · Inicio',
     'Lv.2 · Comunidad',
     'Lv.3 · Leales',
     'Lv.4 · ¡CIMA!',
   ];
-  const levelIndex = data.level;
   if (DOM.badgeText[player]) {
-    DOM.badgeText[player].textContent = levelNames[levelIndex] || `Lv.${levelIndex + 1}`;
+    DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
 
-  // Iluminar dots de nivel (bar-dot en bar-level-markers)
+  // Dots de nivel en la barra
   const zoneEl = document.getElementById(`totem-${player}`);
   if (zoneEl) {
-    // Los markers están ordenados top→bottom en DOM pero bottom→top en porcentaje
-    // Revertimos para que índice 0 = marker de abajo (Inicio)
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
     dots.forEach((dot, i) => {
-      if (i <= levelIndex) {
-        dot.style.background = player === 1 ? '#FFE600' : '#00D4FF';
+      if (i <= data.level) {
+        dot.style.background  = player === 1 ? '#FFE600' : '#00D4FF';
         dot.style.borderColor = player === 1 ? '#FFE600' : '#00D4FF';
-        dot.style.boxShadow = `0 0 2vmin ${player === 1 ? '#FFE600' : '#00D4FF'}`;
+        dot.style.boxShadow   = `0 0 2vmin ${player === 1 ? '#FFE600' : '#00D4FF'}`;
       } else {
-        dot.style.background = '';
-        dot.style.borderColor = '';
-        dot.style.boxShadow = '';
+        dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
       }
     });
   }
 
-  // Spawn particles on level up
-  if (data.level > 0 && data.clicks % Math.floor(CONFIG.CLICKS_TO_WIN * (CONFIG.LEVELS[data.level]?.threshold || 1)) === 0) {
+  // Partículas al subir de nivel
+  const threshold = GAME_CONFIG.LEVELS[data.level]?.threshold ?? 1;
+  if (data.level > 0 && data.clicks === Math.floor(GAME_CONFIG.CLICKS_TO_WIN * threshold)) {
     spawnParticles(player);
   }
 }
 
 function spawnParticles(player) {
   const container = DOM.particles[player];
-  const color = player === 1 ? '#FFE600' : '#00D4FF';
+  const color     = player === 1 ? '#FFE600' : '#00D4FF';
 
   for (let i = 0; i < 8; i++) {
     const p = document.createElement('div');
-    p.className = 'particle';
+    p.className   = 'particle';
     p.style.background = color;
-    p.style.left = `${Math.random() * 100}%`;
-    p.style.bottom = `0%`;
+    p.style.left  = `${Math.random() * 100}%`;
+    p.style.bottom = '0%';
     container.appendChild(p);
 
     gsap.fromTo(p,
@@ -229,17 +244,17 @@ function showCountdown(seconds) {
   DOM.overlayWinner.classList.add('hidden');
 
   if (seconds === 0) {
-    // "¡YA!" flash then hide
     DOM.countdownNumber.textContent = '¡YA!';
     gsap.fromTo(DOM.countdownNumber,
       { scale: 0.5, opacity: 0 },
-      { scale: 1.2, opacity: 1, duration: 0.3, ease: 'back.out(3)',
+      {
+        scale: 1.2, opacity: 1, duration: 0.3, ease: 'back.out(3)',
         onComplete: () => {
           gsap.to(DOM.countdownNumber, {
             scale: 2, opacity: 0, duration: 0.4,
-            onComplete: () => { DOM.overlay.classList.add('hidden'); }
+            onComplete: () => DOM.overlay.classList.add('hidden'),
           });
-        }
+        },
       }
     );
   } else {
@@ -253,16 +268,13 @@ function showCountdown(seconds) {
 
 // ─── Game Start ───────────────────────────────────────────────
 function startGame() {
-  gameActive = true;
   DOM.startArea.classList.add('hidden');
   DOM.statusArea.classList.remove('hidden');
 
-  // Reset bar heights (vertical)
   gsap.set([DOM.fill[1], DOM.fill[2]], { height: '0%' });
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
 
-  // Animate totems in
   gsap.fromTo([DOM.totem[1], DOM.totem[2]],
     { scale: 0.96, opacity: 0.7 },
     { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.5)' }
@@ -271,18 +283,13 @@ function startGame() {
 
 // ─── Game Finish ──────────────────────────────────────────────
 function finishGame(winner, players) {
-  gameActive = false;
-
-  // Update final bars
   updatePlayerUI(1, players[1]);
   updatePlayerUI(2, players[2]);
 
-  // Highlight winner totem
   const loser = winner === 1 ? 2 : 1;
   DOM.totem[winner].classList.add('totem--winner');
   gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0.5 });
 
-  // Show winner overlay after delay
   setTimeout(() => {
     DOM.overlay.classList.remove('hidden');
     DOM.overlayCountdown.classList.add('hidden');
@@ -296,10 +303,8 @@ function finishGame(winner, players) {
   }, 600);
 }
 
-// ─── Reset ────────────────────────────────────────────────────
+// ─── Reset UI ─────────────────────────────────────────────────
 function resetUI() {
-  gameActive = false;
-
   DOM.overlay.classList.add('hidden');
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
@@ -312,28 +317,10 @@ function resetUI() {
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
 
-  // Reset bar dots
   document.querySelectorAll('.bar-dot').forEach(dot => {
-    dot.style.background = '';
-    dot.style.borderColor = '';
-    dot.style.boxShadow = '';
+    dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
   });
 
-  // Reset badges
   if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Inicio';
   if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Inicio';
-}
-
-// ─── Apply server state (on reconnect) ────────────────────────
-function applyState(gs) {
-  if (!gs) return;
-  if (gs.status === 'playing') {
-    gameActive = true;
-    DOM.startArea.classList.add('hidden');
-    DOM.statusArea.classList.remove('hidden');
-    updatePlayerUI(1, gs.players[1]);
-    updatePlayerUI(2, gs.players[2]);
-  } else if (gs.status === 'finished') {
-    finishGame(gs.winner, gs.players);
-  }
 }
