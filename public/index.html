@@ -16,6 +16,21 @@
 <body>
 <div id="viewport-shell">
 
+  <!-- ── MARKET SELECTOR MODAL ── -->
+  <div id="market-modal" class="market-modal hidden">
+    <div class="market-modal-box">
+      <p class="market-modal-title">SELECCIONAR MERCADO</p>
+      <div class="market-grid">
+        <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
+        <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
+        <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
+        <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
+        <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
+        <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- OVERLAY: Countdown / Winner -->
   <div id="overlay" class="overlay hidden">
     <div id="overlay-countdown" class="overlay-content hidden">
@@ -56,6 +71,7 @@
         </div>
 
         <div id="start-area">
+          <button id="btn-market" class="btn-market" title="Seleccionar mercado" aria-label="Seleccionar mercado">⚙️</button>
           <button id="btn-start" class="btn-start">▶ INICIAR</button>
         </div>
         <div id="status-area" class="status-area hidden">

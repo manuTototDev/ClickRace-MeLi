@@ -4,6 +4,128 @@
  * Compatible con Vercel / cualquier CDN estático.
  */
 
+// ─── Mercados / Localización ──────────────────────────────────
+const MARKETS = {
+  MX: {
+    flag: '🇲🇽', name: 'México',
+    header:    'AUMENTA TUS SEGUIDORES',
+    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!',
+    cta:       '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    btnLabel:  'SEGUIR',
+    winner:    '¡TOP OF RETAIL MEDIA!',
+    playAgain: '¡OTRA RONDA!',
+    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+  },
+  BR: {
+    flag: '🇧🇷', name: 'Brasil',
+    header:    'AUMENTE SEUS SEGUIDORES',
+    subtitle:  'QUEM CHEGA PRIMEIRO?',
+    countdown: 'A AUMENTAR SEGUIDORES!',
+    cta:       'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',
+    btnLabel:  'SEGUIR',
+    winner:    'TOP OF RETAIL MEDIA!',
+    playAgain: 'MAIS UMA RODADA!',
+    markers:   ['AUDIÊNCIA', 'FIÉIS', 'COMPRADORES'],
+    levels:    ['Sem audiência', 'Interesse', 'Lealdade', 'Comprador!'],
+  },
+  AR: {
+    flag: '🇦🇷', name: 'Argentina',
+    header:    'AUMENTÁ TUS SEGUIDORES',
+    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!',
+    cta:       '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    btnLabel:  'SEGUIR',
+    winner:    '¡TOP OF RETAIL MEDIA!',
+    playAgain: '¡OTRA RONDA!',
+    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+  },
+  CL: {
+    flag: '🇨🇱', name: 'Chile',
+    header:    'AUMENTA TUS SEGUIDORES',
+    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!',
+    cta:       '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    btnLabel:  'SEGUIR',
+    winner:    '¡TOP OF RETAIL MEDIA!',
+    playAgain: '¡OTRA RONDA!',
+    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+  },
+  CO: {
+    flag: '🇨🇴', name: 'Colombia',
+    header:    'AUMENTA TUS SEGUIDORES',
+    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!',
+    cta:       '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    btnLabel:  'SEGUIR',
+    winner:    '¡TOP OF RETAIL MEDIA!',
+    playAgain: '¡OTRA RONDA!',
+    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+  },
+  UY: {
+    flag: '🇺🇾', name: 'Uruguay',
+    header:    'AUMENTÁ TUS SEGUIDORES',
+    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!',
+    cta:       '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    btnLabel:  'SEGUIR',
+    winner:    '¡TOP OF RETAIL MEDIA!',
+    playAgain: '¡OTRA RONDA!',
+    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+  },
+};
+
+let currentMarket = localStorage.getItem('clickrace_market') || 'AR';
+
+function applyMarket(code) {
+  const m = MARKETS[code];
+  if (!m) return;
+  currentMarket = code;
+  localStorage.setItem('clickrace_market', code);
+
+  const titleEl = document.querySelector('.challenge-title');
+  if (titleEl) titleEl.innerHTML = `${m.header} <span>${m.subtitle}</span>`;
+
+  const ctaEl = document.querySelector('.cta-bar');
+  if (ctaEl) ctaEl.textContent = m.cta;
+
+  document.querySelectorAll('.button-label').forEach(el => {
+    const sub = el.querySelector('.button-label-sub');
+    if (sub) { const s = sub.outerHTML; el.innerHTML = `${m.btnLabel} ${s}`; }
+  });
+
+  const countdownLabel = document.querySelector('.overlay-label');
+  if (countdownLabel) countdownLabel.textContent = m.countdown;
+
+  const winnerLabel = document.querySelector('.winner-label');
+  if (winnerLabel) winnerLabel.textContent = m.winner;
+
+  const playAgainBtn = document.getElementById('btn-play-again');
+  if (playAgainBtn) playAgainBtn.textContent = m.playAgain;
+
+  const markersP1 = document.querySelectorAll('#totem-1 .bar-marker-label');
+  if (markersP1.length >= 3) {
+    markersP1[0].textContent = m.markers[2];
+    markersP1[1].textContent = m.markers[1];
+    markersP1[2].textContent = m.markers[0];
+  }
+  const markersP2 = document.querySelectorAll('#totem-2 .bar-marker-label');
+  if (markersP2.length >= 3) {
+    markersP2[0].textContent = m.markers[2];
+    markersP2[1].textContent = m.markers[1];
+    markersP2[2].textContent = m.markers[0];
+  }
+
+  document.querySelectorAll('.market-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.market === code);
+  });
+}
+
 // ─── Config ───────────────────────────────────────────────────
 const GAME_CONFIG = {
   CLICKS_TO_WIN: 50,
@@ -14,6 +136,7 @@ const GAME_CONFIG = {
     { label: 'Cima de Seguidores',  threshold: 1.0  },
   ],
 };
+
 
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -76,6 +199,29 @@ const hint = document.createElement('div');
 hint.className = 'key-hint';
 hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
 document.body.appendChild(hint);
+
+// ─── Market modal ─────────────────────────────────────────────
+const marketModal = document.getElementById('market-modal');
+const btnMarket   = document.getElementById('btn-market');
+
+btnMarket.addEventListener('click', () => {
+  marketModal.classList.toggle('hidden');
+});
+
+marketModal.addEventListener('click', e => {
+  if (e.target === marketModal) marketModal.classList.add('hidden');
+});
+
+document.querySelectorAll('.market-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyMarket(btn.dataset.market);
+    marketModal.classList.add('hidden');
+  });
+});
+
+// Inicializar mercado al cargar
+applyMarket(currentMarket);
+
 
 // ─── Game Actions ─────────────────────────────────────────────
 
