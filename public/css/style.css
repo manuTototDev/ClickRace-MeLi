@@ -19,7 +19,7 @@
   --text:         #111111;
   --text-muted:   #888888;
 
-  --bar-w:        13vw;
+  --bar-w:        20vw;
 
   --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
@@ -215,6 +215,7 @@ body {
   align-items: center;
   padding: 2vmin 0 1.5vmin;
   position: relative;
+  overflow: hidden;          /* evita que el contenido central se cuele */
 }
 
 .bar-column--1 { }
@@ -274,7 +275,7 @@ body {
 /* ── Track vertical ─────────────────────────────────────────── */
 .bar-track {
   flex: 1;
-  width: 5vmin;
+  width: 7vmin;
   background: var(--surface);
   border-radius: 99px;
   border: none;
@@ -348,6 +349,7 @@ body {
   flex-direction: column;
   align-items: stretch;
   padding: 2vmin 2vmin;
+  overflow: hidden;          /* el texto grande no se derrama sobre las barras */
 }
 
 .player-info {
@@ -375,12 +377,14 @@ body {
 
 /* ── Click Counter ──────────────────────────────────────────── */
 .click-counter {
-  font-size: 17vmin;
+  font-size: 11vmin;
   font-weight: 900;
   color: var(--text);
-  letter-spacing: -0.04em;
-  line-height: 0.9;
+  letter-spacing: -0.02em;
+  line-height: 1;
   text-align: center;
+  width: 100%;
+  overflow: hidden;
 }
 .click-counter--2 { color: var(--text); }
 
