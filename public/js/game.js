@@ -1,12 +1,8 @@
 /**
- * ClickRace — TRÓPICA · Mercado Ads
- * ANIMATED MODE — GSAP + partículas + micro-interacciones
+ * ClickRace - TRÓPICA · Mercado Ads
+ * Versión serverless: estado 100% en el navegador, sin servidor.
+ * Compatible con Vercel / cualquier CDN estático.
  */
-
-const socket = io();
-
-// ─── Config ───────────────────────────────────────────────────
-let CONFIG = { CLICKS_TO_WIN: 50, LEVELS: [] };
 
 // ─── Mercados / Localización ──────────────────────────────────
 const MARKETS = {
@@ -100,10 +96,7 @@ function applyMarket(code) {
 
   document.querySelectorAll('.button-label').forEach(el => {
     const sub = el.querySelector('.button-label-sub');
-    if (sub) {
-      const subText = sub.outerHTML;
-      el.innerHTML = `${m.btnLabel} ${subText}`;
-    }
+    if (sub) { const s = sub.outerHTML; el.innerHTML = `${m.btnLabel} ${s}`; }
   });
 
   const countdownLabel = document.querySelector('.overlay-label');
@@ -121,7 +114,6 @@ function applyMarket(code) {
     markersP1[1].textContent = m.markers[1];
     markersP1[2].textContent = m.markers[0];
   }
-
   const markersP2 = document.querySelectorAll('#totem-2 .bar-marker-label');
   if (markersP2.length >= 3) {
     markersP2[0].textContent = m.markers[2];
@@ -129,13 +121,22 @@ function applyMarket(code) {
     markersP2[2].textContent = m.markers[0];
   }
 
-  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = `Lv.1 · ${m.levels[0]}`;
-  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = `Lv.1 · ${m.levels[0]}`;
-
   document.querySelectorAll('.market-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.market === code);
   });
 }
+
+// ─── Config ───────────────────────────────────────────────────
+const GAME_CONFIG = {
+  CLICKS_TO_WIN: 50,
+  LEVELS: [
+    { label: 'Punto de Partida',    threshold: 0    },
+    { label: 'Comunidad Creciente', threshold: 0.25 },
+    { label: 'Seguidores Leales',   threshold: 0.55 },
+    { label: 'Cima de Seguidores',  threshold: 1.0  },
+  ],
+};
+
 
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -166,34 +167,34 @@ const DOM = {
 };
 
 // ─── State ────────────────────────────────────────────────────
-let gameActive = false;
-// Track previous level to detect level-ups
-const prevLevel = { 1: 0, 2: 0 };
-// Track displayed number for smooth counting
-const displayedValue = { 1: 0, 2: 0 };
+function freshState() {
+  return {
+    status: 'waiting',  // waiting | countdown | playing | finished
+    players: {
+      1: { clicks: 0, progress: 0, level: 0 },
+      2: { clicks: 0, progress: 0, level: 0 },
+    },
+    winner: null,
+  };
+}
 
-// ─── Socket Events ────────────────────────────────────────────
-socket.on('state:sync',    ({ gameState, config }) => { CONFIG = config; applyState(gameState); });
-socket.on('game:countdown',({ seconds }) => showCountdown(seconds));
-socket.on('game:start',    ({ config }) => { CONFIG = config; startGame(); });
-socket.on('player:update', ({ player, data }) => updatePlayerUI(player, data));
-socket.on('game:finished', ({ winner, players }) => finishGame(winner, players));
-socket.on('game:reset',    () => resetUI());
+let gameState = freshState();
 
 // ─── Event Listeners ──────────────────────────────────────────
-DOM.btnStart.addEventListener('click',     () => socket.emit('game:start', { market: currentMarket }));
-DOM.btnPlayAgain.addEventListener('click', () => socket.emit('game:reset'));
-DOM.btnReset.addEventListener('click',     () => socket.emit('game:reset'));
-DOM.btnPlayer1.addEventListener('click',   () => emitClick(1));
-DOM.btnPlayer2.addEventListener('click',   () => emitClick(2));
+DOM.btnStart.addEventListener('click',     () => actionStart());
+DOM.btnPlayAgain.addEventListener('click', () => actionReset());
+DOM.btnReset.addEventListener('click',     () => actionReset());
+DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
+DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
 
+// Atajos de teclado (debug/escritorio)
 document.addEventListener('keydown', e => {
   if (e.repeat) return;
-  if (e.key === 'f' || e.key === 'F') emitClick(1);
-  if (e.key === 'j' || e.key === 'J') emitClick(2);
+  if (e.key === 'f' || e.key === 'F') actionClick(1);
+  if (e.key === 'j' || e.key === 'J') actionClick(2);
 });
 
-// Hint teclado
+// Hint teclado (solo visible fuera del área jugable)
 const hint = document.createElement('div');
 hint.className = 'key-hint';
 hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
@@ -203,7 +204,9 @@ document.body.appendChild(hint);
 const marketModal = document.getElementById('market-modal');
 const btnMarket   = document.getElementById('btn-market');
 
-btnMarket.addEventListener('click', () => marketModal.classList.toggle('hidden'));
+btnMarket.addEventListener('click', () => {
+  marketModal.classList.toggle('hidden');
+});
 
 marketModal.addEventListener('click', e => {
   if (e.target === marketModal) marketModal.classList.add('hidden');
@@ -216,28 +219,64 @@ document.querySelectorAll('.market-btn').forEach(btn => {
   });
 });
 
-document.addEventListener('DOMContentLoaded', () => applyMarket(currentMarket));
-if (document.readyState !== 'loading') applyMarket(currentMarket);
+// Inicializar mercado al cargar
+applyMarket(currentMarket);
 
-// ─── Actions ──────────────────────────────────────────────────
-function emitClick(player) {
-  if (!gameActive) return;
-  socket.emit('player:click', { player });
+
+// ─── Game Actions ─────────────────────────────────────────────
+
+function actionStart() {
+  if (gameState.status !== 'waiting') return;
+  gameState.status = 'countdown';
+
+  let count = 3;
+  showCountdown(count);
+
+  const timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      showCountdown(count);
+    } else {
+      clearInterval(timer);
+      showCountdown(0); // muestra "¡YA!"
+      setTimeout(() => {
+        gameState.status = 'playing';
+        startGame();
+      }, 800);
+    }
+  }, 1000);
+}
+
+function actionClick(player) {
+  if (gameState.status !== 'playing') return;
+
+  const p = gameState.players[player];
+  p.clicks   = Math.min(p.clicks + 1, GAME_CONFIG.CLICKS_TO_WIN);
+  p.progress = p.clicks / GAME_CONFIG.CLICKS_TO_WIN;
+
+  // Actualizar nivel
+  const levels = GAME_CONFIG.LEVELS;
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (p.progress >= levels[i].threshold) { p.level = i; break; }
+  }
+
+  updatePlayerUI(player, p);
   animateButtonPress(player);
+
+  // ¿Ganó?
+  if (p.clicks >= GAME_CONFIG.CLICKS_TO_WIN) {
+    gameState.status = 'finished';
+    gameState.winner = player;
+    finishGame(player, gameState.players);
+  }
 }
 
-// ─── Button press micro-animation ────────────────────────────
-function animateButtonPress(player) {
-  const btn = player === 1 ? DOM.btnPlayer1 : DOM.btnPlayer2;
-  const inner = btn.querySelector('.button-label');
-  if (!inner) return;
-  gsap.fromTo(inner,
-    { scale: 0.92, backgroundColor: '#333' },
-    { scale: 1, backgroundColor: '#111111', duration: 0.35, ease: 'back.out(2)' }
-  );
+function actionReset() {
+  gameState = freshState();
+  resetUI();
 }
 
-// ─── Followers: 0 → 500K exponencial ─────────────────────────
+// ─── Followers: crecimiento exponencial 0 → 500K ──────────────
 function progressToFollowers(progress) {
   if (progress <= 0) return 0;
   if (progress >= 1) return 500000;
@@ -252,106 +291,90 @@ function formatFollowers(n) {
   return n.toLocaleString();
 }
 
-// ─── Update Player UI — con GSAP ─────────────────────────────
-function updatePlayerUI(player, data) {
-  const targetVal   = progressToFollowers(data.progress);
-  const targetPct   = data.progress * 100;
+// ─── Animations ───────────────────────────────────────────────
+function animateButtonPress(player) {
+  const btn = player === 1 ? DOM.btnPlayer1 : DOM.btnPlayer2;
+  gsap.fromTo(btn,
+    { scale: 0.88 },
+    { scale: 1, duration: 0.3, ease: 'back.out(2)' }
+  );
+}
 
-  // ── 1. Barra: animación suave con GSAP ──
+function updatePlayerUI(player, data) {
+  const pct      = data.progress * 100;
+  const followers = progressToFollowers(data.progress);
+  const display   = formatFollowers(followers);
+
+  // Barra de progreso
   gsap.to(DOM.fill[player], {
-    height: `${targetPct}%`,
-    duration: 0.45,
+    height: `${pct}%`,
+    duration: 0.2,
     ease: 'power2.out',
   });
 
-  // ── 2. Contador: pop + número animado ──
-  const counterEl = DOM.counter[player];
-  const from = displayedValue[player];
-  displayedValue[player] = targetVal;
+  // Contador con tamaño dinámico
+  DOM.counter[player].textContent = display;
+  const len = display.length;
+  DOM.counter[player].style.fontSize =
+    len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
-  gsap.to({ val: from }, {
-    val: targetVal,
-    duration: 0.4,
-    ease: 'power1.out',
-    onUpdate: function () {
-      const v = Math.round(this.targets()[0].val);
-      const display = formatFollowers(v);
-      counterEl.textContent = display;
-      const len = display.length;
-      counterEl.style.fontSize = len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '12vmin';
-    },
-  });
-
-  // Pop de escala en el counter
-  gsap.fromTo(counterEl,
-    { scale: 1.12 },
-    { scale: 1, duration: 0.3, ease: 'back.out(1.5)' }
+  gsap.fromTo(DOM.counter[player],
+    { scale: 1.3 },
+    { scale: 1, duration: 0.2, ease: 'back.out(2)' }
   );
 
-  // ── 3. Badge de nivel ──
-  const m = MARKETS[currentMarket] || MARKETS['AR'];
-  const levelNames = m.levels.map((lv, i) => `Lv.${i + 1} · ${lv}`);
+  // Badge de nivel
+  const levelNames = [
+    'Lv.1 · Inicio',
+    'Lv.2 · Comunidad',
+    'Lv.3 · Leales',
+    'Lv.4 · ¡CIMA!',
+  ];
   if (DOM.badgeText[player]) {
-    const newText = levelNames[data.level] ?? `Lv.${data.level + 1}`;
-    if (DOM.badgeText[player].textContent !== newText) {
-      gsap.fromTo(DOM.badge[player],
-        { scale: 1.15, backgroundColor: '#FFE600', color: '#111' },
-        { scale: 1, backgroundColor: '', color: '', duration: 0.5, ease: 'back.out(2)', clearProps: 'backgroundColor,color' }
-      );
-      DOM.badgeText[player].textContent = newText;
-    }
+    DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
 
-  // ── 4. Level-up explosion ──
-  if (data.level > prevLevel[player]) {
-    prevLevel[player] = data.level;
-    spawnLevelUpBurst(player);
-  }
-
-  // ── 5. Dots de nivel ──
+  // Dots de nivel en la barra
   const zoneEl = document.getElementById(`totem-${player}`);
   if (zoneEl) {
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
     dots.forEach((dot, i) => {
-      const active = i <= data.level;
-      gsap.to(dot, {
-        backgroundColor: active ? '#FFE600' : 'rgba(255,255,255,0.35)',
-        borderColor:     active ? '#111111' : 'rgba(0,0,0,0.15)',
-        scale:           active ? 1.25 : 1,
-        duration: 0.25,
-        ease: 'back.out(1.7)',
-      });
+      if (i <= data.level) {
+        dot.style.background  = player === 1 ? '#FFE600' : '#00D4FF';
+        dot.style.borderColor = player === 1 ? '#FFE600' : '#00D4FF';
+        dot.style.boxShadow   = `0 0 2vmin ${player === 1 ? '#FFE600' : '#00D4FF'}`;
+      } else {
+        dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
+      }
     });
   }
 
-  // ── 6. Partículas en la barra ──
-  spawnBarParticles(player);
+  // Partículas al subir de nivel
+  const threshold = GAME_CONFIG.LEVELS[data.level]?.threshold ?? 1;
+  if (data.level > 0 && data.clicks === Math.floor(GAME_CONFIG.CLICKS_TO_WIN * threshold)) {
+    spawnParticles(player);
+  }
 }
 
-// ─── Partículas en la barra ───────────────────────────────────
-function spawnBarParticles(player) {
+function spawnParticles(player) {
   const container = DOM.particles[player];
-  if (!container) return;
+  const color     = player === 1 ? '#FFE600' : '#00D4FF';
 
-  const COLORS = ['#FFE600', '#a855f7', '#ffffff', '#fbbf24'];
-  const count = 4;
-
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < 8; i++) {
     const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.background = COLORS[Math.floor(Math.random() * COLORS.length)];
-    p.style.left = `${20 + Math.random() * 60}%`;
-    p.style.bottom = '5px';
-    p.style.width = p.style.height = `${0.6 + Math.random() * 0.8}vmin`;
+    p.className   = 'particle';
+    p.style.background = color;
+    p.style.left  = `${Math.random() * 100}%`;
+    p.style.bottom = '0%';
     container.appendChild(p);
 
     gsap.fromTo(p,
-      { opacity: 1, y: 0, x: 0, scale: 1 },
+      { y: 0, x: 0, opacity: 1, scale: 1 },
       {
+        y: -(30 + Math.random() * 60),
+        x: (Math.random() - 0.5) * 30,
         opacity: 0,
-        y: -(20 + Math.random() * 40),
-        x: (Math.random() - 0.5) * 20,
-        scale: 0.2,
+        scale: 0,
         duration: 0.6 + Math.random() * 0.4,
         ease: 'power2.out',
         onComplete: () => p.remove(),
@@ -360,209 +383,90 @@ function spawnBarParticles(player) {
   }
 }
 
-// ─── Explosión de nivel ───────────────────────────────────────
-function spawnLevelUpBurst(player) {
-  const fill = DOM.fill[player];
-  if (!fill) return;
-
-  // Flash en la barra
-  gsap.fromTo(fill,
-    { filter: 'brightness(2.5)' },
-    { filter: 'brightness(1)', duration: 0.5, ease: 'power2.out' }
-  );
-
-  // Flash del totem completo
-  const totem = DOM.totem[player];
-  if (totem) {
-    gsap.fromTo(totem,
-      { backgroundColor: 'rgba(255,230,0,0.25)' },
-      { backgroundColor: 'rgba(255,230,0,0)', duration: 0.7, ease: 'power2.out', clearProps: 'backgroundColor' }
-    );
-  }
-
-  // Muchas partículas
-  const container = DOM.particles[player];
-  if (!container) return;
-  const COLORS = ['#FFE600', '#a855f7', '#c084fc', '#ffffff', '#fbbf24'];
-  for (let i = 0; i < 18; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.background = COLORS[Math.floor(Math.random() * COLORS.length)];
-    p.style.left = `${10 + Math.random() * 80}%`;
-    p.style.bottom = `${20 + Math.random() * 60}%`;
-    p.style.width = p.style.height = `${0.8 + Math.random() * 1.2}vmin`;
-    container.appendChild(p);
-
-    gsap.fromTo(p,
-      { opacity: 1, y: 0, x: 0, scale: 1 },
-      {
-        opacity: 0,
-        y: -(40 + Math.random() * 80),
-        x: (Math.random() - 0.5) * 50,
-        scale: 0,
-        duration: 0.8 + Math.random() * 0.6,
-        delay: Math.random() * 0.15,
-        ease: 'power2.out',
-        onComplete: () => p.remove(),
-      }
-    );
-  }
-}
-
-// ─── Countdown — con GSAP fade + scale ───────────────────────
+// ─── Countdown ────────────────────────────────────────────────
 function showCountdown(seconds) {
-  const overlay = DOM.overlay;
-  const numEl   = DOM.countdownNumber;
-
-  overlay.classList.remove('hidden');
+  DOM.overlay.classList.remove('hidden');
   DOM.overlayCountdown.classList.remove('hidden');
   DOM.overlayWinner.classList.add('hidden');
 
   if (seconds === 0) {
-    numEl.textContent = '¡YA!';
-    gsap.fromTo(numEl,
+    DOM.countdownNumber.textContent = '¡YA!';
+    gsap.fromTo(DOM.countdownNumber,
       { scale: 0.5, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)',
+      {
+        scale: 1.2, opacity: 1, duration: 0.3, ease: 'back.out(3)',
         onComplete: () => {
-          gsap.to(overlay, {
-            opacity: 0, duration: 0.5, delay: 0.4, ease: 'power2.in',
-            onComplete: () => {
-              overlay.classList.add('hidden');
-              gsap.set(overlay, { opacity: 1 });
-            }
+          gsap.to(DOM.countdownNumber, {
+            scale: 2, opacity: 0, duration: 0.4,
+            onComplete: () => DOM.overlay.classList.add('hidden'),
           });
-        }
+        },
       }
     );
   } else {
-    numEl.textContent = seconds;
-    gsap.fromTo(numEl,
+    DOM.countdownNumber.textContent = seconds;
+    gsap.fromTo(DOM.countdownNumber,
       { scale: 1.5, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.5)' }
+      { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' }
     );
   }
 }
 
 // ─── Game Start ───────────────────────────────────────────────
 function startGame() {
-  gameActive = true;
   DOM.startArea.classList.add('hidden');
   DOM.statusArea.classList.remove('hidden');
 
-  gsap.to([DOM.fill[1], DOM.fill[2]], { height: '0%', duration: 0.3 });
+  gsap.set([DOM.fill[1], DOM.fill[2]], { height: '0%' });
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
-  displayedValue[1] = 0;
-  displayedValue[2] = 0;
-  prevLevel[1] = 0;
-  prevLevel[2] = 0;
+
+  gsap.fromTo([DOM.totem[1], DOM.totem[2]],
+    { scale: 0.96, opacity: 0.7 },
+    { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.5)' }
+  );
 }
 
 // ─── Game Finish ──────────────────────────────────────────────
 function finishGame(winner, players) {
-  gameActive = false;
   updatePlayerUI(1, players[1]);
   updatePlayerUI(2, players[2]);
 
+  const loser = winner === 1 ? 2 : 1;
   DOM.totem[winner].classList.add('totem--winner');
+  gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0.5 });
 
-  DOM.overlay.classList.remove('hidden');
-  DOM.overlayCountdown.classList.add('hidden');
-  DOM.overlayWinner.classList.remove('hidden');
-  DOM.winnerName.textContent = `JUGADOR ${winner}`;
+  setTimeout(() => {
+    DOM.overlay.classList.remove('hidden');
+    DOM.overlayCountdown.classList.add('hidden');
+    DOM.overlayWinner.classList.remove('hidden');
+    DOM.winnerName.textContent = `JUGADOR ${winner}`;
 
-  // Animación de entrada del overlay ganador
-  gsap.fromTo(DOM.overlayWinner,
-    { scale: 0.85, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.55, ease: 'back.out(1.8)' }
-  );
-
-  // Lluvia de partículas de celebración
-  spawnCelebration();
+    gsap.fromTo(DOM.overlayWinner,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)' }
+    );
+  }, 600);
 }
 
-// ─── Celebración ──────────────────────────────────────────────
-function spawnCelebration() {
-  const overlay = DOM.overlay;
-  const COLORS  = ['#FFE600', '#a855f7', '#c084fc', '#ffffff', '#f97316', '#22c55e'];
-
-  for (let i = 0; i < 40; i++) {
-    const p = document.createElement('div');
-    p.style.cssText = `
-      position: absolute;
-      width: ${1 + Math.random() * 1.5}vmin;
-      height: ${1 + Math.random() * 1.5}vmin;
-      background: ${COLORS[Math.floor(Math.random() * COLORS.length)]};
-      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
-      left: ${Math.random() * 100}%;
-      top: -10px;
-      pointer-events: none;
-      z-index: 101;
-    `;
-    overlay.appendChild(p);
-
-    gsap.to(p, {
-      y: window.innerHeight + 40,
-      x: (Math.random() - 0.5) * 80,
-      rotation: Math.random() * 720 - 360,
-      opacity: 0,
-      duration: 1.5 + Math.random() * 1.5,
-      delay: Math.random() * 0.8,
-      ease: 'power1.in',
-      onComplete: () => p.remove(),
-    });
-  }
-}
-
-// ─── Reset ────────────────────────────────────────────────────
+// ─── Reset UI ─────────────────────────────────────────────────
 function resetUI() {
-  gameActive = false;
-
-  gsap.to(DOM.overlay, {
-    opacity: 0, duration: 0.35, ease: 'power2.in',
-    onComplete: () => {
-      DOM.overlay.classList.add('hidden');
-      gsap.set(DOM.overlay, { opacity: 1 });
-    }
-  });
-
+  DOM.overlay.classList.add('hidden');
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
   DOM.totem[1].classList.remove('totem--winner');
   DOM.totem[2].classList.remove('totem--winner');
 
-  gsap.to([DOM.fill[1], DOM.fill[2]], { height: '0%', duration: 0.5, ease: 'power2.inOut' });
+  gsap.to([DOM.totem[1], DOM.totem[2]], { opacity: 1, scale: 1, duration: 0.4 });
+  gsap.to([DOM.fill[1], DOM.fill[2]], { height: '0%', duration: 0.6, ease: 'power2.inOut' });
+
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';
-  displayedValue[1] = 0;
-  displayedValue[2] = 0;
-  prevLevel[1] = 0;
-  prevLevel[2] = 0;
 
   document.querySelectorAll('.bar-dot').forEach(dot => {
-    gsap.to(dot, {
-      backgroundColor: 'rgba(255,255,255,0.35)',
-      borderColor: 'rgba(0,0,0,0.15)',
-      scale: 1,
-      duration: 0.2,
-    });
+    dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
   });
 
-  const m = MARKETS[currentMarket] || MARKETS['AR'];
-  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = `Lv.1 · ${m.levels[0]}`;
-  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = `Lv.1 · ${m.levels[0]}`;
-}
-
-// ─── Apply state on reconnect ─────────────────────────────────
-function applyState(gs) {
-  if (!gs) return;
-  if (gs.status === 'playing') {
-    gameActive = true;
-    DOM.startArea.classList.add('hidden');
-    DOM.statusArea.classList.remove('hidden');
-    updatePlayerUI(1, gs.players[1]);
-    updatePlayerUI(2, gs.players[2]);
-  } else if (gs.status === 'finished') {
-    finishGame(gs.winner, gs.players);
-  }
+  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Inicio';
+  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Inicio';
 }
