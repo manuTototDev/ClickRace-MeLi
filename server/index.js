@@ -41,6 +41,9 @@ function createFreshState() {
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(express.json());
 
+// ─── Pages ────────────────────────────────────────────────────────────────────
+app.get('/emojis', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'emojis.html')));
+
 // ─── REST API ─────────────────────────────────────────────────────────────────
 app.get('/api/config', (req, res) => res.json(GAME_CONFIG));
 app.get('/api/state',  (req, res) => res.json(gameState));

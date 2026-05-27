@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Íconos SVG — MeLi Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f0f0;
+      --card-bg: #f7f7f7;
+      --stroke: #1a1a1a;
+      --stroke-w: 1.6;
+      --icon-size: 64px;
+      --gap: 32px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px;
+      gap: 32px;
+    }
+
+    h1 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, var(--icon-size));
+      gap: var(--gap);
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+    }
+
+    .icon-wrap {
+      width: var(--icon-size);
+      height: var(--icon-size);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .icon-wrap:hover { transform: scale(1.12); }
+    .icon-wrap svg {
+      width: 36px;
+      height: 36px;
+      overflow: visible;
+    }
+  </style>
+</head>
+<body>
+  <h1>Íconos MeLi</h1>
+
+  <div class="grid">
+
+    <!-- 1. Ojo / Visibilidad -->
+    <div class="icon-wrap" title="Ver / Visibilidad">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="12" r="3"
+                stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 2. Lupa / Búsqueda -->
+    <div class="icon-wrap" title="Buscar">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="10.5" cy="10.5" r="6.5"
+                stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M15.5 15.5L21 21"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 3. Medalla / Premio -->
+    <div class="icon-wrap" title="Premio / Medalla">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="9" r="5"
+                stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8.21 13.89L7 23L12 20L17 23L15.79 13.88"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 4. Estrella / Favorito -->
+    <div class="icon-wrap" title="Favorito">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 5. Moneda / Precio -->
+    <div class="icon-wrap" title="Precio / Dinero">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10"
+                stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M12 6V8M12 16V18M9 9.5C9 8.12 10.34 7 12 7C13.66 7 15 8.12 15 9.5C15 10.88 13.66 12 12 12C10.34 12 9 13.12 9 14.5C9 15.88 10.34 17 12 17C13.66 17 15 15.88 15 14.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 6. Caja / Paquete -->
+    <div class="icon-wrap" title="Paquete / Caja">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="3" width="18" height="18" rx="1.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 9H21" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M9 3V9" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M9 14H15" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 7. TV / Pantalla -->
+    <div class="icon-wrap" title="Pantalla / TV">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="4" width="20" height="14" rx="2"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8 21H16M12 18V21"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 11L9 10.5V12.5L10 12L14 11.5L15 11V13L14 12.5L10 12"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Play triangle -->
+        <path d="M10 9.5L15 12L10 14.5V9.5Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 8. Camión / Envío -->
+    <div class="icon-wrap" title="Envío / Camión">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 3H15V17H1V3Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15 8H19L23 12V17H15V8Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="5" cy="19.5" r="2"
+                stroke="#1a1a1a" stroke-width="1.6"/>
+        <circle cx="19" cy="19.5" r="2"
+                stroke="#1a1a1a" stroke-width="1.6"/>
+        <path d="M1 17H3M15 17H17" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 9. Etiqueta / Tag / Precio -->
+    <div class="icon-wrap" title="Etiqueta / Precio">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.59 13.41L13.42 20.58C13.23 20.77 12.98 20.88 12.71 20.88C12.44 20.88 12.19 20.77 12 20.58L3.41 12C3.05 11.64 2.82 11.16 2.82 10.64V4.82C2.82 3.72 3.72 2.82 4.82 2.82H10.64C11.16 2.82 11.64 3.05 12 3.41L20.59 12C20.96 12.37 20.96 12.97 20.59 13.41Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6.5" cy="6.5" r="1"
+                fill="#1a1a1a"/>
+      </svg>
+    </div>
+
+    <!-- 10. Bolsa de compras -->
+    <div class="icon-wrap" title="Bolsa de compras">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 2L3 6V20C3 20.53 3.21 21.04 3.59 21.41C3.96 21.79 4.47 22 5 22H19C19.53 22 20.04 21.79 20.41 21.41C20.79 21.04 21 20.53 21 20V6L18 2H6Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 6H21" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M16 10C16 11.06 15.58 12.08 14.83 12.83C14.08 13.58 13.06 14 12 14C10.94 14 9.92 13.58 9.17 12.83C8.42 12.08 8 11.06 8 10"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 11. Tablet / Celular -->
+    <div class="icon-wrap" title="Tablet / Dispositivo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="2" width="14" height="20" rx="2"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9 18H15" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 12. Reloj / Tiempo -->
+    <div class="icon-wrap" title="Tiempo / Reloj">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="13" r="8"
+                stroke="#1a1a1a" stroke-width="1.6"/>
+        <path d="M12 9V13L14.5 15.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 3H14" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 13. Chat / Mensaje -->
+    <div class="icon-wrap" title="Mensaje / Chat">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 15C21 15.53 20.79 16.04 20.41 16.41C20.04 16.79 19.53 17 19 17H7L3 21V5C3 4.47 3.21 3.96 3.59 3.59C3.96 3.21 4.47 3 5 3H19C19.53 3 20.04 3.21 20.41 3.59C20.79 3.96 21 4.47 21 5V15Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8 10H16" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M8 13H13" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 14. QR Code -->
+    <div class="icon-wrap" title="Código QR">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Top-left square -->
+        <rect x="3" y="3" width="7" height="7" rx="0.5"
+              stroke="#1a1a1a" stroke-width="1.6"/>
+        <rect x="5" y="5" width="3" height="3"
+              fill="#1a1a1a"/>
+        <!-- Top-right square -->
+        <rect x="14" y="3" width="7" height="7" rx="0.5"
+              stroke="#1a1a1a" stroke-width="1.6"/>
+        <rect x="16" y="5" width="3" height="3"
+              fill="#1a1a1a"/>
+        <!-- Bottom-left square -->
+        <rect x="3" y="14" width="7" height="7" rx="0.5"
+              stroke="#1a1a1a" stroke-width="1.6"/>
+        <rect x="5" y="16" width="3" height="3"
+              fill="#1a1a1a"/>
+        <!-- Bottom-right dots pattern -->
+        <rect x="14" y="14" width="3" height="3" fill="#1a1a1a"/>
+        <rect x="18" y="14" width="3" height="3" fill="#1a1a1a"/>
+        <rect x="14" y="18" width="3" height="3" fill="#1a1a1a"/>
+        <rect x="18" y="18" width="3" height="3" fill="#1a1a1a"/>
+      </svg>
+    </div>
+
+    <!-- 15. Ordenar / Sort -->
+    <div class="icon-wrap" title="Ordenar">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 3V21M8 3L4 7M8 3L12 7"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 21V3M16 21L12 17M16 21L20 17"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 16. Tienda / Local -->
+    <div class="icon-wrap" title="Tienda / Local">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9L5 4H19L21 9"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 9H21V20H3V9Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 9C3 10.66 4.34 12 6 12C7.66 12 9 10.66 9 9"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M9 9C9 10.66 10.34 12 12 12C13.66 12 15 10.66 15 9"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M15 9C15 10.66 16.34 12 18 12C19.66 12 21 10.66 21 9"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="9" y="15" width="6" height="5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 17. Agregar al carrito / Descargar carrito -->
+    <div class="icon-wrap" title="Agregar al carrito">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 6H21" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M12 10V16M9 13L12 16L15 13"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 18. Carrito de compras -->
+    <div class="icon-wrap" title="Carrito de compras">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1H5L7.68 14.39C7.77 14.83 8.01 15.23 8.35 15.51C8.69 15.79 9.12 15.94 9.56 15.94H19.19C19.63 15.94 20.06 15.79 20.4 15.51C20.74 15.23 20.98 14.83 21.07 14.39L22.72 6H6"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="9" cy="20" r="1.5"
+                stroke="#1a1a1a" stroke-width="1.6"/>
+        <circle cx="19" cy="20" r="1.5"
+                stroke="#1a1a1a" stroke-width="1.6"/>
+      </svg>
+    </div>
+
+    <!-- 19. Pin / Ubicación -->
+    <div class="icon-wrap" title="Ubicación">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61 3.95 5.32 5.64 3.64C7.32 1.95 9.61 1 12 1C14.39 1 16.68 1.95 18.36 3.64C20.05 5.32 21 7.61 21 10Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="10" r="3"
+                stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 20. Corazón / Me gusta -->
+    <div class="icon-wrap" title="Me gusta / Favorito">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.84 4.61C20.33 4.1 19.73 3.7 19.06 3.42C18.4 3.14 17.68 3 16.96 3C16.24 3 15.52 3.14 14.86 3.42C14.19 3.7 13.59 4.1 13.08 4.61L12 5.67L10.92 4.61C9.9 3.6 8.52 3 7.04 3C5.56 3 4.18 3.6 3.16 4.61C2.15 5.62 1.5 7 1.5 8.5C1.5 9.98 2.1 11.38 3.16 12.39L12 21L20.84 12.39C21.35 11.88 21.75 11.28 22.03 10.62C22.31 9.96 22.44 9.23 22.44 8.5C22.44 7.77 22.31 7.04 22.03 6.38C21.75 5.72 21.35 5.12 20.84 4.61Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 21. Agregar usuario / Seguir -->
+    <div class="icon-wrap" title="Seguir / Agregar usuario">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="10" cy="8" r="4"
+                stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 21C2 18.87 2.84 16.83 4.34 15.34C5.84 13.84 7.87 13 10 13"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="18.5" cy="18.5" r="4"
+                stroke="#1a1a1a" stroke-width="1.6"/>
+        <path d="M18.5 16.5V20.5M16.5 18.5H20.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 22. Billete / Pago -->
+    <div class="icon-wrap" title="Pago / Billete">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="7" width="20" height="14" rx="2"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 3H8C6.9 3 6 3.9 6 5V7H18V5C18 3.9 17.1 3 16 3Z"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 12.5V14.5M10 12.5C10 11.12 11.34 10 13 10C14.66 10 16 11.12 16 12.5C16 13.88 14.66 15 13 15C11.34 15 10 16.12 10 17.5C10 18.88 11.34 20 13 20C14.66 20 16 18.88 16 17.5M16 17.5V19.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 23. Lista de items -->
+    <div class="icon-wrap" title="Lista / Catálogo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="4" width="4" height="4" rx="0.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 6H21" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="3" y="12" width="4" height="4" rx="0.5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M10 14H21" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="3" y="18" width="4" height="3" rx="0.5"
+              stroke="#1a1a1a" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M10 20H17" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- 24. Copiar / Duplicar -->
+    <div class="icon-wrap" title="Copiar / Duplicar">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="9" width="13" height="13" rx="2"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M5 15H4C3.47 15 2.96 14.79 2.59 14.41C2.21 14.04 2 13.53 2 13V4C2 3.47 2.21 2.96 2.59 2.59C2.96 2.21 3.47 2 4 2H13C13.53 2 14.04 2.21 14.41 2.59C14.79 2.96 15 3.47 15 4V5"
+              stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+  </div>
+
+</body>
+</html>
