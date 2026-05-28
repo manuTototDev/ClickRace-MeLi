@@ -237,7 +237,12 @@ function showSplash() {
 
 // ─── Event Listeners ──────────────────────────────────────────
 DOM.btnStart.addEventListener('click',     () => actionStart());
-DOM.btnPlayAgain.addEventListener('click', () => { cancelAutoReset(); actionReset(); });
+DOM.btnPlayAgain.addEventListener('click', () => {
+  cancelAutoReset();
+  actionReset();
+  // Pequeño delay para que el overlay se oculte antes del countdown
+  setTimeout(() => actionStart(), 300);
+});
 DOM.btnReset.addEventListener('click',     () => actionReset());
 DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
 DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));

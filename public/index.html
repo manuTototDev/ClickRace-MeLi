@@ -100,31 +100,15 @@
   <main class="arena">
     <div class="totem-screen">
 
-      <!-- ── HEADER ── -->
-      <div class="totem-header">
-        <div class="logo-lockup">
-          <div class="logo-icon-wrap">
-            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M2 17L12 22L22 17" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M2 12L12 17L22 12" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="logo-text">mercado<strong>ads</strong></div>
-        </div>
-
-        <div class="challenge-title">
-          AUMENTÁ TUS SEGUIDORES <span>¿QUIÉN LLEGA PRIMERO?</span>
-        </div>
-
-        <div id="start-area">
-          <button id="btn-market" class="btn-market" title="Seleccionar mercado" aria-label="Seleccionar mercado">⚙️</button>
-          <button id="btn-start" class="btn-start">▶ INICIAR</button>
-        </div>
+      <!-- Controles ocultos (referenciados por JS) -->
+      <div style="display:none" aria-hidden="true">
+        <button id="btn-market"></button>
+        <button id="btn-start"></button>
+        <div id="start-area"></div>
         <div id="status-area" class="status-area hidden">
           <div class="live-dot"></div>
           <span id="status-text">EN JUEGO</span>
-          <button id="btn-reset" class="btn-reset" title="Reiniciar partida">✕</button>
+          <button id="btn-reset">✕</button>
         </div>
       </div>
 
