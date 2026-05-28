@@ -6,12 +6,66 @@
 
 // ─── Mercados / Localización ──────────────────────────────────
 const MARKETS = {
-  MX: { flag: '🇲🇽', name: 'México',    header: 'AUMENTA TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
-  BR: { flag: '🇧🇷', name: 'Brasil',    header: 'AUMENTE SEUS SEGUIDORES',  subtitle: 'QUEM CHEGA PRIMEIRO?',   countdown: 'A AUMENTAR SEGUIDORES!',  cta: 'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',   btnLabel: 'SEGUIR', winner: 'TOP OF RETAIL MEDIA!',  playAgain: 'MAIS UMA RODADA!', markers: ['AUDIÊNCIA','FIÉIS','COMPRADORES'], levels: ['Sem audiência','Interesse','Lealdade','Comprador!'] },
-  AR: { flag: '🇦🇷', name: 'Argentina', header: 'AUMENTÁ TUS SEGUIDORES',   subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',  btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
-  CL: { flag: '🇨🇱', name: 'Chile',     header: 'AUMENTA TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
-  CO: { flag: '🇨🇴', name: 'Colombia',  header: 'AUMENTA TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
-  UY: { flag: '🇺🇾', name: 'Uruguay',   header: 'AUMENTÁ TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
+  MX: {
+    flag: '🇲🇽', name: 'México',
+    header: 'AUMENTA TUS SEGUIDORES', subtitle: '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!',
+    markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'],
+    splashHeadline: '¡GANA\nSEGUIDORES!', splashSub: 'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel: 'JUGADOR', playerShort: 'J', goLabel: '¡YA!',
+    levelNames: ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+  },
+  BR: {
+    flag: '🇧🇷', name: 'Brasil',
+    header: 'AUMENTE SEUS SEGUIDORES', subtitle: 'QUEM CHEGA PRIMEIRO?',
+    countdown: 'A AUMENTAR SEGUIDORES!', cta: 'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',
+    btnLabel: 'SEGUIR', winner: 'TOP OF RETAIL MEDIA!', playAgain: 'MAIS UMA RODADA!',
+    markers: ['AUDIÊNCIA','FIÉIS','COMPRADORES'], levels: ['Sem audiência','Interesse','Lealdade','Comprador!'],
+    splashHeadline: 'GANHE\nSEGUIDORES!', splashSub: 'MAIS SEGUIDORES, MAIS VENDAS',
+    playerLabel: 'JOGADOR', playerShort: 'J', goLabel: 'JÁ!',
+    levelNames: ['Lv.1 · Início', 'Lv.2 · Comunidade', 'Lv.3 · Fiéis', 'Lv.4 · TOPO!'],
+  },
+  AR: {
+    flag: '🇦🇷', name: 'Argentina',
+    header: 'AUMENTÁ TUS SEGUIDORES', subtitle: '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!',
+    markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'],
+    splashHeadline: '¡GANÁ\nSEGUIDORES!', splashSub: 'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel: 'JUGADOR', playerShort: 'J', goLabel: '¡YA!',
+    levelNames: ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+  },
+  CL: {
+    flag: '🇨🇱', name: 'Chile',
+    header: 'AUMENTA TUS SEGUIDORES', subtitle: '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!',
+    markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'],
+    splashHeadline: '¡GANA\nSEGUIDORES!', splashSub: 'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel: 'JUGADOR', playerShort: 'J', goLabel: '¡YA!',
+    levelNames: ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+  },
+  CO: {
+    flag: '🇨🇴', name: 'Colombia',
+    header: 'AUMENTA TUS SEGUIDORES', subtitle: '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!',
+    markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'],
+    splashHeadline: '¡GANA\nSEGUIDORES!', splashSub: 'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel: 'JUGADOR', playerShort: 'J', goLabel: '¡YA!',
+    levelNames: ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+  },
+  UY: {
+    flag: '🇺🇾', name: 'Uruguay',
+    header: 'AUMENTÁ TUS SEGUIDORES', subtitle: '¿QUIÉN LLEGA PRIMERO?',
+    countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!',
+    markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'],
+    splashHeadline: '¡GANÁ\nSEGUIDORES!', splashSub: 'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel: 'JUGADOR', playerShort: 'J', goLabel: '¡YA!',
+    levelNames: ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+  },
 };
 let currentMarket = 'MX';
 
@@ -19,34 +73,71 @@ function applyMarket(code) {
   const m = MARKETS[code] || MARKETS['MX'];
   currentMarket = code;
 
-  // Markers de barra (etiquetas AUDIENCIA / LEALES / COMPRADORES)
-  document.querySelectorAll('.bar-marker-label').forEach((el, i) => {
-    const labels = m.markers;
-    if (i < labels.length) el.textContent = labels[i];
-  });
+  // ── Markers de barra ──
+  const markersP1 = document.querySelectorAll('#totem-1 .bar-marker-label');
+  if (markersP1.length >= 3) {
+    markersP1[0].textContent = m.markers[2];
+    markersP1[1].textContent = m.markers[1];
+    markersP1[2].textContent = m.markers[0];
+  }
+  const markersP2 = document.querySelectorAll('#totem-2 .bar-marker-label');
+  if (markersP2.length >= 3) {
+    markersP2[0].textContent = m.markers[2];
+    markersP2[1].textContent = m.markers[1];
+    markersP2[2].textContent = m.markers[0];
+  }
 
-  // CTA bar
+  // ── CTA bar ──
   const ctaEl = document.querySelector('.cta-bar');
   if (ctaEl) ctaEl.textContent = m.cta;
 
-  // Botones de jugador
-  document.querySelectorAll('.button-label').forEach(el => {
+  // ── Botones SEGUIR (con playerLabel localizado) ──
+  document.querySelectorAll('.button-label').forEach((el, i) => {
     const sub = el.querySelector('.button-label-sub');
     if (sub) {
-      const subText = sub.textContent;
-      el.childNodes[0].textContent = m.btnLabel + ' ';
+      el.innerHTML = `${m.btnLabel} <span class="button-label-sub">${m.playerLabel} ${i + 1}</span>`;
     }
   });
 
-  // Winner label
+  // ── Winner label y play again ──
   const winnerLabelEl = document.querySelector('.winner-label');
   if (winnerLabelEl) winnerLabelEl.textContent = m.winner;
-
-  // Otra ronda button
   const btnPlayAgainEl = document.getElementById('btn-play-again');
   if (btnPlayAgainEl) btnPlayAgainEl.textContent = m.playAgain;
 
-  // Badge activo en el modal
+  // ── Countdown label ──
+  const countdownLabel = document.querySelector('.overlay-label');
+  if (countdownLabel) countdownLabel.textContent = m.countdown;
+
+  // ── Splash headline y subtítulo ──
+  const splashMain = document.querySelector('.splash-headline-main');
+  if (splashMain) splashMain.innerHTML = m.splashHeadline.replace('\n', '<br>');
+  const splashSub = document.querySelector('.splash-headline-sub');
+  if (splashSub) splashSub.textContent = m.splashSub;
+
+  // ── Nombres de jugadores en el game area ──
+  document.querySelectorAll('.player-name').forEach((el, i) => {
+    el.textContent = `${m.playerLabel} ${i + 1}`;
+  });
+
+  // ── Etiquetas cortas J1/J2 ──
+  document.querySelectorAll('.player-tag').forEach((tag, i) => {
+    tag.textContent = `${m.playerShort}${i + 1}`;
+  });
+
+  // ── Badges de nivel (solo si no están activos en juego) ──
+  const badge1 = document.getElementById('badge-text-1');
+  const badge2 = document.getElementById('badge-text-2');
+  if (badge1 && !badge1.dataset.active) badge1.textContent = m.levelNames[0];
+  if (badge2 && !badge2.dataset.active) badge2.textContent = m.levelNames[0];
+
+  // ── Winner name si ya hay ganador ──
+  const winnerName = document.getElementById('winner-name');
+  if (winnerName && winnerName.dataset.winner) {
+    winnerName.textContent = `${m.playerLabel} ${winnerName.dataset.winner}`;
+  }
+
+  // ── Badge activo en el modal ──
   document.querySelectorAll('.market-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.market === code);
   });
@@ -174,9 +265,11 @@ function updatePlayerUI(player, data) {
   DOM.counter[player].style.fontSize =
     len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
-  // Badge de nivel
-  const levelNames = ['Lv.1 · Sin audiencia', 'Lv.2 · Interés', 'Lv.3 · Lealtad', 'Lv.4 · ¡Comprador!'];
+  // Badge de nivel (localizado al mercado activo)
+  const mBadge = MARKETS[currentMarket];
+  const levelNames = mBadge?.levelNames ?? ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'];
   if (DOM.badgeText[player]) {
+    DOM.badgeText[player].dataset.active = '1';
     DOM.badgeText[player].textContent = levelNames[data.level] ?? ('Lv.' + (data.level + 1));
   }
 
@@ -199,7 +292,7 @@ function showCountdown(seconds) {
   DOM.overlayWinner.classList.add('hidden');
 
   if (seconds === 0) {
-    DOM.countdownNumber.textContent = '¡YA!';
+    DOM.countdownNumber.textContent = MARKETS[currentMarket]?.goLabel ?? '¡YA!';
     setTimeout(() => DOM.overlay.classList.add('hidden'), 700);
   } else {
     DOM.countdownNumber.textContent = seconds;
@@ -221,7 +314,9 @@ function finishGame(winner) {
   DOM.overlay.classList.remove('hidden');
   DOM.overlayCountdown.classList.add('hidden');
   DOM.overlayWinner.classList.remove('hidden');
-  DOM.winnerName.textContent = 'JUGADOR ' + winner;
+  const mWin = MARKETS[currentMarket];
+  DOM.winnerName.textContent = (mWin?.playerLabel ?? 'JUGADOR') + ' ' + winner;
+  DOM.winnerName.dataset.winner = winner;
 
   startAutoReset();
 }
@@ -244,8 +339,10 @@ function actionReset() {
     dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
   });
 
-  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Sin audiencia';
-  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Sin audiencia';
+  const mReset = MARKETS[currentMarket];
+  const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';
+  if (DOM.badgeText[1]) { DOM.badgeText[1].textContent = resetLevel; delete DOM.badgeText[1].dataset.active; }
+  if (DOM.badgeText[2]) { DOM.badgeText[2].textContent = resetLevel; delete DOM.badgeText[2].dataset.active; }
 }
 
 // ─── Action: iniciar ──────────────────────────────────────────
