@@ -253,10 +253,13 @@
     var btnMarket = document.getElementById('btn-market');
 
     function dismiss() {
+      // Inmediatamente desbloquear clicks del juego detrás
+      splash.style.pointerEvents = 'none';
       splash.classList.add('splash--out');
-      splash.addEventListener('animationend', function () {
+      // Ocultar completamente tras la animación (400ms) con fallback
+      setTimeout(function () {
         splash.style.display = 'none';
-      }, { once: true });
+      }, 400);
     }
 
     // ▶ Play: cierra el splash e inicia el juego
