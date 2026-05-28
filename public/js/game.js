@@ -180,9 +180,64 @@ function freshState() {
 
 let gameState = freshState();
 
+// ── Auto-reset timer ──────────────────────────────────────────
+const AUTO_RESET_SECS = 8;
+let autoResetTimer  = null;
+let autoResetTick   = null;
+
+function startAutoReset() {
+  const bar   = document.getElementById('auto-reset-bar');
+  const count = document.getElementById('auto-reset-count');
+  if (!bar || !count) return;
+
+  let remaining = AUTO_RESET_SECS;
+  count.textContent = remaining;
+
+  // Barra CSS animada
+  bar.style.setProperty('--drain-dur', AUTO_RESET_SECS + 's');
+  bar.classList.remove('running');
+  // forzar reflow para reiniciar animación
+  void bar.offsetWidth;
+  bar.style.setProperty('animation-duration', AUTO_RESET_SECS + 's');
+  bar.classList.add('running');
+
+  // Contador de segundos
+  autoResetTick = setInterval(function () {
+    remaining--;
+    if (count) count.textContent = remaining;
+    if (remaining <= 0) {
+      clearInterval(autoResetTick);
+    }
+  }, 1000);
+
+  // Trigger de reset
+  autoResetTimer = setTimeout(function () {
+    clearInterval(autoResetTick);
+    actionReset();
+    showSplash();
+  }, AUTO_RESET_SECS * 1000);
+}
+
+function cancelAutoReset() {
+  clearTimeout(autoResetTimer);
+  clearInterval(autoResetTick);
+  autoResetTimer = null;
+}
+
+function showSplash() {
+  var splash = document.getElementById('splash');
+  if (!splash) return;
+  splash.classList.remove('splash--out');
+  splash.style.display = '';
+  // re-trigger animation
+  splash.style.animation = 'none';
+  void splash.offsetWidth;
+  splash.style.animation = '';
+}
+
 // ─── Event Listeners ──────────────────────────────────────────
 DOM.btnStart.addEventListener('click',     () => actionStart());
-DOM.btnPlayAgain.addEventListener('click', () => actionReset());
+DOM.btnPlayAgain.addEventListener('click', () => { cancelAutoReset(); actionReset(); });
 DOM.btnReset.addEventListener('click',     () => actionReset());
 DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
 DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
@@ -194,11 +249,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'j' || e.key === 'J') actionClick(2);
 });
 
-// Hint teclado (solo visible fuera del área jugable)
-const hint = document.createElement('div');
-hint.className = 'key-hint';
-hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
-document.body.appendChild(hint);
+
 
 // ─── Market modal ─────────────────────────────────────────────
 const marketModal = document.getElementById('market-modal');
@@ -444,7 +495,9 @@ function finishGame(winner, players) {
 
     gsap.fromTo(DOM.overlayWinner,
       { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)' }
+      { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)',
+        onComplete: () => startAutoReset()
+      }
     );
   }, 600);
 }
