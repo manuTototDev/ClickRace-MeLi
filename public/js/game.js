@@ -4,6 +4,54 @@
  * Estado 100% en el navegador. Compatible con Vercel / CDN estático.
  */
 
+// ─── Mercados / Localización ──────────────────────────────────
+const MARKETS = {
+  MX: { flag: '🇲🇽', name: 'México',    header: 'AUMENTA TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
+  BR: { flag: '🇧🇷', name: 'Brasil',    header: 'AUMENTE SEUS SEGUIDORES',  subtitle: 'QUEM CHEGA PRIMEIRO?',   countdown: 'A AUMENTAR SEGUIDORES!',  cta: 'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',   btnLabel: 'SEGUIR', winner: 'TOP OF RETAIL MEDIA!',  playAgain: 'MAIS UMA RODADA!', markers: ['AUDIÊNCIA','FIÉIS','COMPRADORES'], levels: ['Sem audiência','Interesse','Lealdade','Comprador!'] },
+  AR: { flag: '🇦🇷', name: 'Argentina', header: 'AUMENTÁ TUS SEGUIDORES',   subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',  btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
+  CL: { flag: '🇨🇱', name: 'Chile',     header: 'AUMENTA TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
+  CO: { flag: '🇨🇴', name: 'Colombia',  header: 'AUMENTA TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
+  UY: { flag: '🇺🇾', name: 'Uruguay',   header: 'AUMENTÁ TUS SEGUIDORES',  subtitle: '¿QUIÉN LLEGA PRIMERO?',  countdown: '¡A AUMENTAR SEGUIDORES!', cta: '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!', btnLabel: 'SEGUIR', winner: '¡TOP OF RETAIL MEDIA!', playAgain: '¡OTRA RONDA!', markers: ['AUDIENCIA','LEALES','COMPRADORES'], levels: ['Sin audiencia','Interés','Lealtad','¡Comprador!'] },
+};
+let currentMarket = 'MX';
+
+function applyMarket(code) {
+  const m = MARKETS[code] || MARKETS['MX'];
+  currentMarket = code;
+
+  // Markers de barra (etiquetas AUDIENCIA / LEALES / COMPRADORES)
+  document.querySelectorAll('.bar-marker-label').forEach((el, i) => {
+    const labels = m.markers;
+    if (i < labels.length) el.textContent = labels[i];
+  });
+
+  // CTA bar
+  const ctaEl = document.querySelector('.cta-bar');
+  if (ctaEl) ctaEl.textContent = m.cta;
+
+  // Botones de jugador
+  document.querySelectorAll('.button-label').forEach(el => {
+    const sub = el.querySelector('.button-label-sub');
+    if (sub) {
+      const subText = sub.textContent;
+      el.childNodes[0].textContent = m.btnLabel + ' ';
+    }
+  });
+
+  // Winner label
+  const winnerLabelEl = document.querySelector('.winner-label');
+  if (winnerLabelEl) winnerLabelEl.textContent = m.winner;
+
+  // Otra ronda button
+  const btnPlayAgainEl = document.getElementById('btn-play-again');
+  if (btnPlayAgainEl) btnPlayAgainEl.textContent = m.playAgain;
+
+  // Badge activo en el modal
+  document.querySelectorAll('.market-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.market === code);
+  });
+}
+
 // ─── Config ───────────────────────────────────────────────────
 const GAME_CONFIG = {
   CLICKS_TO_WIN: 50,
@@ -262,3 +310,15 @@ document.addEventListener('keydown', e => {
   if (e.key === 'f' || e.key === 'F') actionClick(1);
   if (e.key === 'j' || e.key === 'J') actionClick(2);
 });
+
+// ─── Market buttons ───────────────────────────────────────────
+const marketModal = document.getElementById('market-modal');
+document.querySelectorAll('.market-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyMarket(btn.dataset.market);
+    if (marketModal) marketModal.classList.add('hidden');
+  });
+});
+
+// Aplicar mercado por defecto al cargar
+applyMarket(currentMarket);

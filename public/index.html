@@ -78,6 +78,20 @@
       </div>
     </div>
   </div>
+  <!-- ── MARKET SELECTOR MODAL ── -->
+  <div id="market-modal" class="market-modal hidden">
+    <div class="market-modal-box">
+      <p class="market-modal-title">SELECCIONAR MERCADO</p>
+      <div class="market-grid">
+        <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
+        <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
+        <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
+        <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
+        <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
+        <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
+      </div>
+    </div>
+  </div>
 
   <!-- ARENA -->
   <main class="arena">
@@ -216,19 +230,31 @@
 
 <script src="/js/game.js"></script>
 <script>
-  // ── Splash: play → iniciar juego | engrane → nada (sin modal en main)
+  // ── Splash: play → iniciar juego | engrane → modal de mercado
   (function () {
-    var splash  = document.getElementById('splash');
-    var btnPlay = document.getElementById('splash-play-btn');
-    var btnStart = document.getElementById('btn-start');
+    var splash    = document.getElementById('splash');
+    var btnPlay   = document.getElementById('splash-play-btn');
+    var btnGear   = document.getElementById('splash-gear-btn');
+    var btnStart  = document.getElementById('btn-start');
+    var marketModal = document.getElementById('market-modal');
 
     function dismissSplash() {
+      splash.style.pointerEvents = 'none';
       splash.style.display = 'none';
     }
 
     btnPlay.addEventListener('click', function () {
       dismissSplash();
       btnStart && btnStart.click();
+    });
+
+    btnGear && btnGear.addEventListener('click', function () {
+      marketModal && marketModal.classList.toggle('hidden');
+    });
+
+    // Cerrar modal al hacer click fuera
+    marketModal && marketModal.addEventListener('click', function (e) {
+      if (e.target === marketModal) marketModal.classList.add('hidden');
     });
   })();
 </script>
