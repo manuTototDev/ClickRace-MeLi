@@ -698,3 +698,174 @@ body {
   background: transparent !important;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   SPLASH SCREEN — wireframe
+   Plano, sin animaciones, sin blur. Aparece/desaparece
+   instantáneo con display none/block desde JS.
+══════════════════════════════════════════════════════════════ */
+
+.splash {
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+/* Logo esquina superior izquierda */
+.splash-logo {
+  position: absolute;
+  top: 3vmin;
+  left: 3vmin;
+  z-index: 3;
+  background: #e8e8e8;
+  border: 1.5px solid #bbb;
+  padding: 1.2vmin 2.5vmin;
+  display: flex;
+  align-items: center;
+  gap: 1.2vmin;
+  font-size: 1.8vmin;
+  font-weight: 400;
+  color: #333;
+}
+.splash-logo strong { font-weight: 900; color: #111; }
+
+/* Engrane esquina inferior derecha */
+.splash-gear {
+  position: absolute;
+  bottom: 3vmin;
+  right: 3vmin;
+  z-index: 3;
+  background: none;
+  border: none;
+  padding: 1vmin;
+  cursor: pointer;
+  opacity: 0.5;
+  line-height: 0;
+}
+
+/* Zona central */
+.splash-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 72%;
+}
+
+/* Banner */
+.splash-banner {
+  background: #1a1a2e;
+  color: #ffffff;
+  font-size: 2.2vmin;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 1.8vmin 5vmin;
+  white-space: nowrap;
+  width: 80%;
+  text-align: center;
+  align-self: center;
+}
+
+/* Card */
+.splash-card {
+  width: 100%;
+  background: #e8e6f0;
+  border: 1.5px solid #bbb;
+  border-top: none;
+  padding: 5vmin 4vmin 6vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4vmin;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Headline */
+.splash-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5vmin;
+  text-align: center;
+}
+.splash-headline-main {
+  font-size: clamp(14px, 5vmin, 36px);
+  font-weight: 900;
+  color: #1a1a2e;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  width: 100%;
+  word-break: break-word;
+}
+.splash-headline-sub {
+  font-size: 2vmin;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Botón play — cuadrado, borde simple */
+.splash-play {
+  width: 15vmin;
+  height: 15vmin;
+  background: #fff;
+  border: 1.5px solid #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.splash-play:active { background: #e0e0e0; }
+.splash-play svg {
+  width: 6vmin;
+  height: 6vmin;
+  margin-left: 0.8vmin;
+}
+
+/* ── Auto-reset countdown (bajo "otra ronda") ─────────────── */
+.auto-reset-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2vmin;
+  margin-top: 1vmin;
+  width: 28vmin;
+}
+.auto-reset-bar {
+  width: 100%;
+  height: 3px;
+  background: #ccc;
+  position: relative;
+  overflow: hidden;
+}
+/* La barra interior se reduce via JS (transform: scaleX) */
+.auto-reset-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #333;
+  transform-origin: left;
+  transform: scaleX(1);
+}
+.auto-reset-label {
+  font-size: 1.6vmin;
+  font-weight: 500;
+  color: #666;
+  letter-spacing: 0.04em;
+}
+.auto-reset-label strong {
+  font-weight: 900;
+  color: #111;
+}
+

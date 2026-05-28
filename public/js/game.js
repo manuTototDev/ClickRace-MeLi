@@ -39,6 +39,50 @@ const DOM = {
 // ─── State ────────────────────────────────────────────────────
 let gameActive = false;
 
+// ─── Auto-reset timer (8s sin presionar "otra ronda") ─────────
+const AUTO_RESET_SECS = 8;
+let autoResetTimer = null;
+let autoResetTick  = null;
+
+function startAutoReset() {
+  const bar   = $('auto-reset-bar');
+  const count = $('auto-reset-count');
+  if (!bar || !count) return;
+
+  let remaining = AUTO_RESET_SECS;
+  count.textContent = remaining;
+
+  // Barra: reducción directa via JS, sin CSS animation
+  bar.style.transformOrigin = 'left';
+  bar.style.transform = 'scaleX(1)';
+
+  autoResetTick = setInterval(function () {
+    remaining--;
+    if (count) count.textContent = remaining;
+    // Actualizar barra proporcionalmente
+    if (bar) bar.style.transform = 'scaleX(' + (remaining / AUTO_RESET_SECS) + ')';
+    if (remaining <= 0) clearInterval(autoResetTick);
+  }, 1000);
+
+  autoResetTimer = setTimeout(function () {
+    clearInterval(autoResetTick);
+    socket.emit('game:reset');
+    showSplash();
+  }, AUTO_RESET_SECS * 1000);
+}
+
+function cancelAutoReset() {
+  clearTimeout(autoResetTimer);
+  clearInterval(autoResetTick);
+  autoResetTimer = null;
+}
+
+function showSplash() {
+  var splash = $('splash');
+  if (!splash) return;
+  splash.style.display = '';
+}
+
 // ─── Socket Events ────────────────────────────────────────────
 socket.on('state:sync',    ({ gameState, config }) => { CONFIG = config; applyState(gameState); });
 socket.on('game:countdown',({ seconds }) => showCountdown(seconds));
@@ -49,7 +93,10 @@ socket.on('game:reset',    () => resetUI());
 
 // ─── Event Listeners ──────────────────────────────────────────
 DOM.btnStart.addEventListener('click',     () => socket.emit('game:start', { market: 'MX' }));
-DOM.btnPlayAgain.addEventListener('click', () => socket.emit('game:reset'));
+DOM.btnPlayAgain.addEventListener('click', () => {
+  cancelAutoReset();
+  socket.emit('game:reset');
+});
 DOM.btnReset.addEventListener('click',     () => socket.emit('game:reset'));
 DOM.btnPlayer1.addEventListener('click',   () => emitClick(1));
 DOM.btnPlayer2.addEventListener('click',   () => emitClick(2));
@@ -59,12 +106,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'f' || e.key === 'F') emitClick(1);
   if (e.key === 'j' || e.key === 'J') emitClick(2);
 });
-
-// Hint teclado
-const hint = document.createElement('div');
-hint.className = 'key-hint';
-hint.innerHTML = 'Teclado: <kbd>F</kbd> = Jugador 1 &nbsp;|&nbsp; <kbd>J</kbd> = Jugador 2';
-document.body.appendChild(hint);
 
 // ─── Actions ──────────────────────────────────────────────────
 function emitClick(player) {
@@ -91,22 +132,18 @@ function formatFollowers(n) {
 function updatePlayerUI(player, data) {
   const display = formatFollowers(progressToFollowers(data.progress));
 
-  // Barra: salto directo
   DOM.fill[player].style.height = `${data.progress * 100}%`;
 
-  // Contador con fuente dinámica
   DOM.counter[player].textContent = display;
   const len = display.length;
   DOM.counter[player].style.fontSize =
     len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
-  // Badge de nivel — texto corto estilo wireframe
   const levelNames = ['Lv.1 · Sin audiencia', 'Lv.2 · Interés', 'Lv.3 · Lealtad', 'Lv.4 · ¡Comprador!'];
   if (DOM.badgeText[player]) {
     DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
 
-  // Dots: ON/OFF instantáneo, sin color
   const zoneEl = document.getElementById(`totem-${player}`);
   if (zoneEl) {
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
@@ -155,11 +192,14 @@ function finishGame(winner, players) {
   DOM.overlayCountdown.classList.add('hidden');
   DOM.overlayWinner.classList.remove('hidden');
   DOM.winnerName.textContent = `JUGADOR ${winner}`;
+
+  startAutoReset();
 }
 
 // ─── Reset ────────────────────────────────────────────────────
 function resetUI() {
   gameActive = false;
+  cancelAutoReset();
 
   DOM.overlay.classList.add('hidden');
   DOM.startArea.classList.remove('hidden');
