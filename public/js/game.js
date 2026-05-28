@@ -1,12 +1,19 @@
 /**
  * ClickRace - TRÓPICA · Mercado Ads
- * WIREFRAME MODE — sin animaciones, updates directos al DOM
+ * WIREFRAME MODE — serverless, sin socket.io, sin animaciones.
+ * Estado 100% en el navegador. Compatible con Vercel / CDN estático.
  */
 
-const socket = io();
-
 // ─── Config ───────────────────────────────────────────────────
-let CONFIG = { CLICKS_TO_WIN: 50, LEVELS: [] };
+const GAME_CONFIG = {
+  CLICKS_TO_WIN: 50,
+  LEVELS: [
+    { label: 'Sin audiencia',  threshold: 0    },
+    { label: 'Interés',        threshold: 0.25 },
+    { label: 'Lealtad',        threshold: 0.55 },
+    { label: '¡Comprador!',    threshold: 1.0  },
+  ],
+};
 
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -17,7 +24,6 @@ const DOM = {
   badge:      { 1: $('badge-1'),      2: $('badge-2')      },
   badgeText:  { 1: $('badge-text-1'), 2: $('badge-text-2') },
   totem:      { 1: $('totem-1'),      2: $('totem-2')      },
-  particles:  { 1: $('particles-1'),  2: $('particles-2')  },
 
   overlay:          $('overlay'),
   overlayCountdown: $('overlay-countdown'),
@@ -29,7 +35,6 @@ const DOM = {
   btnReset:     $('btn-reset'),
   startArea:    $('start-area'),
   statusArea:   $('status-area'),
-  statusText:   $('status-text'),
 
   btnPlayer1:   $('btn-player-1'),
   btnPlayer2:   $('btn-player-2'),
@@ -37,7 +42,17 @@ const DOM = {
 };
 
 // ─── State ────────────────────────────────────────────────────
-let gameActive = false;
+function freshState() {
+  return {
+    status: 'waiting',   // waiting | countdown | playing | finished
+    players: {
+      1: { clicks: 0, progress: 0, level: 0 },
+      2: { clicks: 0, progress: 0, level: 0 },
+    },
+    winner: null,
+  };
+}
+let gameState = freshState();
 
 // ─── Auto-reset timer (8s sin presionar "otra ronda") ─────────
 const AUTO_RESET_SECS = 8;
@@ -52,21 +67,20 @@ function startAutoReset() {
   let remaining = AUTO_RESET_SECS;
   count.textContent = remaining;
 
-  // Barra: reducción directa via JS, sin CSS animation
+  // Barra: reducción directa via JS (sin CSS animation)
   bar.style.transformOrigin = 'left';
   bar.style.transform = 'scaleX(1)';
 
   autoResetTick = setInterval(function () {
     remaining--;
     if (count) count.textContent = remaining;
-    // Actualizar barra proporcionalmente
-    if (bar) bar.style.transform = 'scaleX(' + (remaining / AUTO_RESET_SECS) + ')';
+    if (bar)   bar.style.transform = 'scaleX(' + (remaining / AUTO_RESET_SECS) + ')';
     if (remaining <= 0) clearInterval(autoResetTick);
   }, 1000);
 
   autoResetTimer = setTimeout(function () {
     clearInterval(autoResetTick);
-    socket.emit('game:reset');
+    actionReset();
     showSplash();
   }, AUTO_RESET_SECS * 1000);
 }
@@ -80,37 +94,8 @@ function cancelAutoReset() {
 function showSplash() {
   var splash = $('splash');
   if (!splash) return;
+  splash.style.pointerEvents = '';
   splash.style.display = '';
-}
-
-// ─── Socket Events ────────────────────────────────────────────
-socket.on('state:sync',    ({ gameState, config }) => { CONFIG = config; applyState(gameState); });
-socket.on('game:countdown',({ seconds }) => showCountdown(seconds));
-socket.on('game:start',    ({ config }) => { CONFIG = config; startGame(); });
-socket.on('player:update', ({ player, data }) => updatePlayerUI(player, data));
-socket.on('game:finished', ({ winner, players }) => finishGame(winner, players));
-socket.on('game:reset',    () => resetUI());
-
-// ─── Event Listeners ──────────────────────────────────────────
-DOM.btnStart.addEventListener('click',     () => socket.emit('game:start', { market: 'MX' }));
-DOM.btnPlayAgain.addEventListener('click', () => {
-  cancelAutoReset();
-  socket.emit('game:reset');
-});
-DOM.btnReset.addEventListener('click',     () => socket.emit('game:reset'));
-DOM.btnPlayer1.addEventListener('click',   () => emitClick(1));
-DOM.btnPlayer2.addEventListener('click',   () => emitClick(2));
-
-document.addEventListener('keydown', e => {
-  if (e.repeat) return;
-  if (e.key === 'f' || e.key === 'F') emitClick(1);
-  if (e.key === 'j' || e.key === 'J') emitClick(2);
-});
-
-// ─── Actions ──────────────────────────────────────────────────
-function emitClick(player) {
-  if (!gameActive) return;
-  socket.emit('player:click', { player });
 }
 
 // ─── Followers: 0 → 500K exponencial ─────────────────────────
@@ -132,19 +117,23 @@ function formatFollowers(n) {
 function updatePlayerUI(player, data) {
   const display = formatFollowers(progressToFollowers(data.progress));
 
-  DOM.fill[player].style.height = `${data.progress * 100}%`;
+  // Barra: salto directo
+  DOM.fill[player].style.height = (data.progress * 100) + '%';
 
+  // Contador
   DOM.counter[player].textContent = display;
   const len = display.length;
   DOM.counter[player].style.fontSize =
     len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
 
+  // Badge de nivel
   const levelNames = ['Lv.1 · Sin audiencia', 'Lv.2 · Interés', 'Lv.3 · Lealtad', 'Lv.4 · ¡Comprador!'];
   if (DOM.badgeText[player]) {
-    DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
+    DOM.badgeText[player].textContent = levelNames[data.level] ?? ('Lv.' + (data.level + 1));
   }
 
-  const zoneEl = document.getElementById(`totem-${player}`);
+  // Dots: ON/OFF instantáneo
+  const zoneEl = document.getElementById('totem-' + player);
   if (zoneEl) {
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
     dots.forEach((dot, i) => {
@@ -153,7 +142,6 @@ function updatePlayerUI(player, data) {
       dot.style.boxShadow   = '';
     });
   }
-  // Sin partículas en wireframe
 }
 
 // ─── Countdown: texto directo, sin fade ───────────────────────
@@ -172,10 +160,6 @@ function showCountdown(seconds) {
 
 // ─── Game Start ───────────────────────────────────────────────
 function startGame() {
-  gameActive = true;
-  DOM.startArea.classList.add('hidden');
-  DOM.statusArea.classList.remove('hidden');
-
   DOM.fill[1].style.height = '0%';
   DOM.fill[2].style.height = '0%';
   DOM.counter[1].textContent = '0';
@@ -183,27 +167,23 @@ function startGame() {
 }
 
 // ─── Game Finish ──────────────────────────────────────────────
-function finishGame(winner, players) {
-  gameActive = false;
-  updatePlayerUI(1, players[1]);
-  updatePlayerUI(2, players[2]);
+function finishGame(winner) {
+  gameState.status = 'finished';
 
   DOM.overlay.classList.remove('hidden');
   DOM.overlayCountdown.classList.add('hidden');
   DOM.overlayWinner.classList.remove('hidden');
-  DOM.winnerName.textContent = `JUGADOR ${winner}`;
+  DOM.winnerName.textContent = 'JUGADOR ' + winner;
 
   startAutoReset();
 }
 
 // ─── Reset ────────────────────────────────────────────────────
-function resetUI() {
-  gameActive = false;
+function actionReset() {
   cancelAutoReset();
+  gameState = freshState();
 
   DOM.overlay.classList.add('hidden');
-  DOM.startArea.classList.remove('hidden');
-  DOM.statusArea.classList.add('hidden');
   DOM.totem[1].classList.remove('totem--winner');
   DOM.totem[2].classList.remove('totem--winner');
 
@@ -220,16 +200,65 @@ function resetUI() {
   if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Sin audiencia';
 }
 
-// ─── Apply state on reconnect ─────────────────────────────────
-function applyState(gs) {
-  if (!gs) return;
-  if (gs.status === 'playing') {
-    gameActive = true;
-    DOM.startArea.classList.add('hidden');
-    DOM.statusArea.classList.remove('hidden');
-    updatePlayerUI(1, gs.players[1]);
-    updatePlayerUI(2, gs.players[2]);
-  } else if (gs.status === 'finished') {
-    finishGame(gs.winner, gs.players);
+// ─── Action: iniciar ──────────────────────────────────────────
+function actionStart() {
+  if (gameState.status !== 'waiting') return;
+  gameState.status = 'countdown';
+
+  let count = 3;
+  showCountdown(count);
+
+  const timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      showCountdown(count);
+    } else {
+      clearInterval(timer);
+      showCountdown(0);
+      setTimeout(() => {
+        gameState.status = 'playing';
+        startGame();
+      }, 800);
+    }
+  }, 1000);
+}
+
+// ─── Action: click de jugador ─────────────────────────────────
+function actionClick(player) {
+  if (gameState.status !== 'playing') return;
+
+  const p = gameState.players[player];
+  p.clicks   = Math.min(p.clicks + 1, GAME_CONFIG.CLICKS_TO_WIN);
+  p.progress = p.clicks / GAME_CONFIG.CLICKS_TO_WIN;
+
+  // Nivel
+  const levels = GAME_CONFIG.LEVELS;
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (p.progress >= levels[i].threshold) { p.level = i; break; }
+  }
+
+  updatePlayerUI(player, p);
+
+  // Win check
+  if (p.clicks >= GAME_CONFIG.CLICKS_TO_WIN) {
+    finishGame(player);
   }
 }
+
+// ─── Event Listeners ──────────────────────────────────────────
+DOM.btnStart.addEventListener('click',     () => actionStart());
+DOM.btnPlayAgain.addEventListener('click', () => {
+  cancelAutoReset();
+  actionReset();
+  setTimeout(() => actionStart(), 300);
+});
+DOM.btnReset.addEventListener('click',     () => { actionReset(); showSplash(); });
+DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
+DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
+
+// Atajos de teclado
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  if (e.key === 'f' || e.key === 'F') actionClick(1);
+  if (e.key === 'j' || e.key === 'J') actionClick(2);
+});
