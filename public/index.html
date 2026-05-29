@@ -14,261 +14,338 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-<div id="viewport-shell">
 
-  <!-- ── SPLASH SCREEN (overlay blur sobre el juego) ── -->
-  <div id="splash" class="splash">
-
-    <!-- Logo mercado ads — esquina superior izquierda -->
-    <div class="splash-logo">
-      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-        <circle cx="10" cy="10" r="9" stroke="#111" stroke-width="1.5"/>
-        <path d="M5 13.5C6.5 11 8 10 10 10C12 10 13.5 11 15 13.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M7 8.5C7 7.1 8.3 6 10 6C11.7 6 13 7.1 13 8.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span>mercado<strong>ads</strong></span>
-    </div>
-
-    <!-- Zona central: banner + card -->
-    <div class="splash-center">
-      <div class="splash-banner">THE CLICK RACE</div>
-      <div class="splash-card">
-        <div class="splash-headline">
-          <span class="splash-headline-main">¡GANA<br>SEGUIDORES!</span>
-          <span class="splash-headline-sub">MÁS SEGUIDORES, MÁS VENTAS</span>
-        </div>
-        <button id="splash-play-btn" class="splash-play" aria-label="Iniciar juego">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="7,4 20,12 7,20" stroke="#111" stroke-width="1.8"
-                     stroke-linejoin="round" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Engrane — esquina inferior derecha -->
-    <button id="splash-gear-btn" class="splash-gear" aria-label="Seleccionar mercado">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
-        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-
+<!-- Controles ocultos (referenciados por JS, únicos) -->
+<div id="hidden-controls" style="display:none" aria-hidden="true">
+  <button id="btn-market"></button>
+  <button id="btn-start"></button>
+  <div id="start-area"></div>
+  <div id="status-area" class="status-area hidden">
+    <div class="live-dot"></div>
+    <span id="status-text">EN JUEGO</span>
+    <button id="btn-reset">x</button>
   </div>
+</div>
 
+<div id="dual-stage">
 
-  <!-- ── MARKET SELECTOR MODAL ── -->
-  <div id="market-modal" class="market-modal hidden">
-    <div class="market-modal-box">
-      <p class="market-modal-title">SELECCIONAR MERCADO</p>
-      <div class="market-grid">
-        <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
-        <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
-        <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
-        <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
-        <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
-        <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
-      </div>
-    </div>
-  </div>
+  <!-- ════════════════════════════════════════════════════════
+       TÓTEM 1 — JUGADOR 1 (extremo izquierdo)
+  ════════════════════════════════════════════════════════ -->
+  <div class="viewport-shell" data-totem="1">
 
-  <!-- OVERLAY: Countdown / Winner -->
-  <div id="overlay" class="overlay hidden">
-    <div id="overlay-countdown" class="overlay-content hidden">
-      <p class="overlay-label">¡A AUMENTAR SEGUIDORES!</p>
-      <div id="countdown-number" class="countdown-number">3</div>
-    </div>
-
-    <div id="overlay-winner" class="overlay-content hidden">
-      <div class="winner-badge">
-        <svg viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r="32" fill="#FFE600"/>
-          <path d="M20 34l8 8 16-16" stroke="#1C2B3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- ── SPLASH ── -->
+    <div class="splash">
+      <div class="splash-logo">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+          <circle cx="10" cy="10" r="9" stroke="#111" stroke-width="1.5"/>
+          <path d="M5 13.5C6.5 11 8 10 10 10C12 10 13.5 11 15 13.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7 8.5C7 7.1 8.3 6 10 6C11.7 6 13 7.1 13 8.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
+        <span>mercado<strong>ads</strong></span>
       </div>
-      <p class="winner-label">¡TOP OF RETAIL MEDIA!</p>
-      <p id="winner-name" class="winner-name">JUGADOR 1</p>
-      <button id="btn-play-again" class="btn-play-again">¡OTRA RONDA!</button>
-      <div id="auto-reset-wrap" class="auto-reset-wrap">
-        <div id="auto-reset-bar" class="auto-reset-bar"></div>
-        <span id="auto-reset-label" class="auto-reset-label">volviendo en <strong id="auto-reset-count">8</strong>s</span>
+
+      <div class="splash-center">
+        <div class="splash-banner">THE CLICK RACE</div>
+        <div class="splash-card">
+          <div class="splash-headline">
+            <span class="splash-headline-main">¡GANA<br>SEGUIDORES!</span>
+            <span class="splash-headline-sub">MÁS SEGUIDORES, MÁS VENTAS</span>
+          </div>
+          <button class="splash-play-btn splash-play" aria-label="Iniciar juego">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="7,4 20,12 7,20" stroke="#111" stroke-width="1.8"
+                       stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="splash-gear-btn splash-gear" aria-label="Seleccionar mercado">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+          <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ── MARKET MODAL ── -->
+    <div class="market-modal hidden">
+      <div class="market-modal-box">
+        <p class="market-modal-title">SELECCIONAR MERCADO</p>
+        <div class="market-grid">
+          <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
+          <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
+          <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
+          <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
+          <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
+          <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
+        </div>
       </div>
     </div>
+
+    <!-- ── OVERLAY (Countdown / Winner) ── -->
+    <div class="overlay overlay-shared hidden">
+      <div class="overlay-content overlay-countdown hidden">
+        <p class="overlay-label">¡A AUMENTAR SEGUIDORES!</p>
+        <div class="countdown-number">3</div>
+      </div>
+      <div class="overlay-content overlay-winner hidden">
+        <div class="winner-badge">
+          <svg viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="32" fill="#FFE600"/>
+            <path d="M20 34l8 8 16-16" stroke="#1C2B3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="winner-label">¡TOP OF RETAIL MEDIA!</p>
+        <p class="winner-name">JUGADOR 1</p>
+        <button class="btn-play-again">¡OTRA RONDA!</button>
+        <div class="auto-reset-wrap">
+          <div class="auto-reset-bar"></div>
+          <span class="auto-reset-label">volviendo en <strong class="auto-reset-count">8</strong>s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ARENA — vista egoísta J1 ── -->
+    <main class="arena">
+      <div class="totem-screen">
+        <div class="game-area game-area--solo">
+
+          <!-- Barra J1 -->
+          <div class="bar-column bar-column--1" id="totem-1">
+            <div class="bar-level-markers">
+              <div class="bar-marker" style="bottom: 100%">
+                <span class="bar-dot bar-dot--top"></span>
+                <span class="bar-marker-label">COMPRADORES</span>
+              </div>
+              <div class="bar-marker" style="bottom: 55%">
+                <span class="bar-dot"></span>
+                <span class="bar-marker-label">LEALES</span>
+              </div>
+              <div class="bar-marker" style="bottom: 25%">
+                <span class="bar-dot"></span>
+                <span class="bar-marker-label">AUDIENCIA</span>
+              </div>
+              <div class="bar-marker bar-marker--start" style="bottom: 0%">
+                <span class="bar-dot"></span>
+              </div>
+            </div>
+
+            <div class="bar-track">
+              <div class="bar-fill" id="fill-1">
+                <div class="particle-container" id="particles-1"></div>
+              </div>
+            </div>
+
+            <div class="bar-player-label">
+              <div class="player-tag" data-player="1">J1</div>
+            </div>
+          </div>
+
+          <!-- Info solo J1 -->
+          <div class="center-zone center-zone--solo">
+            <div class="player-info player-info--1">
+              <div class="player-name" data-player="1">JUGADOR 1</div>
+              <div class="click-counter" id="counter-1">0</div>
+              <div class="level-badge" id="badge-1">
+                <span id="badge-text-1">Lv.1 · Sin audiencia</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
+
+        <div class="button-zone button-zone--solo">
+          <button id="btn-player-1" class="big-button" aria-label="Botón Jugador 1" data-player="1">
+            <span class="button-label">
+              SEGUIR
+              <span class="button-label-sub">JUGADOR 1</span>
+            </span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
   </div>
 
-  <!-- ARENA -->
-  <main class="arena">
-    <div class="totem-screen">
+  <!-- ════════════════════════════════════════════════════════
+       TÓTEM 2 — JUGADOR 2 (extremo derecho)
+  ════════════════════════════════════════════════════════ -->
+  <div class="viewport-shell" data-totem="2">
 
-      <!-- Controles ocultos (referenciados por JS) -->
-      <div style="display:none" aria-hidden="true">
-        <button id="btn-market"></button>
-        <button id="btn-start"></button>
-        <div id="start-area"></div>
-        <div id="status-area" class="status-area hidden">
-          <div class="live-dot"></div>
-          <span id="status-text">EN JUEGO</span>
-          <button id="btn-reset">✕</button>
+    <!-- ── SPLASH ── -->
+    <div class="splash">
+      <div class="splash-logo">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+          <circle cx="10" cy="10" r="9" stroke="#111" stroke-width="1.5"/>
+          <path d="M5 13.5C6.5 11 8 10 10 10C12 10 13.5 11 15 13.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7 8.5C7 7.1 8.3 6 10 6C11.7 6 13 7.1 13 8.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>mercado<strong>ads</strong></span>
+      </div>
+
+      <div class="splash-center">
+        <div class="splash-banner">THE CLICK RACE</div>
+        <div class="splash-card">
+          <div class="splash-headline">
+            <span class="splash-headline-main">¡GANA<br>SEGUIDORES!</span>
+            <span class="splash-headline-sub">MÁS SEGUIDORES, MÁS VENTAS</span>
+          </div>
+          <button class="splash-play-btn splash-play" aria-label="Iniciar juego">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="7,4 20,12 7,20" stroke="#111" stroke-width="1.8"
+                       stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+          </button>
         </div>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════
-           MAIN GAME AREA
-           [BARRA P1] — [CENTRO: counters + VS] — [BARRA P2]
-      ══════════════════════════════════════════════════════ -->
-      <div class="game-area">
+      <button class="splash-gear-btn splash-gear" aria-label="Seleccionar mercado">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+          <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
 
-        <!-- ── COLUMNA IZQUIERDA: barra P1 ── -->
-        <div class="bar-column bar-column--1" id="totem-1">
-          <!-- Markers de nivel (puntos en la barra) -->
-          <div class="bar-level-markers">
-            <div class="bar-marker" style="bottom: 100%">
-              <span class="bar-dot bar-dot--top"></span>
-              <span class="bar-marker-label">COMPRADORES</span>
-            </div>
-            <div class="bar-marker" style="bottom: 55%">
-              <span class="bar-dot"></span>
-              <span class="bar-marker-label">LEALES</span>
-            </div>
-            <div class="bar-marker" style="bottom: 25%">
-              <span class="bar-dot"></span>
-              <span class="bar-marker-label">AUDIENCIA</span>
-            </div>
-            <div class="bar-marker bar-marker--start" style="bottom: 0%">
-              <span class="bar-dot"></span>
-            </div>
-          </div>
-
-          <!-- Track vertical -->
-          <div class="bar-track">
-            <div class="bar-fill" id="fill-1">
-              <div class="particle-container" id="particles-1"></div>
-            </div>
-          </div>
-
-          <!-- Etiqueta jugador abajo -->
-          <div class="bar-player-label">
-            <div class="player-tag">J1</div>
-          </div>
+    <!-- ── MARKET MODAL ── -->
+    <div class="market-modal hidden">
+      <div class="market-modal-box">
+        <p class="market-modal-title">SELECCIONAR MERCADO</p>
+        <div class="market-grid">
+          <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
+          <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
+          <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
+          <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
+          <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
+          <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
         </div>
-
-        <!-- ── CENTRO: info de ambos jugadores ── -->
-        <div class="center-zone">
-
-          <!-- Jugador 1 info (arriba) -->
-          <div class="player-info player-info--1">
-            <div class="player-name">JUGADOR 1</div>
-            <div class="click-counter" id="counter-1">0</div>
-            <div class="level-badge" id="badge-1">
-              <span id="badge-text-1">Lv.1 · Sin audiencia</span>
-            </div>
-          </div>
-
-          <!-- VS divider -->
-          <div class="vs-divider">
-            <div class="vs-line"></div>
-            <div class="vs-badge">VS</div>
-            <div class="vs-line"></div>
-          </div>
-
-          <!-- Jugador 2 info (abajo) -->
-          <div class="player-info player-info--2">
-            <div class="level-badge level-badge--2" id="badge-2">
-              <span id="badge-text-2">Lv.1 · Sin audiencia</span>
-            </div>
-            <div class="click-counter click-counter--2" id="counter-2">0</div>
-            <div class="player-name player-name--2">JUGADOR 2</div>
-          </div>
-
-        </div><!-- /center-zone -->
-
-        <!-- ── COLUMNA DERECHA: barra P2 ── -->
-        <div class="bar-column bar-column--2" id="totem-2">
-          <!-- Markers (espejados, labels a la izquierda) -->
-          <div class="bar-level-markers bar-level-markers--right">
-            <div class="bar-marker bar-marker--right" style="bottom: 100%">
-              <span class="bar-marker-label">COMPRADORES</span>
-              <span class="bar-dot bar-dot--top bar-dot--p2"></span>
-            </div>
-            <div class="bar-marker bar-marker--right" style="bottom: 55%">
-              <span class="bar-marker-label">LEALES</span>
-              <span class="bar-dot"></span>
-            </div>
-            <div class="bar-marker bar-marker--right" style="bottom: 25%">
-              <span class="bar-marker-label">AUDIENCIA</span>
-              <span class="bar-dot"></span>
-            </div>
-            <div class="bar-marker bar-marker--right bar-marker--start" style="bottom: 0%">
-              <span class="bar-dot"></span>
-            </div>
-          </div>
-
-          <div class="bar-track">
-            <div class="bar-fill bar-fill--2" id="fill-2">
-              <div class="particle-container" id="particles-2"></div>
-            </div>
-          </div>
-
-          <div class="bar-player-label">
-            <div class="player-tag player-tag--2">J2</div>
-          </div>
-        </div>
-
-      </div><!-- /game-area -->
-
-      <!-- ── CTA BAR ── -->
-      <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
-
-      <!-- ── BOTONES: P1 izquierda · P2 derecha ── -->
-      <div class="button-zone">
-        <button id="btn-player-1" class="big-button" aria-label="Botón Jugador 1" data-player="1">
-          <span class="button-label">
-            SEGUIR
-            <span class="button-label-sub">JUGADOR 1</span>
-          </span>
-        </button>
-        <button id="btn-player-2" class="big-button big-button--2" aria-label="Botón Jugador 2" data-player="2">
-          <span class="button-label">
-            SEGUIR
-            <span class="button-label-sub">JUGADOR 2</span>
-          </span>
-        </button>
       </div>
+    </div>
 
-    </div><!-- /totem-screen -->
-  </main>
+    <!-- ── OVERLAY (Countdown / Winner) ── -->
+    <div class="overlay overlay-shared hidden">
+      <div class="overlay-content overlay-countdown hidden">
+        <p class="overlay-label">¡A AUMENTAR SEGUIDORES!</p>
+        <div class="countdown-number">3</div>
+      </div>
+      <div class="overlay-content overlay-winner hidden">
+        <div class="winner-badge">
+          <svg viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="32" fill="#FFE600"/>
+            <path d="M20 34l8 8 16-16" stroke="#1C2B3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="winner-label">¡TOP OF RETAIL MEDIA!</p>
+        <p class="winner-name">JUGADOR 1</p>
+        <button class="btn-play-again">¡OTRA RONDA!</button>
+        <div class="auto-reset-wrap">
+          <div class="auto-reset-bar"></div>
+          <span class="auto-reset-label">volviendo en <strong class="auto-reset-count">8</strong>s</span>
+        </div>
+      </div>
+    </div>
 
-</div><!-- /#viewport-shell -->
+    <!-- ── ARENA — vista egoísta J2 ── -->
+    <main class="arena">
+      <div class="totem-screen">
+        <div class="game-area game-area--solo">
+
+          <!-- Info solo J2 (izquierda en T2) -->
+          <div class="center-zone center-zone--solo">
+            <div class="player-info player-info--1">
+              <div class="player-name" data-player="2">JUGADOR 2</div>
+              <div class="click-counter" id="counter-2">0</div>
+              <div class="level-badge" id="badge-2">
+                <span id="badge-text-2">Lv.1 · Sin audiencia</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra J2 (derecha en T2) -->
+          <div class="bar-column bar-column--2" id="totem-2">
+            <div class="bar-level-markers bar-level-markers--right">
+              <div class="bar-marker bar-marker--right" style="bottom: 100%">
+                <span class="bar-marker-label">COMPRADORES</span>
+                <span class="bar-dot bar-dot--top bar-dot--p2"></span>
+              </div>
+              <div class="bar-marker bar-marker--right" style="bottom: 55%">
+                <span class="bar-marker-label">LEALES</span>
+                <span class="bar-dot"></span>
+              </div>
+              <div class="bar-marker bar-marker--right" style="bottom: 25%">
+                <span class="bar-marker-label">AUDIENCIA</span>
+                <span class="bar-dot"></span>
+              </div>
+              <div class="bar-marker bar-marker--right bar-marker--start" style="bottom: 0%">
+                <span class="bar-dot"></span>
+              </div>
+            </div>
+
+            <div class="bar-track">
+              <div class="bar-fill bar-fill--2" id="fill-2">
+                <div class="particle-container" id="particles-2"></div>
+              </div>
+            </div>
+
+            <div class="bar-player-label">
+              <div class="player-tag player-tag--2" data-player="2">J2</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
+
+        <div class="button-zone button-zone--solo">
+          <button id="btn-player-2" class="big-button big-button--2" aria-label="Botón Jugador 2" data-player="2">
+            <span class="button-label">
+              SEGUIR
+              <span class="button-label-sub">JUGADOR 2</span>
+            </span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+</div>
 
 <script src="/js/game.js"></script>
 <script>
-  // ── Splash: play → iniciar juego | engrane → modal de mercado ──
+  // ── Splash: play -> iniciar juego | engrane -> modal de mercado (sincronizado en ambos tótems) ──
   (function () {
-    var splash    = document.getElementById('splash');
-    var btnPlay   = document.getElementById('splash-play-btn');
-    var btnGear   = document.getElementById('splash-gear-btn');
+    var splashes  = document.querySelectorAll('.splash');
+    var btnPlays  = document.querySelectorAll('.splash-play-btn');
+    var btnGears  = document.querySelectorAll('.splash-gear-btn');
     var btnStart  = document.getElementById('btn-start');
     var btnMarket = document.getElementById('btn-market');
 
-    function dismiss() {
-      // Inmediatamente desbloquear clicks del juego detrás
-      splash.style.pointerEvents = 'none';
-      splash.classList.add('splash--out');
-      // Ocultar completamente tras la animación (400ms) con fallback
-      setTimeout(function () {
-        splash.style.display = 'none';
-      }, 400);
+    function dismissAll() {
+      splashes.forEach(function (splash) {
+        splash.style.pointerEvents = 'none';
+        splash.classList.add('splash--out');
+        setTimeout(function () { splash.style.display = 'none'; }, 400);
+      });
     }
 
-    // ▶ Play: cierra el splash e inicia el juego
-    btnPlay.addEventListener('click', function () {
-      dismiss();
-      btnStart && btnStart.click();
+    btnPlays.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        dismissAll();
+        btnStart && btnStart.click();
+      });
     });
 
-    // ⚙ Engrane: abre el modal de selección de mercado
-    btnGear && btnGear.addEventListener('click', function () {
-      btnMarket && btnMarket.click();
+    btnGears.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        btnMarket && btnMarket.click();
+      });
     });
   })();
 </script>

@@ -142,33 +142,29 @@ function applyMarket(code) {
   currentMarket = code;
   localStorage.setItem('clickrace_market', code);
 
+  // Helper: set textContent en todos los elementos por selector
+  const setAllText = (sel, txt) => document.querySelectorAll(sel).forEach(el => el.textContent = txt);
+  const setAllHTML = (sel, html) => document.querySelectorAll(sel).forEach(el => el.innerHTML = html);
+
   // ── challenge title (game area) ──
-  const titleEl = document.querySelector('.challenge-title');
-  if (titleEl) titleEl.innerHTML = `${m.header} <span>${m.subtitle}</span>`;
+  setAllHTML('.challenge-title', `${m.header} <span>${m.subtitle}</span>`);
 
-  // ── CTA bar ──
-  const ctaEl = document.querySelector('.cta-bar');
-  if (ctaEl) ctaEl.textContent = m.cta;
+  // ── CTA bar (una por tótem) ──
+  setAllText('.cta-bar', m.cta);
 
-  // ── Botones SEGUIR (reconstruye con playerLabel localizado) ──
-  document.querySelectorAll('.button-label').forEach((el, i) => {
-    const sub = el.querySelector('.button-label-sub');
-    if (sub) {
-      const playerNum = i + 1;
-      el.innerHTML = `${m.btnLabel} <span class="button-label-sub">${m.playerLabel} ${playerNum}</span>`;
-    }
+  // ── Botones SEGUIR (cada botón ya tiene data-player) ──
+  document.querySelectorAll('.button-label').forEach(el => {
+    const btn = el.closest('.big-button');
+    const playerNum = btn?.dataset.player ?? '1';
+    el.innerHTML = `${m.btnLabel} <span class="button-label-sub">${m.playerLabel} ${playerNum}</span>`;
   });
 
   // ── Countdown label ──
-  const countdownLabel = document.querySelector('.overlay-label');
-  if (countdownLabel) countdownLabel.textContent = m.countdown;
+  setAllText('.overlay-label', m.countdown);
 
   // ── Winner label y play again ──
-  const winnerLabel = document.querySelector('.winner-label');
-  if (winnerLabel) winnerLabel.textContent = m.winner;
-
-  const playAgainBtn = document.getElementById('btn-play-again');
-  if (playAgainBtn) playAgainBtn.textContent = m.playAgain;
+  setAllText('.winner-label', m.winner);
+  setAllText('.btn-play-again', m.playAgain);
 
   // ── Markers de las barras ──
   const markersP1 = document.querySelectorAll('#totem-1 .bar-marker-label');
@@ -184,20 +180,21 @@ function applyMarket(code) {
     markersP2[2].textContent = m.markers[0];
   }
 
-  // ── Splash headline y subtítulo ──
-  const splashMain = document.querySelector('.splash-headline-main');
-  if (splashMain) splashMain.innerHTML = m.splashHeadline.replace('\n', '<br>');
-  const splashSub = document.querySelector('.splash-headline-sub');
-  if (splashSub) splashSub.textContent = m.splashSub;
+  // ── Splash headline y subtítulo (uno por tótem) ──
+  setAllHTML('.splash-headline-main', m.splashHeadline.replace('\n', '<br>'));
+  setAllText('.splash-headline-sub', m.splashSub);
 
-  // ── Nombres de jugadores (game area) ──
-  document.querySelectorAll('.player-name').forEach((el, i) => {
-    el.textContent = `${m.playerLabel} ${i + 1}`;
+  // ── Nombres de jugadores (cada tótem tiene 1, con data-player) ──
+  document.querySelectorAll('.player-name').forEach(el => {
+    const p = el.dataset.player ?? '1';
+    el.textContent = `${m.playerLabel} ${p}`;
   });
 
-  // ── Etiquetas cortas (J1 / J2) ──
-  const tags = document.querySelectorAll('.player-tag');
-  tags.forEach((tag, i) => { tag.textContent = `${m.playerShort}${i + 1}`; });
+  // ── Etiquetas cortas (J1 / J2), con data-player ──
+  document.querySelectorAll('.player-tag').forEach(tag => {
+    const p = tag.dataset.player ?? '1';
+    tag.textContent = `${m.playerShort}${p}`;
+  });
 
   // ── Badges de nivel (estado inicial) ──
   const badge1 = document.getElementById('badge-text-1');
@@ -205,21 +202,20 @@ function applyMarket(code) {
   if (badge1 && !badge1.dataset.active) badge1.textContent = m.levelNames[0];
   if (badge2 && !badge2.dataset.active) badge2.textContent = m.levelNames[0];
 
-  // ── Winner name si ya hay ganador ──
-  const winnerName = document.getElementById('winner-name');
-  if (winnerName && winnerName.dataset.winner) {
-    winnerName.textContent = `${m.playerLabel} ${winnerName.dataset.winner}`;
-  }
+  // ── Winner name si ya hay ganador (refleja en todos los tótems) ──
+  document.querySelectorAll('.winner-name').forEach(el => {
+    if (el.dataset.winner) {
+      el.textContent = `${m.playerLabel} ${el.dataset.winner}`;
+    }
+  });
 
   // ── Título del modal ──
-  const modalTitleEl = document.querySelector('.market-modal-title');
-  if (modalTitleEl) modalTitleEl.textContent = m.modalTitle ?? 'SELECCIONAR MERCADO';
+  setAllText('.market-modal-title', m.modalTitle ?? 'SELECCIONAR MERCADO');
 
   // ── Splash banner ──
-  const splashBannerEl = document.querySelector('.splash-banner');
-  if (splashBannerEl) splashBannerEl.textContent = m.splashBanner ?? 'THE CLICK RACE';
+  setAllText('.splash-banner', m.splashBanner ?? 'THE CLICK RACE');
 
-  // ── Botones del market: marcar activo y actualizar nombre con playerLabel si aplica ──
+  // ── Botones del market: marcar activo ──
   document.querySelectorAll('.market-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.market === code);
   });
@@ -240,6 +236,8 @@ const GAME_CONFIG = {
 // ─── DOM References ───────────────────────────────────────────
 const $ = id => document.getElementById(id);
 
+const $$ = sel => document.querySelectorAll(sel);
+
 const DOM = {
   fill:       { 1: $('fill-1'),       2: $('fill-2')       },
   counter:    { 1: $('counter-1'),    2: $('counter-2')    },
@@ -248,11 +246,12 @@ const DOM = {
   totem:      { 1: $('totem-1'),      2: $('totem-2')      },
   particles:  { 1: $('particles-1'),  2: $('particles-2')  },
 
-  overlay:          $('overlay'),
-  overlayCountdown: $('overlay-countdown'),
-  overlayWinner:    $('overlay-winner'),
-  countdownNumber:  $('countdown-number'),
-  winnerName:       $('winner-name'),
+  // Compartidos: hay una instancia en cada tótem, se controlan en simultáneo
+  overlays:          $$('.overlay-shared'),
+  overlayCountdowns: $$('.overlay-countdown'),
+  overlayWinners:    $$('.overlay-winner'),
+  countdownNumbers:  $$('.countdown-number'),
+  winnerNames:       $$('.winner-name'),
 
   btnStart:     $('btn-start'),
   btnReset:     $('btn-reset'),
@@ -260,10 +259,15 @@ const DOM = {
   statusArea:   $('status-area'),
   statusText:   $('status-text'),
 
-  btnPlayer1:   $('btn-player-1'),
-  btnPlayer2:   $('btn-player-2'),
-  btnPlayAgain: $('btn-play-again'),
+  btnPlayer1:    $('btn-player-1'),
+  btnPlayer2:    $('btn-player-2'),
+  btnsPlayAgain: $$('.btn-play-again'),
 };
+
+// Helpers para mostrar/ocultar elementos compartidos en ambos tótems
+function showAll(nodeList)    { nodeList.forEach(el => el.classList.remove('hidden')); }
+function hideAll(nodeList)    { nodeList.forEach(el => el.classList.add('hidden')); }
+function setAllText(nodeList, txt) { nodeList.forEach(el => el.textContent = txt); }
 
 // ─── Person Icons — sistema de partículas flotantes ───────────────────
 const PLAYER_COLORS = { 1: '#FFE600', 2: '#00D4FF' };
@@ -342,28 +346,27 @@ let autoResetTimer  = null;
 let autoResetTick   = null;
 
 function startAutoReset() {
-  const bar   = document.getElementById('auto-reset-bar');
-  const count = document.getElementById('auto-reset-count');
-  if (!bar || !count) return;
+  const bars   = document.querySelectorAll('.auto-reset-bar');
+  const counts = document.querySelectorAll('.auto-reset-count');
+  if (!bars.length || !counts.length) return;
 
   let remaining = AUTO_RESET_SECS;
-  count.textContent = remaining;
+  counts.forEach(c => c.textContent = remaining);
 
-  // Barra CSS animada
-  bar.style.setProperty('--drain-dur', AUTO_RESET_SECS + 's');
-  bar.classList.remove('running');
-  // forzar reflow para reiniciar animación
-  void bar.offsetWidth;
-  bar.style.setProperty('animation-duration', AUTO_RESET_SECS + 's');
-  bar.classList.add('running');
+  // Barra CSS animada en todos los tótems
+  bars.forEach(bar => {
+    bar.style.setProperty('--drain-dur', AUTO_RESET_SECS + 's');
+    bar.classList.remove('running');
+    void bar.offsetWidth; // reflow para reiniciar animación
+    bar.style.setProperty('animation-duration', AUTO_RESET_SECS + 's');
+    bar.classList.add('running');
+  });
 
   // Contador de segundos
   autoResetTick = setInterval(function () {
     remaining--;
-    if (count) count.textContent = remaining;
-    if (remaining <= 0) {
-      clearInterval(autoResetTick);
-    }
+    counts.forEach(c => c.textContent = remaining);
+    if (remaining <= 0) clearInterval(autoResetTick);
   }, 1000);
 
   // Trigger de reset
@@ -381,23 +384,27 @@ function cancelAutoReset() {
 }
 
 function showSplash() {
-  var splash = document.getElementById('splash');
-  if (!splash) return;
-  splash.classList.remove('splash--out');
-  splash.style.display = '';
-  // re-trigger animation
-  splash.style.animation = 'none';
-  void splash.offsetWidth;
-  splash.style.animation = '';
+  document.querySelectorAll('.splash').forEach(splash => {
+    splash.classList.remove('splash--out');
+    splash.style.display = '';
+    splash.style.pointerEvents = '';
+    // re-trigger animation
+    splash.style.animation = 'none';
+    void splash.offsetWidth;
+    splash.style.animation = '';
+  });
 }
 
 // ─── Event Listeners ──────────────────────────────────────────
 DOM.btnStart.addEventListener('click',     () => actionStart());
-DOM.btnPlayAgain.addEventListener('click', () => {
-  cancelAutoReset();
-  actionReset();
-  // Pequeño delay para que el overlay se oculte antes del countdown
-  setTimeout(() => actionStart(), 300);
+// Cualquier botón "¡OTRA RONDA!" de cualquiera de los tótems reinicia
+DOM.btnsPlayAgain.forEach(btn => {
+  btn.addEventListener('click', () => {
+    cancelAutoReset();
+    actionReset();
+    // Pequeño delay para que el overlay se oculte antes del countdown
+    setTimeout(() => actionStart(), 300);
+  });
 });
 DOM.btnReset.addEventListener('click',     () => actionReset());
 DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
@@ -412,22 +419,29 @@ document.addEventListener('keydown', e => {
 
 
 
-// ─── Market modal ─────────────────────────────────────────────
-const marketModal = document.getElementById('market-modal');
-const btnMarket   = document.getElementById('btn-market');
+// ─── Market modal (uno por tótem, sincronizados) ──────────────
+const marketModals = document.querySelectorAll('.market-modal');
+const btnMarket    = document.getElementById('btn-market');
+
+function openMarketModals()  { marketModals.forEach(m => m.classList.remove('hidden')); }
+function closeMarketModals() { marketModals.forEach(m => m.classList.add('hidden')); }
 
 btnMarket.addEventListener('click', () => {
-  marketModal.classList.toggle('hidden');
+  // Si alguno está abierto, cerramos todos; si no, abrimos todos
+  const anyOpen = Array.from(marketModals).some(m => !m.classList.contains('hidden'));
+  if (anyOpen) closeMarketModals(); else openMarketModals();
 });
 
-marketModal.addEventListener('click', e => {
-  if (e.target === marketModal) marketModal.classList.add('hidden');
+marketModals.forEach(modal => {
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeMarketModals();
+  });
 });
 
 document.querySelectorAll('.market-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     applyMarket(btn.dataset.market);
-    marketModal.classList.add('hidden');
+    closeMarketModals();
   });
 });
 
@@ -599,28 +613,28 @@ function spawnParticles(player) {
 
 // ─── Countdown ────────────────────────────────────────────────
 function showCountdown(seconds) {
-  DOM.overlay.classList.remove('hidden');
-  DOM.overlayCountdown.classList.remove('hidden');
-  DOM.overlayWinner.classList.add('hidden');
+  showAll(DOM.overlays);
+  showAll(DOM.overlayCountdowns);
+  hideAll(DOM.overlayWinners);
 
   if (seconds === 0) {
     const goText = MARKETS[currentMarket]?.goLabel ?? '¡YA!';
-    DOM.countdownNumber.textContent = goText;
-    gsap.fromTo(DOM.countdownNumber,
+    setAllText(DOM.countdownNumbers, goText);
+    gsap.fromTo(DOM.countdownNumbers,
       { scale: 0.5, opacity: 0 },
       {
         scale: 1.2, opacity: 1, duration: 0.3, ease: 'back.out(3)',
         onComplete: () => {
-          gsap.to(DOM.countdownNumber, {
+          gsap.to(DOM.countdownNumbers, {
             scale: 2, opacity: 0, duration: 0.4,
-            onComplete: () => DOM.overlay.classList.add('hidden'),
+            onComplete: () => hideAll(DOM.overlays),
           });
         },
       }
     );
   } else {
-    DOM.countdownNumber.textContent = seconds;
-    gsap.fromTo(DOM.countdownNumber,
+    setAllText(DOM.countdownNumbers, seconds);
+    gsap.fromTo(DOM.countdownNumbers,
       { scale: 1.5, opacity: 0 },
       { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' }
     );
@@ -651,14 +665,17 @@ function finishGame(winner, players) {
   gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0.5 });
 
   setTimeout(() => {
-    DOM.overlay.classList.remove('hidden');
-    DOM.overlayCountdown.classList.add('hidden');
-    DOM.overlayWinner.classList.remove('hidden');
+    showAll(DOM.overlays);
+    hideAll(DOM.overlayCountdowns);
+    showAll(DOM.overlayWinners);
     const mWinner = MARKETS[currentMarket];
-    DOM.winnerName.textContent = `${mWinner?.playerLabel ?? 'JUGADOR'} ${winner}`;
-    DOM.winnerName.dataset.winner = winner;
+    const winnerLabel = `${mWinner?.playerLabel ?? 'JUGADOR'} ${winner}`;
+    DOM.winnerNames.forEach(el => {
+      el.textContent = winnerLabel;
+      el.dataset.winner = winner;
+    });
 
-    gsap.fromTo(DOM.overlayWinner,
+    gsap.fromTo(DOM.overlayWinners,
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)',
         onComplete: () => startAutoReset()
@@ -669,7 +686,7 @@ function finishGame(winner, players) {
 
 // ─── Reset UI ─────────────────────────────────────────────────
 function resetUI() {
-  DOM.overlay.classList.add('hidden');
+  hideAll(DOM.overlays);
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
   DOM.totem[1].classList.remove('totem--winner');
@@ -691,6 +708,9 @@ function resetUI() {
   document.querySelectorAll('.bar-dot').forEach(dot => {
     dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
   });
+
+  // Limpia el ganador almacenado en cada winner-name
+  DOM.winnerNames.forEach(el => { delete el.dataset.winner; });
 
   const mReset = MARKETS[currentMarket];
   const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';

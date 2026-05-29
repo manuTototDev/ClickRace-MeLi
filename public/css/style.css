@@ -33,27 +33,36 @@ body {
   background: #ffffff;
   font-family: 'Inter', system-ui, sans-serif;
   color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* ══════════════════════════════════════════════════════════════
-   VIEWPORT SHELL — 9:16 portrait-first
+   DUAL STAGE — dos tótems 9:16, uno en cada extremo
 ══════════════════════════════════════════════════════════════ */
-#viewport-shell {
+#dual-stage {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* ── Viewport shell por tótem (9:16) ──────────────────────────── */
+.viewport-shell {
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
   z-index: 1;
   height: 100vh;
-  width: min(100vw, calc(100vh * 9 / 16));
+  width: min(50vw, calc(100vh * 9 / 16));
 }
 
-@media (orientation: landscape) {
-  #viewport-shell {
-    height: min(100vh, calc(100vw * 16 / 9));
-    width: calc(min(100vh, calc(100vw * 16 / 9)) * 9 / 16);
+/* En aspect ratios extremos donde dos 9:16 no caben sin solaparse,
+   reducimos altura para que cada uno mantenga la proporción */
+@media (max-aspect-ratio: 9 / 8) {
+  .viewport-shell {
+    height: calc(50vw * 16 / 9);
+    width: 50vw;
   }
 }
 
@@ -986,4 +995,59 @@ body {
   width: 6vmin;
   height: 6vmin;
   margin-left: 0.8vmin;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SOLO LAYOUT — un solo jugador por tótem (vista egoísta)
+══════════════════════════════════════════════════════════════ */
+
+/* La barra ocupa un tercio del tótem; el resto, info del jugador */
+.game-area--solo .bar-column {
+  width: 30%;
+}
+
+/* Sin VS divider, sin segundo player-info: el bloque único se centra */
+.center-zone--solo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin;
+}
+
+.center-zone--solo .player-info {
+  flex: 0 0 auto;
+  gap: 2vmin;
+}
+
+/* En el tótem 2 los nombres deben verse igual que el J1 (no atenuados) */
+.viewport-shell[data-totem="2"] .player-name--2,
+.viewport-shell[data-totem="2"] .click-counter--2,
+.viewport-shell[data-totem="2"] .player-name {
+  color: var(--text);
+}
+
+/* Counter grande, badge centrado */
+.center-zone--solo .click-counter {
+  font-size: 14vmin;
+}
+
+.center-zone--solo .player-name {
+  font-size: 2.4vmin;
+}
+
+.center-zone--solo .level-badge {
+  font-size: 1.8vmin;
+}
+
+/* Un solo botón ocupando todo el ancho de su tótem */
+.button-zone--solo {
+  height: 18vmin;
+}
+.button-zone--solo .big-button {
+  border-left: none;
+}
+.button-zone--solo .big-button .button-label {
+  font-size: 5vmin;
 }
