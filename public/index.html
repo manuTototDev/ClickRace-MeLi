@@ -8,22 +8,23 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;700;900&display=swap" rel="stylesheet" />
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div id="viewport-shell">
 
-  <!-- ── SPLASH SCREEN (wireframe) ── -->
+  <!-- ── SPLASH SCREEN (overlay blur sobre el juego) ── -->
   <div id="splash" class="splash">
 
     <!-- Logo mercado ads — esquina superior izquierda -->
     <div class="splash-logo">
-      <svg viewBox="0 0 40 24" fill="none" width="28" height="17">
-        <path d="M0 12C0 5.373 5.373 0 12 0h16c6.627 0 12 5.373 12 12s-5.373 12-12 12H12C5.373 24 0 18.627 0 12z" fill="#FFE600"/>
-        <path d="M10 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
-        <path d="M22 16l4-8 4 8" stroke="#1C2B3A" stroke-width="2" stroke-linecap="round"/>
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+        <circle cx="10" cy="10" r="9" stroke="#111" stroke-width="1.5"/>
+        <path d="M5 13.5C6.5 11 8 10 10 10C12 10 13.5 11 15 13.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M7 8.5C7 7.1 8.3 6 10 6C11.7 6 13 7.1 13 8.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
       <span>mercado<strong>ads</strong></span>
     </div>
@@ -46,13 +47,29 @@
     </div>
 
     <!-- Engrane — esquina inferior derecha -->
-    <button id="splash-gear-btn" class="splash-gear" aria-label="Configuración">
-      <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+    <button id="splash-gear-btn" class="splash-gear" aria-label="Seleccionar mercado">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
 
+  </div>
+
+
+  <!-- ── MARKET SELECTOR MODAL ── -->
+  <div id="market-modal" class="market-modal hidden">
+    <div class="market-modal-box">
+      <p class="market-modal-title">SELECCIONAR MERCADO</p>
+      <div class="market-grid">
+        <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
+        <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
+        <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
+        <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
+        <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
+        <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
+      </div>
+    </div>
   </div>
 
   <!-- OVERLAY: Countdown / Winner -->
@@ -74,21 +91,7 @@
       <button id="btn-play-again" class="btn-play-again">¡OTRA RONDA!</button>
       <div id="auto-reset-wrap" class="auto-reset-wrap">
         <div id="auto-reset-bar" class="auto-reset-bar"></div>
-        <span class="auto-reset-label">volviendo en <strong id="auto-reset-count">8</strong>s</span>
-      </div>
-    </div>
-  </div>
-  <!-- ── MARKET SELECTOR MODAL ── -->
-  <div id="market-modal" class="market-modal hidden">
-    <div class="market-modal-box">
-      <p class="market-modal-title">SELECCIONAR MERCADO</p>
-      <div class="market-grid">
-        <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
-        <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
-        <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
-        <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
-        <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
-        <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
+        <span id="auto-reset-label" class="auto-reset-label">volviendo en <strong id="auto-reset-count">8</strong>s</span>
       </div>
     </div>
   </div>
@@ -97,22 +100,27 @@
   <main class="arena">
     <div class="totem-screen">
 
-      <!-- Controles ocultos (JS los referencia) -->
+      <!-- Controles ocultos (referenciados por JS) -->
       <div style="display:none" aria-hidden="true">
+        <button id="btn-market"></button>
+        <button id="btn-start"></button>
         <div id="start-area"></div>
         <div id="status-area" class="status-area hidden">
           <div class="live-dot"></div>
           <span id="status-text">EN JUEGO</span>
           <button id="btn-reset">✕</button>
         </div>
-        <button id="btn-start"></button>
       </div>
 
-      <!-- MAIN GAME AREA -->
+      <!-- ══════════════════════════════════════════════════════
+           MAIN GAME AREA
+           [BARRA P1] — [CENTRO: counters + VS] — [BARRA P2]
+      ══════════════════════════════════════════════════════ -->
       <div class="game-area">
 
-        <!-- COLUMNA IZQUIERDA: barra P1 -->
+        <!-- ── COLUMNA IZQUIERDA: barra P1 ── -->
         <div class="bar-column bar-column--1" id="totem-1">
+          <!-- Markers de nivel (puntos en la barra) -->
           <div class="bar-level-markers">
             <div class="bar-marker" style="bottom: 100%">
               <span class="bar-dot bar-dot--top"></span>
@@ -131,6 +139,7 @@
             </div>
           </div>
 
+          <!-- Track vertical -->
           <div class="bar-track">
             <div class="bar-fill" id="fill-1">
               <div class="bar-glow"></div>
@@ -138,14 +147,16 @@
             </div>
           </div>
 
+          <!-- Etiqueta jugador abajo -->
           <div class="bar-player-label">
             <div class="player-tag">J1</div>
           </div>
         </div>
 
-        <!-- CENTRO -->
+        <!-- ── CENTRO: info de ambos jugadores ── -->
         <div class="center-zone">
 
+          <!-- Jugador 1 info (arriba) -->
           <div class="player-info player-info--1">
             <div class="player-name">JUGADOR 1</div>
             <div class="click-counter" id="counter-1">0</div>
@@ -154,12 +165,14 @@
             </div>
           </div>
 
+          <!-- VS divider -->
           <div class="vs-divider">
             <div class="vs-line"></div>
             <div class="vs-badge">VS</div>
             <div class="vs-line"></div>
           </div>
 
+          <!-- Jugador 2 info (abajo) -->
           <div class="player-info player-info--2">
             <div class="level-badge level-badge--2" id="badge-2">
               <span id="badge-text-2">Lv.1 · Sin audiencia</span>
@@ -170,8 +183,9 @@
 
         </div><!-- /center-zone -->
 
-        <!-- COLUMNA DERECHA: barra P2 -->
+        <!-- ── COLUMNA DERECHA: barra P2 ── -->
         <div class="bar-column bar-column--2" id="totem-2">
+          <!-- Markers (espejados, labels a la izquierda) -->
           <div class="bar-level-markers bar-level-markers--right">
             <div class="bar-marker bar-marker--right" style="bottom: 100%">
               <span class="bar-marker-label">COMPRADORES</span>
@@ -204,10 +218,10 @@
 
       </div><!-- /game-area -->
 
-      <!-- CTA BAR -->
+      <!-- ── CTA BAR ── -->
       <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
 
-      <!-- BOTONES -->
+      <!-- ── BOTONES: P1 izquierda · P2 derecha ── -->
       <div class="button-zone">
         <button id="btn-player-1" class="big-button" aria-label="Botón Jugador 1" data-player="1">
           <span class="button-label">
@@ -230,31 +244,33 @@
 
 <script src="/js/game.js"></script>
 <script>
-  // ── Splash: play → iniciar juego | engrane → modal de mercado
+  // ── Splash: play → iniciar juego | engrane → modal de mercado ──
   (function () {
     var splash    = document.getElementById('splash');
     var btnPlay   = document.getElementById('splash-play-btn');
     var btnGear   = document.getElementById('splash-gear-btn');
     var btnStart  = document.getElementById('btn-start');
-    var marketModal = document.getElementById('market-modal');
+    var btnMarket = document.getElementById('btn-market');
 
-    function dismissSplash() {
+    function dismiss() {
+      // Inmediatamente desbloquear clicks del juego detrás
       splash.style.pointerEvents = 'none';
-      splash.style.display = 'none';
+      splash.classList.add('splash--out');
+      // Ocultar completamente tras la animación (400ms) con fallback
+      setTimeout(function () {
+        splash.style.display = 'none';
+      }, 400);
     }
 
+    // ▶ Play: cierra el splash e inicia el juego
     btnPlay.addEventListener('click', function () {
-      dismissSplash();
+      dismiss();
       btnStart && btnStart.click();
     });
 
+    // ⚙ Engrane: abre el modal de selección de mercado
     btnGear && btnGear.addEventListener('click', function () {
-      marketModal && marketModal.classList.toggle('hidden');
-    });
-
-    // Cerrar modal al hacer click fuera
-    marketModal && marketModal.addEventListener('click', function (e) {
-      if (e.target === marketModal) marketModal.classList.add('hidden');
+      btnMarket && btnMarket.click();
     });
   })();
 </script>
