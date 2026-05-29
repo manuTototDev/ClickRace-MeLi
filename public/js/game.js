@@ -227,7 +227,7 @@ function applyMarket(code) {
 
 // ─── Config ───────────────────────────────────────────────────
 const GAME_CONFIG = {
-  CLICKS_TO_WIN: 50,
+  CLICKS_TO_WIN: 75,
   LEVELS: [
     { label: 'Punto de Partida',    threshold: 0    },
     { label: 'Comunidad Creciente', threshold: 0.25 },
@@ -282,29 +282,30 @@ function spawnPersonIcons(player, progress) {
   const container = DOM.fill[player];
   if (!container) return;
 
-  const color       = PLAYER_COLORS[player];
-  const spawnBottom = 4 + progress * 78;   // 4% (inicio) → 82% (final)
+  const color      = PLAYER_COLORS[player];
+  // Y base sube con el progreso: 0% = fondo, ~88% = tope
+  const baseBottom = progress * 88;
 
   for (let i = 0; i < 4; i++) {
-    const icon  = document.createElement('div');
+    const icon = document.createElement('div');
     icon.className = 'float-person';
 
-    const x     = 2 + Math.random() * 72;       // 2% – 74%
-    const rot   = (Math.random() - 0.5) * 52;   // −26° – +26°
-    const dur   = 1.4 + Math.random() * 0.9;    // 1.4 – 2.3 s
-    const delay = i * 60;                        // stagger entre las 4
-    const size  = 12 + Math.random() * 6;       // 12% – 18% ancho
+    const x      = -5 + Math.random() * 75;       // X: -5% – 70% (bordes recortados por overflow)
+    const yOff   = (Math.random() - 0.5) * 5;     // ±2.5% jitter en Y
+    const bottom = Math.max(0, Math.min(90, baseBottom + yOff));
+    const rot    = (Math.random() - 0.5) * 50;    // rotación: −25° – +25°
+    const size   = 28 + Math.random() * 14;        // ancho: 28% – 42% del track
+    const delay  = i * 55;                         // stagger entre los 4
 
-    icon.style.left    = `${x}%`;
-    icon.style.bottom  = `${spawnBottom}%`;
-    icon.style.width   = `${size}%`;
-    icon.style.setProperty('--rot',         `${rot}deg`);
-    icon.style.setProperty('--float-dur',   `${dur}s`);
-    icon.style.setProperty('--float-delay', `${delay}ms`);
+    icon.style.left           = `${x}%`;
+    icon.style.bottom         = `${bottom}%`;
+    icon.style.width          = `${size}%`;
+    icon.style.animationDelay = `${delay}ms`;
+    icon.style.setProperty('--rot', `${rot}deg`);
     icon.innerHTML = createPersonSVG(color);
 
     container.appendChild(icon);
-    setTimeout(() => icon.remove(), dur * 1000 + delay + 300);
+    // Los iconos se quedan fijos — no hay setTimeout de borrado
   }
 }
 

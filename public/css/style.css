@@ -391,37 +391,28 @@ body {
 }
 .bar-fill--2 { /* igual que --1, solo cambia el color de los iconos activos */ }
 
-/* ── Persona flotante (spawned en cada click) ────────────────── */
+/* ── Persona estática (spawned en cada click, queda fija) ────── */
 .float-person {
   position: absolute;
   pointer-events: none;
   transform-origin: center bottom;
-  animation: float-up var(--float-dur, 1.6s) ease-out var(--float-delay, 0ms) both;
+  /* pop-in: aparece con bounce y se queda en su posición */
+  animation: pop-in 0.4s var(--ease-bounce) var(--float-delay, 0ms) both;
 }
 .float-person svg {
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
 }
 
-@keyframes float-up {
-  0%   {
-    transform: translateY(0)      rotate(var(--rot, 0deg)) scale(0.5);
-    opacity: 0;
-  }
-  12%  {
-    transform: translateY(-1.5vmin) rotate(var(--rot, 0deg)) scale(1.15);
-    opacity: 1;
-  }
-  75%  { opacity: 1; }
-  100% {
-    transform: translateY(-20vmin) rotate(calc(var(--rot, 0deg) * 1.2)) scale(0.85);
-    opacity: 0;
-  }
+@keyframes pop-in {
+  0%   { transform: scale(0)    rotate(var(--rot, 0deg)); opacity: 0; }
+  65%  { transform: scale(1.25) rotate(var(--rot, 0deg)); opacity: 1; }
+  100% { transform: scale(1)    rotate(var(--rot, 0deg)); opacity: 1; }
 }
 
-/* ── Watermark — nivel de progreso como fondo tenue ─────────── */
+/* ── Watermark — fondo tenue que crece con el progreso ──────── */
 .bar-watermark {
   position: absolute;
   bottom: 0;
@@ -430,13 +421,12 @@ body {
   height: 0%;
   pointer-events: none;
   border-radius: 0 0 1.5vmin 1.5vmin;
-  transition: border-radius 0.3s;
 }
 .bar-watermark--p1 {
-  background: linear-gradient(to top, rgba(255,230,0,0.18) 50%, rgba(255,230,0,0.04));
+  background: linear-gradient(to top, rgba(255,230,0,0.14) 50%, rgba(255,230,0,0.03));
 }
 .bar-watermark--p2 {
-  background: linear-gradient(to top, rgba(0,212,255,0.18) 50%, rgba(0,212,255,0.04));
+  background: linear-gradient(to top, rgba(0,212,255,0.14) 50%, rgba(0,212,255,0.03));
 }
 
 
