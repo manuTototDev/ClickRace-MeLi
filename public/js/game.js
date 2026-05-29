@@ -227,7 +227,7 @@ function applyMarket(code) {
 
 // ─── Config ───────────────────────────────────────────────────
 const GAME_CONFIG = {
-  CLICKS_TO_WIN: 50,
+  CLICKS_TO_WIN: 75,
   LEVELS: [
     { label: 'Punto de Partida',    threshold: 0    },
     { label: 'Comunidad Creciente', threshold: 0.25 },
@@ -265,55 +265,62 @@ const DOM = {
   btnPlayAgain: $('btn-play-again'),
 };
 
-// ─── Person Icons ──────────────────────────────────────────────
-const INACTIVE_FILL  = 'rgba(0,0,0,0.10)';
-const PLAYER_COLORS  = { 1: '#FFE600', 2: '#00D4FF' };
-const ICON_COLS      = 5;
-const ICON_ROWS      = 20;              // filas que llenan el bar-track
-const TOTAL_ICONS    = ICON_ROWS * ICON_COLS; // 100
+// ─── Person Icons — sistema de partículas flotantes ───────────────────
+const PLAYER_COLORS = { 1: '#FFE600', 2: '#00D4FF' };
 
-const PERSON_SVG = [
-  '<svg viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">',
-  `  <circle class="pi-head" cx="10" cy="7" r="5.5" fill="${INACTIVE_FILL}"/>`,
-  `  <path   class="pi-body" d="M1 27c0-5 4-9 9-9s9 4 9 9z" fill="${INACTIVE_FILL}"/>`,
-  '</svg>',
-].join('');
-
-const personIcons = { 1: [], 2: [] };
-
-function _setIconFill(icon, fill) {
-  icon.querySelectorAll('.pi-head, .pi-body').forEach(el => el.setAttribute('fill', fill));
+function createPersonSVG(color) {
+  return [
+    '<svg viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">',
+    `  <circle class="pi-head" cx="10" cy="7" r="5.5" fill="${color}"/>`,
+    `  <path   class="pi-body" d="M1 27c0-5 4-9 9-9s9 4 9 9z" fill="${color}"/>`,
+    '</svg>',
+  ].join('');
 }
 
-// col: columna dentro de la fila (0-4) para aplicar stagger de animación
-function activateIcon(icon, player, col = 0) {
-  _setIconFill(icon, PLAYER_COLORS[player]);
-  icon.style.setProperty('--pop-delay', `${col * 22}ms`);
-  icon.classList.add('pop');
-  icon.addEventListener('animationend', () => icon.classList.remove('pop'), { once: true });
-  icon.dataset.active = '1';
+// Spawnea 4 personas flotantes en la altura Y del progreso actual
+function spawnPersonIcons(player, progress) {
+  const container = DOM.fill[player];
+  if (!container) return;
+
+  const color      = PLAYER_COLORS[player];
+  // Y base sube con el progreso: 0% = fondo, ~88% = tope
+  const baseBottom = progress * 88;
+
+  for (let i = 0; i < 4; i++) {
+    const icon = document.createElement('div');
+    icon.className = 'float-person';
+
+    const x      = -5 + Math.random() * 75;       // X: -5% – 70% (bordes recortados por overflow)
+    const yOff   = (Math.random() - 0.5) * 5;     // ±2.5% jitter en Y
+    const bottom = Math.max(0, Math.min(90, baseBottom + yOff));
+    const rot    = (Math.random() - 0.5) * 50;    // rotación: −25° – +25°
+    const size   = 28 + Math.random() * 14;        // ancho: 28% – 42% del track
+    const delay  = i * 55;                         // stagger entre los 4
+
+    icon.style.left           = `${x}%`;
+    icon.style.bottom         = `${bottom}%`;
+    icon.style.width          = `${size}%`;
+    icon.style.animationDelay = `${delay}ms`;
+    icon.style.setProperty('--rot', `${rot}deg`);
+    icon.innerHTML = createPersonSVG(color);
+
+    container.appendChild(icon);
+    // Los iconos se quedan fijos — no hay setTimeout de borrado
+  }
 }
 
-function deactivateIcon(icon) {
-  _setIconFill(icon, INACTIVE_FILL);
-  icon.classList.remove('pop');
-  delete icon.dataset.active;
+// Watermark — fondo tenue que crece con el progreso
+function ensureWatermark(player) {
+  if (!DOM.fill[player]) return null;
+  let wm = DOM.fill[player].querySelector('.bar-watermark');
+  if (!wm) {
+    wm = document.createElement('div');
+    wm.className = `bar-watermark bar-watermark--p${player}`;
+    DOM.fill[player].prepend(wm);
+  }
+  return wm;
 }
 
-function initPersonIcons() {
-  [1, 2].forEach(player => {
-    const grid = $(`person-grid-${player}`);
-    if (!grid) return;
-    personIcons[player] = [];
-    for (let i = 0; i < TOTAL_ICONS; i++) {
-      const icon = document.createElement('div');
-      icon.className = 'person-icon';
-      icon.innerHTML = PERSON_SVG;
-      grid.appendChild(icon);
-      personIcons[player].push(icon);
-    }
-  });
-}
 
 // ─── State ────────────────────────────────────────────────────
 function freshState() {
@@ -426,8 +433,7 @@ document.querySelectorAll('.market-btn').forEach(btn => {
 
 // Inicializar mercado al cargar
 applyMarket(currentMarket);
-// Crear los iconos de persona en ambas barras
-initPersonIcons();
+
 
 
 // ─── Game Actions ─────────────────────────────────────────────
@@ -512,25 +518,11 @@ function updatePlayerUI(player, data) {
   const followers = progressToFollowers(data.progress);
   const display   = formatFollowers(followers);
 
-  // ── Iconos de persona: activa por filas completas de abajo hacia arriba ──
-  // Cada click llena ICON_COLS/CLICKS_TO_WIN filas; una fila nueva = bloque de 5
-  const activeRows  = Math.min(
-    Math.floor(data.clicks * ICON_ROWS / GAME_CONFIG.CLICKS_TO_WIN),
-    ICON_ROWS
-  );
-  const activeCount = activeRows * ICON_COLS;
-  // En CSS grid: icon[0]=top-left, icon[99]=bottom-right
-  // Queremos activar desde abajo: los últimos activeCount índices son los activos
-  personIcons[player].forEach((icon, i) => {
-    const shouldBeActive = i >= (TOTAL_ICONS - activeCount);
-    const isActive       = !!icon.dataset.active;
-    if (shouldBeActive && !isActive) {
-      const col = i % ICON_COLS;     // 0-4 para el stagger
-      activateIcon(icon, player, col);
-    } else if (!shouldBeActive && isActive) {
-      deactivateIcon(icon);
-    }
-  });
+  // ── Personas flotantes + watermark de nivel ───────────────────────
+  spawnPersonIcons(player, data.progress);
+  const wm = ensureWatermark(player);
+  if (wm) gsap.to(wm, { height: `${data.progress * 85}%`, duration: 0.4, ease: 'power2.out' });
+
 
   // Contador con tamaño dinámico
   DOM.counter[player].textContent = display;
@@ -685,9 +677,12 @@ function resetUI() {
 
   gsap.to([DOM.totem[1], DOM.totem[2]], { opacity: 1, scale: 1, duration: 0.4 });
 
-  // Desactivar todos los iconos de persona
+  // Limpiar personas flotantes y resetear watermarks
   [1, 2].forEach(p => {
-    personIcons[p].forEach(icon => deactivateIcon(icon));
+    if (!DOM.fill[p]) return;
+    DOM.fill[p].querySelectorAll('.float-person').forEach(el => el.remove());
+    const wm = DOM.fill[p].querySelector('.bar-watermark');
+    if (wm) gsap.to(wm, { height: '0%', duration: 0.5, ease: 'power2.inOut' });
   });
 
   DOM.counter[1].textContent = '0';
