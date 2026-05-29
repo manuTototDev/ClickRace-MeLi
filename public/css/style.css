@@ -391,45 +391,54 @@ body {
 }
 .bar-fill--2 { /* igual que --1, solo cambia el color de los iconos activos */ }
 
-/* ── Person Grid — CSS grid que llena todo el alto del track ── */
-.person-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(20, 1fr);   /* 20 filas llenan el 100% */
-  gap: 2px;
-  padding: 3px;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
+/* ── Persona flotante (spawned en cada click) ────────────────── */
+.float-person {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: center bottom;
+  animation: float-up var(--float-dur, 1.6s) ease-out var(--float-delay, 0ms) both;
 }
-
-/* ── Icono individual ────────────────────────────────────────── */
-.person-icon {
+.float-person svg {
   width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.person-icon svg {
-  width: 82%;
-  height: 82%;
+  height: auto;
   display: block;
-  overflow: visible;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
 }
-/* fill se controla 100% desde JS */
 
-/* Pop al activarse — escala grande → tamaño normal, con delay por columna */
-@keyframes icon-pop {
-  0%   { transform: scale(0.1); }
-  55%  { transform: scale(1.55); }
-  100% { transform: scale(1); }
+@keyframes float-up {
+  0%   {
+    transform: translateY(0)      rotate(var(--rot, 0deg)) scale(0.5);
+    opacity: 0;
+  }
+  12%  {
+    transform: translateY(-1.5vmin) rotate(var(--rot, 0deg)) scale(1.15);
+    opacity: 1;
+  }
+  75%  { opacity: 1; }
+  100% {
+    transform: translateY(-20vmin) rotate(calc(var(--rot, 0deg) * 1.2)) scale(0.85);
+    opacity: 0;
+  }
 }
-.person-icon.pop {
-  animation: icon-pop 0.38s var(--ease-bounce) var(--pop-delay, 0ms) both;
+
+/* ── Watermark — nivel de progreso como fondo tenue ─────────── */
+.bar-watermark {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  pointer-events: none;
+  border-radius: 0 0 1.5vmin 1.5vmin;
+  transition: border-radius 0.3s;
 }
+.bar-watermark--p1 {
+  background: linear-gradient(to top, rgba(255,230,0,0.18) 50%, rgba(255,230,0,0.04));
+}
+.bar-watermark--p2 {
+  background: linear-gradient(to top, rgba(0,212,255,0.18) 50%, rgba(0,212,255,0.04));
+}
+
 
 
 /* ── Etiqueta jugador ───────────────────────────────────────── */
