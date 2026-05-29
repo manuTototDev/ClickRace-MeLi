@@ -659,47 +659,82 @@ function spawnCelebrationIcons(player, levelIdx) {
   const layer = ensureCelebrationLayer(player);
   if (!layer) return;
 
-  const fillPct = MILESTONE_FILL_PCT[levelIdx] ?? 50;
-  const count   = CELEBRATION_COUNTS[levelIdx] ?? 20;
-  const isFinal = levelIdx === 3;
+  const count = CELEBRATION_COUNTS[levelIdx] ?? 20;
 
+  if (levelIdx === 3) {
+    // ── FUENTE: íconos salen disparados desde la cima y caen en cascada ──
+    spawnFountain(layer, count);
+  } else {
+    // ── HITOS 1-2: íconos suben desde abajo y caen ──
+    spawnRisingIcons(layer, count, MILESTONE_FILL_PCT[levelIdx] ?? 50);
+  }
+}
+
+function spawnRisingIcons(layer, count, fillPct) {
   for (let i = 0; i < count; i++) {
     const icon = document.createElement('div');
     icon.className = 'celebration-icon';
     icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
 
-    const size      = 5 + Math.random() * 8;              // 5–13 vmin
-    const xPct      = Math.random() * 92;                 // 0–92%
-    // bottom: 0% = pegado al piso. Hasta fillPct = altura del hito.
+    const size      = 5 + Math.random() * 8;
+    const xPct      = Math.random() * 92;
     const bottomPct = Math.random() * fillPct;
     const rotStart  = (Math.random() - 0.5) * 30;
     const rotEnd    = rotStart + (Math.random() - 0.5) * 80;
-    const delay     = Math.random() * 200;   // stagger más corto → ráfaga rápida
+    const delay     = Math.random() * 200;
 
     icon.style.left   = `${xPct}%`;
     icon.style.bottom = `${bottomPct}%`;
     icon.style.width  = `${size}vmin`;
+    layer.appendChild(icon);
 
-    layer.appendChild(icon);   // ← insertar en DOM ANTES de animar
-
-    const tl = gsap.timeline({ delay: delay / 1000 });
-    tl.fromTo(icon,
-      { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
-      { y: 0, opacity: 1, rotation: rotStart, scale: 1,
-        duration: 0.28, ease: 'power2.out' }   // subida: el doble de rápido
-    );
-
-    if (isFinal) {
-      // Compradores: se quedan llenando la pantalla hasta el reset
-      tl.to(icon, { opacity: 0.92, duration: 0.15 });
-    } else {
-      // Audiencia / Leales: caen como festejo
-      tl.to(icon, {
+    gsap.timeline({ delay: delay / 1000 })
+      .fromTo(icon,
+        { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
+        { y: 0,      opacity: 1, rotation: rotStart, scale: 1,
+          duration: 0.28, ease: 'power2.out' })
+      .to(icon, {
         y: '60vh', opacity: 0, rotation: rotEnd,
-        duration: 0.45, ease: 'power2.in', delay: 0.2,  // bajada: el doble de rápido
+        duration: 0.45, ease: 'power2.in', delay: 0.2,
         onComplete: () => icon.remove(),
       });
-    }
+  }
+}
+
+function spawnFountain(layer, count) {
+  // Cada ícono nace en el borde superior, sube fuera de pantalla y cae como cascada
+  for (let i = 0; i < count; i++) {
+    const icon = document.createElement('div');
+    icon.className = 'celebration-icon';
+    icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
+
+    const size     = 4 + Math.random() * 9;          // 4–13 vmin
+    const xPct     = 2 + Math.random() * 90;          // casi toda la anchura
+    const upShot   = 15 + Math.random() * 45;         // cuánto sube: 15–60 vh
+    const fallDist = 80 + Math.random() * 60;         // cuánto cae: 80–140 vh
+    const rotStart = (Math.random() - 0.5) * 40;
+    const rotEnd   = rotStart + (Math.random() - 0.5) * 140;
+    const delay    = Math.random() * 400;             // ráfaga de 0.4 s
+
+    // Posición inicial: justo en el tope del layer
+    icon.style.left   = `${xPct}%`;
+    icon.style.top    = '0%';
+    icon.style.bottom = 'auto';
+    icon.style.width  = `${size}vmin`;
+    layer.appendChild(icon);
+
+    gsap.timeline({ delay: delay / 1000 })
+      // 1) disparo hacia arriba (sale de pantalla)
+      .fromTo(icon,
+        { y: 0,            opacity: 0, scale: 0.5, rotation: rotStart },
+        { y: `-${upShot}vh`, opacity: 1, scale: 1,   rotation: rotStart,
+          duration: 0.25, ease: 'power2.out' })
+      // 2) gravedad: cae por toda la pantalla y desaparece abajo
+      .to(icon, {
+        y: `${fallDist}vh`, opacity: 0, rotation: rotEnd,
+        duration: 0.55, ease: 'power2.in',
+        onComplete: () => icon.remove(),
+      });
   }
 }
 
