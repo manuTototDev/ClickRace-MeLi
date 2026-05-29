@@ -17,6 +17,15 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡GANA\nSEGUIDORES!',
+    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel:    'JUGADOR',
+    playerShort:    'J',
+    goLabel:        '¡YA!',
+    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+    modalTitle:     'SELECCIONAR MERCADO',
+    splashBanner:   'THE CLICK RACE',
+    ctaBarLabel:    '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
   },
   BR: {
     flag: '🇧🇷', name: 'Brasil',
@@ -29,6 +38,15 @@ const MARKETS = {
     playAgain: 'MAIS UMA RODADA!',
     markers:   ['AUDIÊNCIA', 'FIÉIS', 'COMPRADORES'],
     levels:    ['Sem audiência', 'Interesse', 'Lealdade', 'Comprador!'],
+    splashHeadline: 'GANHE\nSEGUIDORES!',
+    splashSub:      'MAIS SEGUIDORES, MAIS VENDAS',
+    playerLabel:    'JOGADOR',
+    playerShort:    'J',
+    goLabel:        'JÁ!',
+    levelNames:     ['Lv.1 · Início', 'Lv.2 · Comunidade', 'Lv.3 · Fiéis', 'Lv.4 · TOPO!'],
+    modalTitle:     'SELECIONAR MERCADO',
+    splashBanner:   'THE CLICK RACE',
+    ctaBarLabel:    'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',
   },
   AR: {
     flag: '🇦🇷', name: 'Argentina',
@@ -41,6 +59,15 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡GANÁ\nSEGUIDORES!',
+    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel:    'JUGADOR',
+    playerShort:    'J',
+    goLabel:        '¡YA!',
+    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+    modalTitle:     'SELECCIONAR MERCADO',
+    splashBanner:   'THE CLICK RACE',
+    ctaBarLabel:    '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
   },
   CL: {
     flag: '🇨🇱', name: 'Chile',
@@ -53,6 +80,15 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡GANA\nSEGUIDORES!',
+    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel:    'JUGADOR',
+    playerShort:    'J',
+    goLabel:        '¡YA!',
+    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+    modalTitle:     'SELECCIONAR MERCADO',
+    splashBanner:   'THE CLICK RACE',
+    ctaBarLabel:    '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
   },
   CO: {
     flag: '🇨🇴', name: 'Colombia',
@@ -65,6 +101,15 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡GANA\nSEGUIDORES!',
+    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel:    'JUGADOR',
+    playerShort:    'J',
+    goLabel:        '¡YA!',
+    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+    modalTitle:     'SELECCIONAR MERCADO',
+    splashBanner:   'THE CLICK RACE',
+    ctaBarLabel:    '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
   },
   UY: {
     flag: '🇺🇾', name: 'Uruguay',
@@ -77,6 +122,15 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡GANÁ\nSEGUIDORES!',
+    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    playerLabel:    'JUGADOR',
+    playerShort:    'J',
+    goLabel:        '¡YA!',
+    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
+    modalTitle:     'SELECCIONAR MERCADO',
+    splashBanner:   'THE CLICK RACE',
+    ctaBarLabel:    '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
   },
 };
 
@@ -88,26 +142,35 @@ function applyMarket(code) {
   currentMarket = code;
   localStorage.setItem('clickrace_market', code);
 
+  // ── challenge title (game area) ──
   const titleEl = document.querySelector('.challenge-title');
   if (titleEl) titleEl.innerHTML = `${m.header} <span>${m.subtitle}</span>`;
 
+  // ── CTA bar ──
   const ctaEl = document.querySelector('.cta-bar');
   if (ctaEl) ctaEl.textContent = m.cta;
 
-  document.querySelectorAll('.button-label').forEach(el => {
+  // ── Botones SEGUIR (reconstruye con playerLabel localizado) ──
+  document.querySelectorAll('.button-label').forEach((el, i) => {
     const sub = el.querySelector('.button-label-sub');
-    if (sub) { const s = sub.outerHTML; el.innerHTML = `${m.btnLabel} ${s}`; }
+    if (sub) {
+      const playerNum = i + 1;
+      el.innerHTML = `${m.btnLabel} <span class="button-label-sub">${m.playerLabel} ${playerNum}</span>`;
+    }
   });
 
+  // ── Countdown label ──
   const countdownLabel = document.querySelector('.overlay-label');
   if (countdownLabel) countdownLabel.textContent = m.countdown;
 
+  // ── Winner label y play again ──
   const winnerLabel = document.querySelector('.winner-label');
   if (winnerLabel) winnerLabel.textContent = m.winner;
 
   const playAgainBtn = document.getElementById('btn-play-again');
   if (playAgainBtn) playAgainBtn.textContent = m.playAgain;
 
+  // ── Markers de las barras ──
   const markersP1 = document.querySelectorAll('#totem-1 .bar-marker-label');
   if (markersP1.length >= 3) {
     markersP1[0].textContent = m.markers[2];
@@ -121,6 +184,42 @@ function applyMarket(code) {
     markersP2[2].textContent = m.markers[0];
   }
 
+  // ── Splash headline y subtítulo ──
+  const splashMain = document.querySelector('.splash-headline-main');
+  if (splashMain) splashMain.innerHTML = m.splashHeadline.replace('\n', '<br>');
+  const splashSub = document.querySelector('.splash-headline-sub');
+  if (splashSub) splashSub.textContent = m.splashSub;
+
+  // ── Nombres de jugadores (game area) ──
+  document.querySelectorAll('.player-name').forEach((el, i) => {
+    el.textContent = `${m.playerLabel} ${i + 1}`;
+  });
+
+  // ── Etiquetas cortas (J1 / J2) ──
+  const tags = document.querySelectorAll('.player-tag');
+  tags.forEach((tag, i) => { tag.textContent = `${m.playerShort}${i + 1}`; });
+
+  // ── Badges de nivel (estado inicial) ──
+  const badge1 = document.getElementById('badge-text-1');
+  const badge2 = document.getElementById('badge-text-2');
+  if (badge1 && !badge1.dataset.active) badge1.textContent = m.levelNames[0];
+  if (badge2 && !badge2.dataset.active) badge2.textContent = m.levelNames[0];
+
+  // ── Winner name si ya hay ganador ──
+  const winnerName = document.getElementById('winner-name');
+  if (winnerName && winnerName.dataset.winner) {
+    winnerName.textContent = `${m.playerLabel} ${winnerName.dataset.winner}`;
+  }
+
+  // ── Título del modal ──
+  const modalTitleEl = document.querySelector('.market-modal-title');
+  if (modalTitleEl) modalTitleEl.textContent = m.modalTitle ?? 'SELECCIONAR MERCADO';
+
+  // ── Splash banner ──
+  const splashBannerEl = document.querySelector('.splash-banner');
+  if (splashBannerEl) splashBannerEl.textContent = m.splashBanner ?? 'THE CLICK RACE';
+
+  // ── Botones del market: marcar activo y actualizar nombre con playerLabel si aplica ──
   document.querySelectorAll('.market-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.market === code);
   });
@@ -379,14 +478,16 @@ function updatePlayerUI(player, data) {
     { scale: 1, duration: 0.2, ease: 'back.out(2)' }
   );
 
-  // Badge de nivel
-  const levelNames = [
+  // Badge de nivel (usa traducción del mercado actual)
+  const m = MARKETS[currentMarket];
+  const levelNames = m?.levelNames ?? [
     'Lv.1 · Inicio',
     'Lv.2 · Comunidad',
     'Lv.3 · Leales',
     'Lv.4 · ¡CIMA!',
   ];
   if (DOM.badgeText[player]) {
+    DOM.badgeText[player].dataset.active = '1';
     DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
   }
 
@@ -446,7 +547,8 @@ function showCountdown(seconds) {
   DOM.overlayWinner.classList.add('hidden');
 
   if (seconds === 0) {
-    DOM.countdownNumber.textContent = '¡YA!';
+    const goText = MARKETS[currentMarket]?.goLabel ?? '¡YA!';
+    DOM.countdownNumber.textContent = goText;
     gsap.fromTo(DOM.countdownNumber,
       { scale: 0.5, opacity: 0 },
       {
@@ -496,7 +598,9 @@ function finishGame(winner, players) {
     DOM.overlay.classList.remove('hidden');
     DOM.overlayCountdown.classList.add('hidden');
     DOM.overlayWinner.classList.remove('hidden');
-    DOM.winnerName.textContent = `JUGADOR ${winner}`;
+    const mWinner = MARKETS[currentMarket];
+    DOM.winnerName.textContent = `${mWinner?.playerLabel ?? 'JUGADOR'} ${winner}`;
+    DOM.winnerName.dataset.winner = winner;
 
     gsap.fromTo(DOM.overlayWinner,
       { y: 30, opacity: 0 },
@@ -525,6 +629,8 @@ function resetUI() {
     dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
   });
 
-  if (DOM.badgeText[1]) DOM.badgeText[1].textContent = 'Lv.1 · Inicio';
-  if (DOM.badgeText[2]) DOM.badgeText[2].textContent = 'Lv.1 · Inicio';
+  const mReset = MARKETS[currentMarket];
+  const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';
+  if (DOM.badgeText[1]) { DOM.badgeText[1].textContent = resetLevel; delete DOM.badgeText[1].dataset.active; }
+  if (DOM.badgeText[2]) { DOM.badgeText[2].textContent = resetLevel; delete DOM.badgeText[2].dataset.active; }
 }
