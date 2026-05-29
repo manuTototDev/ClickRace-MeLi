@@ -637,10 +637,11 @@ function spawnParticles(player) {
   }
 }
 
-// ─── Celebration: 30 personas suben desde abajo, llenan hasta el hito ─────
-// levelIdx: 1 = audiencia (25% del shell), 2 = leales (60%), 3 = compradores (100%)
-const MILESTONE_FILL_PCT = { 1: 30, 2: 65, 3: 100 };
-const CELEBRATION_COUNT  = 30;
+// ─── Celebration: personas suben desde abajo, más ícones por hito ─────
+// levelIdx: 1 = audiencia, 2 = leales, 3 = compradores
+const MILESTONE_FILL_PCT  = { 1: 30, 2: 65, 3: 100 };
+const CELEBRATION_COUNTS  = { 1: 15, 2: 35, 3: 70 };  // escala con el hito
+const CELEBRATION_COLOR   = '#111111';                  // todos negros
 
 function ensureCelebrationLayer(player) {
   const shell = DOM.totem[player]?.closest('.viewport-shell');
@@ -658,14 +659,14 @@ function spawnCelebrationIcons(player, levelIdx) {
   const layer = ensureCelebrationLayer(player);
   if (!layer) return;
 
-  const color   = PLAYER_COLORS[player];
   const fillPct = MILESTONE_FILL_PCT[levelIdx] ?? 50;
+  const count   = CELEBRATION_COUNTS[levelIdx] ?? 20;
   const isFinal = levelIdx === 3;
 
-  for (let i = 0; i < CELEBRATION_COUNT; i++) {
+  for (let i = 0; i < count; i++) {
     const icon = document.createElement('div');
     icon.className = 'celebration-icon';
-    icon.innerHTML = createPersonSVG(color);
+    icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
 
     const size      = 5 + Math.random() * 8;              // 5–13 vmin
     const xPct      = Math.random() * 92;                 // 0–92%
