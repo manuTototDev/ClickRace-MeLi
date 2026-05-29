@@ -679,6 +679,8 @@ function spawnCelebrationIcons(player, levelIdx) {
     icon.style.bottom = `${bottomPct}%`;
     icon.style.width  = `${size}vmin`;
 
+    layer.appendChild(icon);   // ← insertar en DOM ANTES de animar
+
     const tl = gsap.timeline({ delay: delay / 1000 });
     tl.fromTo(icon,
       { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
