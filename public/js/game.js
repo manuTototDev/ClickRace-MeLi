@@ -640,7 +640,7 @@ function spawnParticles(player) {
 // ─── Celebration: personas suben desde abajo, más ícones por hito ─────
 // levelIdx: 1 = audiencia, 2 = leales, 3 = compradores
 const MILESTONE_FILL_PCT  = { 1: 30, 2: 65, 3: 100 };
-const CELEBRATION_COUNTS  = { 1: 15, 2: 35, 3: 70 };  // escala con el hito
+const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 140 };  // escala con el hito
 const CELEBRATION_COLOR   = '#111111';                  // todos negros
 
 function ensureCelebrationLayer(player) {
@@ -674,7 +674,7 @@ function spawnCelebrationIcons(player, levelIdx) {
     const bottomPct = Math.random() * fillPct;
     const rotStart  = (Math.random() - 0.5) * 30;
     const rotEnd    = rotStart + (Math.random() - 0.5) * 80;
-    const delay     = Math.random() * 350;
+    const delay     = Math.random() * 200;   // stagger más corto → ráfaga rápida
 
     icon.style.left   = `${xPct}%`;
     icon.style.bottom = `${bottomPct}%`;
@@ -686,17 +686,17 @@ function spawnCelebrationIcons(player, levelIdx) {
     tl.fromTo(icon,
       { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
       { y: 0, opacity: 1, rotation: rotStart, scale: 1,
-        duration: 0.55, ease: 'power2.out' }
+        duration: 0.28, ease: 'power2.out' }   // subida: el doble de rápido
     );
 
     if (isFinal) {
       // Compradores: se quedan llenando la pantalla hasta el reset
-      tl.to(icon, { opacity: 0.92, duration: 0.3 });
+      tl.to(icon, { opacity: 0.92, duration: 0.15 });
     } else {
       // Audiencia / Leales: caen como festejo
       tl.to(icon, {
         y: '60vh', opacity: 0, rotation: rotEnd,
-        duration: 0.85, ease: 'power2.in', delay: 0.35,
+        duration: 0.45, ease: 'power2.in', delay: 0.2,  // bajada: el doble de rápido
         onComplete: () => icon.remove(),
       });
     }
