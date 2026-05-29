@@ -383,6 +383,25 @@ function cancelAutoReset() {
   autoResetTimer = null;
 }
 
+// ── Idle timer: si nadie clickea en 10s durante el juego, volver al splash ──
+const IDLE_LIMIT_MS = 10000;
+let idleTimer = null;
+
+function resetIdleTimer() {
+  clearTimeout(idleTimer);
+  if (gameState.status !== 'playing') return;
+  idleTimer = setTimeout(() => {
+    if (gameState.status !== 'playing') return;
+    actionReset();
+    showSplash();
+  }, IDLE_LIMIT_MS);
+}
+
+function clearIdleTimer() {
+  clearTimeout(idleTimer);
+  idleTimer = null;
+}
+
 function showSplash() {
   document.querySelectorAll('.splash').forEach(splash => {
     splash.classList.remove('splash--out');
@@ -477,7 +496,10 @@ function actionStart() {
 function actionClick(player) {
   if (gameState.status !== 'playing') return;
 
+  resetIdleTimer();
+
   const p = gameState.players[player];
+  const prevLevel = p.level;
   p.clicks   = Math.min(p.clicks + 1, GAME_CONFIG.CLICKS_TO_WIN);
   p.progress = p.clicks / GAME_CONFIG.CLICKS_TO_WIN;
 
@@ -490,6 +512,11 @@ function actionClick(player) {
   updatePlayerUI(player, p);
   animateButtonPress(player);
 
+  // Celebración cuando cruza a un nivel nuevo (1, 2 o 3)
+  if (p.level > prevLevel && p.level >= 1) {
+    spawnCelebrationIcons(player, p.level);
+  }
+
   // ¿Ganó?
   if (p.clicks >= GAME_CONFIG.CLICKS_TO_WIN) {
     gameState.status = 'finished';
@@ -499,6 +526,7 @@ function actionClick(player) {
 }
 
 function actionReset() {
+  clearIdleTimer();
   gameState = freshState();
   resetUI();
 }
@@ -577,14 +605,12 @@ function updatePlayerUI(player, data) {
     });
   }
 
-  // Partículas al subir de nivel
-  const threshold = GAME_CONFIG.LEVELS[data.level]?.threshold ?? 1;
-  if (data.level > 0 && data.clicks === Math.floor(GAME_CONFIG.CLICKS_TO_WIN * threshold)) {
-    spawnParticles(player);
-  }
+  // (la celebración por cruce de hito se dispara desde actionClick, donde
+  // tenemos el level previo para comparar)
 }
 
 function spawnParticles(player) {
+  // (efecto antiguo, ya no se llama — reemplazado por spawnCelebrationIcons)
   const container = DOM.particles[player];
   const color     = player === 1 ? '#FFE600' : '#00D4FF';
 
@@ -609,6 +635,75 @@ function spawnParticles(player) {
       }
     );
   }
+}
+
+// ─── Celebration: 30 personas suben desde abajo, llenan hasta el hito ─────
+// levelIdx: 1 = audiencia (25% del shell), 2 = leales (60%), 3 = compradores (100%)
+const MILESTONE_FILL_PCT = { 1: 30, 2: 65, 3: 100 };
+const CELEBRATION_COUNT  = 30;
+
+function ensureCelebrationLayer(player) {
+  const shell = DOM.totem[player]?.closest('.viewport-shell');
+  if (!shell) return null;
+  let layer = shell.querySelector('.celebration-layer');
+  if (!layer) {
+    layer = document.createElement('div');
+    layer.className = 'celebration-layer';
+    shell.appendChild(layer);
+  }
+  return layer;
+}
+
+function spawnCelebrationIcons(player, levelIdx) {
+  const layer = ensureCelebrationLayer(player);
+  if (!layer) return;
+
+  const color   = PLAYER_COLORS[player];
+  const fillPct = MILESTONE_FILL_PCT[levelIdx] ?? 50;
+  const isFinal = levelIdx === 3;
+
+  for (let i = 0; i < CELEBRATION_COUNT; i++) {
+    const icon = document.createElement('div');
+    icon.className = 'celebration-icon';
+    icon.innerHTML = createPersonSVG(color);
+
+    const size      = 5 + Math.random() * 8;              // 5–13 vmin
+    const xPct      = Math.random() * 92;                 // 0–92%
+    // bottom: 0% = pegado al piso. Hasta fillPct = altura del hito.
+    const bottomPct = Math.random() * fillPct;
+    const rotStart  = (Math.random() - 0.5) * 30;
+    const rotEnd    = rotStart + (Math.random() - 0.5) * 80;
+    const delay     = Math.random() * 350;
+
+    icon.style.left   = `${xPct}%`;
+    icon.style.bottom = `${bottomPct}%`;
+    icon.style.width  = `${size}vmin`;
+
+    const tl = gsap.timeline({ delay: delay / 1000 });
+    tl.fromTo(icon,
+      { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
+      { y: 0, opacity: 1, rotation: rotStart, scale: 1,
+        duration: 0.55, ease: 'power2.out' }
+    );
+
+    if (isFinal) {
+      // Compradores: se quedan llenando la pantalla hasta el reset
+      tl.to(icon, { opacity: 0.92, duration: 0.3 });
+    } else {
+      // Audiencia / Leales: caen como festejo
+      tl.to(icon, {
+        y: '60vh', opacity: 0, rotation: rotEnd,
+        duration: 0.85, ease: 'power2.in', delay: 0.35,
+        onComplete: () => icon.remove(),
+      });
+    }
+  }
+}
+
+function clearCelebrationLayers() {
+  document.querySelectorAll('.celebration-layer').forEach(layer => {
+    layer.innerHTML = '';
+  });
 }
 
 // ─── Countdown ────────────────────────────────────────────────
@@ -653,10 +748,13 @@ function startGame() {
     { scale: 0.96, opacity: 0.7 },
     { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.5)' }
   );
+
+  resetIdleTimer();
 }
 
 // ─── Game Finish ──────────────────────────────────────────────
 function finishGame(winner, players) {
+  clearIdleTimer();
   updatePlayerUI(1, players[1]);
   updatePlayerUI(2, players[2]);
 
@@ -664,6 +762,7 @@ function finishGame(winner, players) {
   DOM.totem[winner].classList.add('totem--winner');
   gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0.5 });
 
+  // Dejamos que la celebración de COMPRADORES llene la pantalla antes del winner
   setTimeout(() => {
     showAll(DOM.overlays);
     hideAll(DOM.overlayCountdowns);
@@ -681,7 +780,7 @@ function finishGame(winner, players) {
         onComplete: () => startAutoReset()
       }
     );
-  }, 600);
+  }, 1400);
 }
 
 // ─── Reset UI ─────────────────────────────────────────────────
@@ -701,6 +800,9 @@ function resetUI() {
     const wm = DOM.fill[p].querySelector('.bar-watermark');
     if (wm) gsap.to(wm, { height: '0%', duration: 0.5, ease: 'power2.inOut' });
   });
+
+  // Limpiar capas de celebración
+  clearCelebrationLayers();
 
   DOM.counter[1].textContent = '0';
   DOM.counter[2].textContent = '0';

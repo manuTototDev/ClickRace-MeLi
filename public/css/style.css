@@ -1051,3 +1051,29 @@ body {
 .button-zone--solo .big-button .button-label {
   font-size: 5vmin;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   CELEBRATION LAYER — iconos por hito (audiencia/leales/compradores)
+══════════════════════════════════════════════════════════════ */
+.celebration-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 90;
+}
+
+.celebration-icon {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+.celebration-icon svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.28));
+}
