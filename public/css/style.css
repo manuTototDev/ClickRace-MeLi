@@ -373,31 +373,64 @@ body {
 /* ── Track vertical ─────────────────────────────────────────── */
 .bar-track {
   flex: 1;
-  width: 7vmin;
+  width: 8vmin;
   background: var(--surface);
-  border-radius: 99px;
-  border: none;
+  border-radius: 2vmin;
+  border: 1px solid var(--border);
   overflow: hidden;
   position: relative;
   margin: 0 auto;
   margin-bottom: 1vmin;
 }
 
-/* ── Fill (crece de abajo hacia arriba) ─────────────────────── */
+/* ── Fill: contenedor de iconos de persona ───────────────────── */
 .bar-fill {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 0%;
-  background: var(--border-strong);  /* gris wireframe, no negro */
-  border-radius: 99px;
-  will-change: height;
+  inset: 0;
   overflow: hidden;
 }
-.bar-fill--2 {
-  background: var(--border-strong);
+.bar-fill--2 { /* igual que --1, solo cambia el color de los iconos activos */ }
+
+/* ── Person Grid — CSS grid que llena todo el alto del track ── */
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(20, 1fr);   /* 20 filas llenan el 100% */
+  gap: 2px;
+  padding: 3px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.bar-glow { display: none; } /* sin glow en wireframe */
+/* ── Icono individual ────────────────────────────────────────── */
+.person-icon {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.person-icon svg {
+  width: 82%;
+  height: 82%;
+  display: block;
+  overflow: visible;
+}
+/* fill se controla 100% desde JS */
+
+/* Pop al activarse — escala grande → tamaño normal, con delay por columna */
+@keyframes icon-pop {
+  0%   { transform: scale(0.1); }
+  55%  { transform: scale(1.55); }
+  100% { transform: scale(1); }
+}
+.person-icon.pop {
+  animation: icon-pop 0.38s var(--ease-bounce) var(--pop-delay, 0ms) both;
+}
+
 
 /* ── Etiqueta jugador ───────────────────────────────────────── */
 .bar-player-label {
