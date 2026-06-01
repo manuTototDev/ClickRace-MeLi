@@ -222,8 +222,24 @@ function applyMarket(code) {
 }
 
 // ─── Config ───────────────────────────────────────────────────
+const DIFFICULTY_CLICKS = { easy: 60, medium: 80, hard: 120 };
+
+let currentDifficulty = localStorage.getItem('clickrace_difficulty') || 'medium';
+
+function applyDifficulty(level) {
+  if (!DIFFICULTY_CLICKS[level]) return;
+  currentDifficulty = level;
+  localStorage.setItem('clickrace_difficulty', level);
+  GAME_CONFIG.CLICKS_TO_WIN = DIFFICULTY_CLICKS[level];
+
+  // Marcar botón activo en todos los modales
+  document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.difficulty === level);
+  });
+}
+
 const GAME_CONFIG = {
-  CLICKS_TO_WIN: 75,
+  CLICKS_TO_WIN: DIFFICULTY_CLICKS[currentDifficulty],
   LEVELS: [
     { label: 'Punto de Partida',    threshold: 0    },
     { label: 'Comunidad Creciente', threshold: 0.25 },
@@ -464,8 +480,17 @@ document.querySelectorAll('.market-btn').forEach(btn => {
   });
 });
 
-// Inicializar mercado al cargar
+// Listeners para dificultad
+document.querySelectorAll('.difficulty-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyDifficulty(btn.dataset.difficulty);
+    closeMarketModals();
+  });
+});
+
+// Inicializar mercado y dificultad al cargar
 applyMarket(currentMarket);
+applyDifficulty(currentDifficulty);
 
 
 
