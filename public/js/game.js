@@ -601,6 +601,14 @@ function updatePlayerUI(player, data) {
     gsap.to(infoEl, { bottom: `${data.progress * 88}%`, duration: 0.4, ease: 'power2.out' });
   }
 
+  // Actualizar opacidad de marcadores según progreso (umbral)
+  const markers = document.querySelectorAll(`#totem-${player} .bar-marker[data-threshold]`);
+  markers.forEach(marker => {
+    const threshold = parseFloat(marker.getAttribute('data-threshold'));
+    const targetOpacity = data.progress >= threshold ? 1 : 0.3;
+    gsap.to(marker, { opacity: targetOpacity, duration: 0.3 });
+  });
+
   // Contador con tamaño dinámico en cqw
   DOM.counter[player].textContent = display;
   const len = display.length;
@@ -873,6 +881,10 @@ function resetUI() {
     // Resetear posición de la tarjeta de comunidad dinámica
     const infoEl = document.getElementById(`player-info-${p}`);
     if (infoEl) gsap.to(infoEl, { bottom: '0%', duration: 0.5, ease: 'power2.inOut' });
+
+    // Resetear opacidad de marcadores
+    const markers = document.querySelectorAll(`#totem-${p} .bar-marker[data-threshold]`);
+    markers.forEach(marker => gsap.to(marker, { opacity: 0.3, duration: 0.5, ease: 'power2.inOut' }));
   });
 
   // Limpiar capas de celebración
