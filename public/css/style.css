@@ -111,12 +111,36 @@ body {
 /* ── Totem Screen ───────────────────────────────────────────── */
 .totem-screen {
   flex: 1;
-  background: var(--bg);
+  background: linear-gradient(
+    180deg,
+    #FFFFFB 0%,
+    #FFFDE7 20%,
+    #FFF176 55%,
+    #FFE600 100%
+  );
   border-radius: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   border: none;
+}
+
+/* ── Watermark "¡AUMENTA SEGUIDORES!" en el bottom ── */
+.game-watermark {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: clamp(20px, 16.5cqw, 260px);
+  font-weight: 900;
+  line-height: 0.88;
+  text-transform: uppercase;
+  color: rgba(218, 145, 0, 0.38);
+  letter-spacing: -0.02em;
+  padding: 0 3cqw 3cqw;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -415,7 +439,7 @@ body {
   align-items: center;
   padding: 2vmin 0 1.5vmin;
   position: relative;
-  overflow: hidden;          /* evita que el contenido central se cuele */
+  overflow: visible;          /* Permite que el panel de comunidad que sube a la derecha sea visible */
 }
 
 .bar-column--1 { }
@@ -424,10 +448,7 @@ body {
 /* ── Markers de nivel ───────────────────────────────────────── */
 .bar-level-markers {
   position: absolute;
-  top: 2vmin;
-  bottom: 7vmin;
-  left: 0;
-  right: 0;
+  inset: 0;
   pointer-events: none;
 }
 
@@ -473,16 +494,21 @@ body {
 }
 
 /* ── Track vertical ─────────────────────────────────────────── */
+.track-wrapper {
+  position: relative;
+  width: 121.5px;
+  height: 105.7cqw;
+  margin-bottom: 1vmin;
+}
+
 .bar-track {
-  flex: 1;
-  width: 8vmin;
+  width: 100%;
+  height: 100%;
   background: var(--surface);
-  border-radius: 2vmin;
+  border-radius: 20px;
   border: 1px solid var(--border);
   overflow: hidden;
   position: relative;
-  margin: 0 auto;
-  margin-bottom: 1vmin;
 }
 
 /* ── Fill: contenedor de iconos de persona ───────────────────── */
@@ -522,7 +548,7 @@ body {
   right: 0;
   height: 0%;
   pointer-events: none;
-  border-radius: 0 0 1.5vmin 1.5vmin;
+  border-radius: 0 0 20px 20px;
 }
 .bar-watermark--p1 {
   background: linear-gradient(to top, rgba(255,230,0,0.14) 50%, rgba(255,230,0,0.03));
@@ -596,50 +622,79 @@ body {
   width: 100%;
 }
 
+.player-info--dynamic {
+  position: absolute !important;
+  left: calc(100% + 2cqw); /* A la derecha de la barra */
+  bottom: 0%; /* Animado por JS */
+  transform: translateY(50%); /* Centrado vertical respecto al nivel actual */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  pointer-events: none;
+  z-index: 20;
+  width: 35cqw;
+  gap: 0.5cqw !important;
+}
+
+.player-info--dynamic .player-name {
+  font-size: 3.5cqw !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #5333B4 !important;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  max-width: none;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.player-info--dynamic .click-counter {
+  font-size: 11cqw !important;
+  font-weight: 900;
+  color: #5333B4 !important;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-align: left;
+  width: auto;
+  overflow: visible;
+  margin: 0;
+}
+
 .player-name {
   font-size: 2vmin;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #5333B4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
 }
-.player-name--2 { color: var(--text-muted); }
+.player-name--2 { color: #5333B4; }
 
 /* ── Click Counter ──────────────────────────────────────────── */
 .click-counter {
   font-size: 11vmin;
   font-weight: 900;
-  color: var(--text);
+  color: #5333B4;
   letter-spacing: -0.02em;
   line-height: 1;
   text-align: center;
   width: 100%;
   overflow: hidden;
 }
-.click-counter--2 { color: var(--text); }
+.click-counter--2 { color: #5333B4; }
 
 /* ── Level Badge ────────────────────────────────────────────── */
 .level-badge {
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: 1vmin;
-  padding: 0.8vmin 2vmin;
-  font-size: 1.6vmin;
-  font-weight: 700;
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-  white-space: nowrap;
+  display: none !important;
 }
 .level-badge--2 {
-  background: var(--surface);
-  border-color: var(--border-strong);
-  color: var(--text);
+  display: none !important;
 }
 
 /* ── VS Divider ─────────────────────────────────────────────── */
@@ -676,17 +731,7 @@ body {
    CTA BAR
 ══════════════════════════════════════════════════════════════ */
 .cta-bar {
-  padding: 2vmin 3vmin;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 2.2vmin;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
-  flex-shrink: 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  display: none; /* quitado por diseño */
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -694,15 +739,20 @@ body {
 ══════════════════════════════════════════════════════════════ */
 .button-zone {
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  height: 16vmin;
+  padding: 2vmin 0 4.5vmin;
 }
 
 .big-button {
-  flex: 1;
+  width: 29.35cqw;
+  height: 11.85cqw;
+  flex: none;
   border: none;
-  border-top: 1px solid var(--border);
+  border-radius: 1.85cqw;
+  padding: 0;
+  font-family: inherit;
   cursor: pointer;
   position: relative;
   user-select: none;
@@ -710,33 +760,26 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface);
-  transition: background 0.08s;
+  background: #EDE9FF;
+  transition: transform 0.1s var(--ease-bounce), background 0.08s;
+  box-shadow: 0 4px 20px rgba(74, 53, 176, 0.15);
 }
 .big-button--2 {
-  background: var(--surface-2);
-  border-left: 1px solid var(--border);
+  background: #EDE9FF;
 }
 
-.big-button:active { background: var(--border); }
+.big-button:active {
+  background: #DDD5F5;
+  transform: scale(0.97);
+}
 
 .button-label {
-  font-size: 4vmin;
-  font-weight: 900;
-  color: var(--text);
-  letter-spacing: 0.05em;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5vmin;
-  line-height: 1.2;
-}
-.button-label-sub {
-  font-size: 1.6vmin;
+  font-size: clamp(16px, 5.2cqw, 88px);
   font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
+  color: #4A35B0;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  line-height: 1;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -745,15 +788,22 @@ body {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
 }
 .overlay.hidden { display: none; }
+
+.overlay-winner {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  justify-content: center;
+}
 
 .overlay-content {
   text-align: center;
@@ -773,13 +823,15 @@ body {
   justify-content: flex-start;
   padding: 20cqw 6cqw 0;
   gap: 8cqw;
-  /* Mismo degradado que la pantalla de inicio */
+  /* Fondo semitransparente con blur */
   background: linear-gradient(
     180deg,
-    #FBF5E1 0%,
-    #F7EDB6 50%,
-    #EFDD78 100%
+    rgba(251, 245, 225, 0.6) 0%,
+    rgba(247, 237, 182, 0.6) 50%,
+    rgba(239, 221, 120, 0.6) 100%
   );
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
 /* El label queda debajo del logo, en su posición natural */
@@ -981,13 +1033,15 @@ body {
   align-items: center;
   justify-content: flex-start;
   gap: 14cqw;
-  /* Fondo opaco: degradado amarillo suave (crema arriba → amarillo pálido abajo) */
+  /* Fondo semitransparente con blur */
   background: linear-gradient(
     180deg,
-    #FBF5E1 0%,
-    #F7EDB6 50%,
-    #EFDD78 100%
+    rgba(251, 245, 225, 0.6) 0%,
+    rgba(247, 237, 182, 0.6) 50%,
+    rgba(239, 221, 120, 0.6) 100%
   );
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   overflow: hidden;
   animation: splash-in 0.4s var(--ease-out) both;
   padding: 20cqw 6cqw 8cqw;
@@ -1129,20 +1183,36 @@ body {
 /* ══════════════════════════════════════════════════════════════
    SOLO LAYOUT — un solo jugador por tótem (vista egoísta)
 ══════════════════════════════════════════════════════════════ */
-
-/* La barra ocupa un tercio del tótem; el resto, info del jugador */
-.game-area--solo .bar-column {
-  width: 30%;
+.game-area--solo {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Sin VS divider, sin segundo player-info: el bloque único se centra */
-.center-zone--solo {
-  flex: 1;
+.game-area--solo .bar-column {
+  width: auto;
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2vmin;
+  padding: 2vmin 0 1.5vmin;
+}
+
+.center-zone--solo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
 }
 
 .center-zone--solo .player-info {
@@ -1154,7 +1224,7 @@ body {
 .viewport-shell[data-totem="2"] .player-name--2,
 .viewport-shell[data-totem="2"] .click-counter--2,
 .viewport-shell[data-totem="2"] .player-name {
-  color: var(--text);
+  color: #5333B4;
 }
 
 /* Counter grande, badge centrado */
@@ -1167,18 +1237,17 @@ body {
 }
 
 .center-zone--solo .level-badge {
-  font-size: 1.8vmin;
+  display: none !important;
 }
 
 /* Un solo botón ocupando todo el ancho de su tótem */
 .button-zone--solo {
-  height: 18vmin;
+  height: auto;
+  padding: 0;
+  margin-bottom: 35cqw;
 }
 .button-zone--solo .big-button {
   border-left: none;
-}
-.button-zone--solo .big-button .button-label {
-  font-size: 5vmin;
 }
 
 /* ══════════════════════════════════════════════════════════════

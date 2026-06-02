@@ -12,7 +12,8 @@ const MARKETS = {
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
     cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
-    btnLabel:  'SEGUIR',
+    btnLabel:  'Seguir',
+    communityLabel: 'Tu comunidad:',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
@@ -33,7 +34,8 @@ const MARKETS = {
     subtitle:  'QUEM CHEGA PRIMEIRO?',
     countdown: 'A AUMENTAR SEGUIDORES!',
     cta:       'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
-    btnLabel:  'SEGUIR',
+    btnLabel:  'Seguir',
+    communityLabel: 'Sua comunidade:',
     winner:    'TOP OF RETAIL MEDIA!',
     playAgain: 'MAIS UMA RODADA!',
     markers:   ['COMUNIDADE', 'FIÉIS', 'COMPRADORES'],
@@ -54,7 +56,8 @@ const MARKETS = {
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
     cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
-    btnLabel:  'SEGUIR',
+    btnLabel:  'Seguir',
+    communityLabel: 'Tu comunidad:',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
@@ -75,7 +78,8 @@ const MARKETS = {
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
     cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
-    btnLabel:  'SEGUIR',
+    btnLabel:  'Seguir',
+    communityLabel: 'Tu comunidad:',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
@@ -96,7 +100,8 @@ const MARKETS = {
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
     cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
-    btnLabel:  'SEGUIR',
+    btnLabel:  'Seguir',
+    communityLabel: 'Tu comunidad:',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
@@ -117,7 +122,8 @@ const MARKETS = {
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
     cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
-    btnLabel:  'SEGUIR',
+    btnLabel:  'Seguir',
+    communityLabel: 'Tu comunidad:',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
@@ -154,9 +160,7 @@ function applyMarket(code) {
 
   // ── Botones SEGUIR (cada botón ya tiene data-player) ──
   document.querySelectorAll('.button-label').forEach(el => {
-    const btn = el.closest('.big-button');
-    const playerNum = btn?.dataset.player ?? '1';
-    el.innerHTML = `${m.btnLabel} <span class="button-label-sub">${m.playerLabel} ${playerNum}</span>`;
+    el.textContent = m.btnLabel;
   });
 
   // ── Countdown label ──
@@ -186,8 +190,7 @@ function applyMarket(code) {
 
   // ── Nombres de jugadores (cada tótem tiene 1, con data-player) ──
   document.querySelectorAll('.player-name').forEach(el => {
-    const p = el.dataset.player ?? '1';
-    el.textContent = `${m.playerLabel} ${p}`;
+    el.textContent = m.communityLabel;
   });
 
   // ── Etiquetas cortas (J1 / J2), con data-player ──
@@ -286,7 +289,7 @@ function hideAll(nodeList)    { nodeList.forEach(el => el.classList.add('hidden'
 function setAllText(nodeList, txt) { nodeList.forEach(el => el.textContent = txt); }
 
 // ─── Person Icons — sistema de partículas flotantes ───────────────────
-const PLAYER_COLORS = { 1: '#A87EE8', 2: '#7BACD4' };
+const PLAYER_COLORS = { 1: '#A87EE8', 2: '#A87EE8' };
 
 function createPersonSVG(color) {
   return [
@@ -566,10 +569,10 @@ function progressToFollowers(progress) {
 }
 
 function formatFollowers(n) {
-  if (n >= 500000) return '500K';
-  if (n >= 100000) return Math.round(n / 1000) + 'K';
-  if (n >= 10000)  return (n / 1000).toFixed(1) + 'K';
-  if (n >= 1000)   return (n / 1000).toFixed(1) + 'K';
+  if (n >= 500000) return '500 K';
+  if (n >= 100000) return Math.round(n / 1000) + ' K';
+  if (n >= 10000)  return (n / 1000).toFixed(1) + ' K';
+  if (n >= 1000)   return (n / 1000).toFixed(1) + ' K';
   return n.toLocaleString();
 }
 
@@ -592,12 +595,17 @@ function updatePlayerUI(player, data) {
   const wm = ensureWatermark(player);
   if (wm) gsap.to(wm, { height: `${data.progress * 85}%`, duration: 0.4, ease: 'power2.out' });
 
+  // Mover el panel de comunidad junto con la altura del avance (define el punto de spawn de iconos)
+  const infoEl = document.getElementById(`player-info-${player}`);
+  if (infoEl) {
+    gsap.to(infoEl, { bottom: `${data.progress * 88}%`, duration: 0.4, ease: 'power2.out' });
+  }
 
-  // Contador con tamaño dinámico
+  // Contador con tamaño dinámico en cqw
   DOM.counter[player].textContent = display;
   const len = display.length;
   DOM.counter[player].style.fontSize =
-    len >= 5 ? '8vmin' : len >= 4 ? '9.5vmin' : '11vmin';
+    len >= 6 ? '7.5cqw' : len >= 5 ? '9cqw' : '11cqw';
 
   gsap.fromTo(DOM.counter[player],
     { scale: 1.3 },
@@ -861,6 +869,10 @@ function resetUI() {
     DOM.fill[p].querySelectorAll('.float-person').forEach(el => el.remove());
     const wm = DOM.fill[p].querySelector('.bar-watermark');
     if (wm) gsap.to(wm, { height: '0%', duration: 0.5, ease: 'power2.inOut' });
+
+    // Resetear posición de la tarjeta de comunidad dinámica
+    const infoEl = document.getElementById(`player-info-${p}`);
+    if (infoEl) gsap.to(infoEl, { bottom: '0%', duration: 0.5, ease: 'power2.inOut' });
   });
 
   // Limpiar capas de celebración

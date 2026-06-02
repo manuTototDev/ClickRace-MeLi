@@ -9,7 +9,7 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260602b" />
+  <link rel="stylesheet" href="/css/style.css?v=20260602o" />
 </head>
 <body>
 
@@ -113,27 +113,35 @@
 
           <!-- Barra J1 -->
           <div class="bar-column bar-column--1" id="totem-1">
-            <div class="bar-level-markers">
-              <div class="bar-marker" style="bottom: 100%">
-                <span class="bar-dot bar-dot--top"></span>
-                <span class="bar-marker-label">COMPRADORES</span>
+            <div class="track-wrapper">
+              <div class="bar-level-markers">
+                <div class="bar-marker" style="bottom: 100%">
+                  <span class="bar-dot bar-dot--top"></span>
+                  <span class="bar-marker-label">COMPRADORES</span>
+                </div>
+                <div class="bar-marker" style="bottom: 55%">
+                  <span class="bar-dot"></span>
+                  <span class="bar-marker-label">LEALES</span>
+                </div>
+                <div class="bar-marker" style="bottom: 25%">
+                  <span class="bar-dot"></span>
+                  <span class="bar-marker-label">AUDIENCIA</span>
+                </div>
+                <div class="bar-marker bar-marker--start" style="bottom: 0%">
+                  <span class="bar-dot"></span>
+                </div>
               </div>
-              <div class="bar-marker" style="bottom: 55%">
-                <span class="bar-dot"></span>
-                <span class="bar-marker-label">LEALES</span>
-              </div>
-              <div class="bar-marker" style="bottom: 25%">
-                <span class="bar-dot"></span>
-                <span class="bar-marker-label">AUDIENCIA</span>
-              </div>
-              <div class="bar-marker bar-marker--start" style="bottom: 0%">
-                <span class="bar-dot"></span>
-              </div>
-            </div>
 
-            <div class="bar-track">
-              <div class="bar-fill" id="fill-1">
-                <div class="particle-container" id="particles-1"></div>
+              <div class="bar-track">
+                <div class="bar-fill" id="fill-1">
+                  <div class="particle-container" id="particles-1"></div>
+                </div>
+              </div>
+
+              <!-- Tu comunidad dynamic label for J1 -->
+              <div class="player-info player-info--dynamic player-info--1" id="player-info-1">
+                <div class="player-name" data-player="1">Tu comunidad:</div>
+                <div class="click-counter" id="counter-1">0</div>
               </div>
             </div>
 
@@ -142,29 +150,19 @@
             </div>
           </div>
 
-          <!-- Info solo J1 -->
+          <!-- Info solo J1 (ahora vacío, la info sube con la barra) -->
           <div class="center-zone center-zone--solo">
-            <div class="player-info player-info--1">
-              <div class="player-name" data-player="1">JUGADOR 1</div>
-              <div class="click-counter" id="counter-1">0</div>
-              <div class="level-badge" id="badge-1">
-                <span id="badge-text-1">Lv.1 · Sin audiencia</span>
-              </div>
-            </div>
           </div>
 
         </div>
 
-        <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
-
         <div class="button-zone button-zone--solo">
-          <button id="btn-player-1" class="big-button" aria-label="Botón Jugador 1" data-player="1">
-            <span class="button-label">
-              SEGUIR
-              <span class="button-label-sub">JUGADOR 1</span>
-            </span>
+          <button type="button" class="andes-button ui-ms-profile__follow-button--mobile ui-ms-profile__follow-button--mobile--new andes-button--small andes-button--quiet big-button" id="btn-player-1" data-player="1" data-andes-button="true" data-andes-button-hierarchy="quiet" data-andes-button-size="small">
+            <span class="andes-button__content button-label" data-andes-button-content="true">Seguir</span>
           </button>
         </div>
+        <!-- ── Watermark bottom ── -->
+        <div class="game-watermark" aria-hidden="true">¡AUMENTA<br>SEGUIDORES!</div>
 
       </div>
     </main>
@@ -229,6 +227,7 @@
     <!-- ── OVERLAY (Countdown / Winner) ── -->
     <div class="overlay overlay-shared hidden">
       <div class="overlay-content overlay-countdown hidden">
+        <img src="/assets/logo.png" class="overlay-logo" alt="Mercado Ads" />
         <p class="overlay-label">¡A AUMENTAR SEGUIDORES!</p>
         <div class="countdown-number">3</div>
       </div>
@@ -254,40 +253,41 @@
       <div class="totem-screen">
         <div class="game-area game-area--solo">
 
-          <!-- Info solo J2 (izquierda en T2) -->
+          <!-- Info solo J2 (ahora vacío, la info sube con la barra) -->
           <div class="center-zone center-zone--solo">
-            <div class="player-info player-info--1">
-              <div class="player-name" data-player="2">JUGADOR 2</div>
-              <div class="click-counter" id="counter-2">0</div>
-              <div class="level-badge" id="badge-2">
-                <span id="badge-text-2">Lv.1 · Sin audiencia</span>
-              </div>
-            </div>
           </div>
 
           <!-- Barra J2 (derecha en T2) -->
           <div class="bar-column bar-column--2" id="totem-2">
-            <div class="bar-level-markers bar-level-markers--right">
-              <div class="bar-marker bar-marker--right" style="bottom: 100%">
-                <span class="bar-marker-label">COMPRADORES</span>
-                <span class="bar-dot bar-dot--top bar-dot--p2"></span>
+            <div class="track-wrapper">
+              <div class="bar-level-markers bar-level-markers--right">
+                <div class="bar-marker bar-marker--right" style="bottom: 100%">
+                  <span class="bar-marker-label">COMPRADORES</span>
+                  <span class="bar-dot bar-dot--top bar-dot--p2"></span>
+                </div>
+                <div class="bar-marker bar-marker--right" style="bottom: 55%">
+                  <span class="bar-marker-label">LEALES</span>
+                  <span class="bar-dot"></span>
+                </div>
+                <div class="bar-marker bar-marker--right" style="bottom: 25%">
+                  <span class="bar-marker-label">AUDIENCIA</span>
+                  <span class="bar-dot"></span>
+                </div>
+                <div class="bar-marker bar-marker--right bar-marker--start" style="bottom: 0%">
+                  <span class="bar-dot"></span>
+                </div>
               </div>
-              <div class="bar-marker bar-marker--right" style="bottom: 55%">
-                <span class="bar-marker-label">LEALES</span>
-                <span class="bar-dot"></span>
-              </div>
-              <div class="bar-marker bar-marker--right" style="bottom: 25%">
-                <span class="bar-marker-label">AUDIENCIA</span>
-                <span class="bar-dot"></span>
-              </div>
-              <div class="bar-marker bar-marker--right bar-marker--start" style="bottom: 0%">
-                <span class="bar-dot"></span>
-              </div>
-            </div>
 
-            <div class="bar-track">
-              <div class="bar-fill bar-fill--2" id="fill-2">
-                <div class="particle-container" id="particles-2"></div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill--2" id="fill-2">
+                  <div class="particle-container" id="particles-2"></div>
+                </div>
+              </div>
+
+              <!-- Tu comunidad dynamic label for J2 -->
+              <div class="player-info player-info--dynamic player-info--2" id="player-info-2">
+                <div class="player-name" data-player="2">Tu comunidad:</div>
+                <div class="click-counter" id="counter-2">0</div>
               </div>
             </div>
 
@@ -301,13 +301,12 @@
         <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
 
         <div class="button-zone button-zone--solo">
-          <button id="btn-player-2" class="big-button big-button--2" aria-label="Botón Jugador 2" data-player="2">
-            <span class="button-label">
-              SEGUIR
-              <span class="button-label-sub">JUGADOR 2</span>
-            </span>
+          <button type="button" class="andes-button ui-ms-profile__follow-button--mobile ui-ms-profile__follow-button--mobile--new andes-button--small andes-button--quiet big-button big-button--2" id="btn-player-2" data-player="2" data-andes-button="true" data-andes-button-hierarchy="quiet" data-andes-button-size="small">
+            <span class="andes-button__content button-label" data-andes-button-content="true">Seguir</span>
           </button>
         </div>
+        <!-- ── Watermark bottom ── -->
+        <div class="game-watermark" aria-hidden="true">¡AUMENTA<br>SEGUIDORES!</div>
 
       </div>
     </main>
@@ -316,7 +315,7 @@
 
 </div>
 
-<script src="/js/game.js?v=20260602d"></script>
+<script src="/js/game.js?v=20260602p"></script>
 <script>
   // ── Splash: play -> iniciar juego | engrane -> modal de mercado (sincronizado en ambos tótems) ──
   (function () {
