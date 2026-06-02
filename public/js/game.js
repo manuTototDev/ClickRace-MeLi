@@ -11,126 +11,126 @@ const MARKETS = {
     header:    'AUMENTA TUS SEGUIDORES',
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'SEGUIR',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
-    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡GANA\nSEGUIDORES!',
-    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡CONSTRUYE\nTU COMUNIDAD!',
+    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
     levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   'THE CLICK RACE',
-    ctaBarLabel:    '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    splashBanner:   '',
+    ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
   },
   BR: {
     flag: '🇧🇷', name: 'Brasil',
     header:    'AUMENTE SEUS SEGUIDORES',
     subtitle:  'QUEM CHEGA PRIMEIRO?',
     countdown: 'A AUMENTAR SEGUIDORES!',
-    cta:       'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',
+    cta:       'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
     btnLabel:  'SEGUIR',
     winner:    'TOP OF RETAIL MEDIA!',
     playAgain: 'MAIS UMA RODADA!',
-    markers:   ['AUDIÊNCIA', 'FIÉIS', 'COMPRADORES'],
-    levels:    ['Sem audiência', 'Interesse', 'Lealdade', 'Comprador!'],
-    splashHeadline: 'GANHE\nSEGUIDORES!',
-    splashSub:      'MAIS SEGUIDORES, MAIS VENDAS',
+    markers:   ['COMUNIDADE', 'FIÉIS', 'COMPRADORES'],
+    levels:    ['Sem comunidade', 'Interesse', 'Lealdade', 'Comprador!'],
+    splashHeadline: 'CONSTRUA\nSUA COMUNIDADE!',
+    splashSub:      'Comunidade → Fiéis → Compradores → + Vendas',
     playerLabel:    'JOGADOR',
     playerShort:    'J',
     goLabel:        'JÁ!',
     levelNames:     ['Lv.1 · Início', 'Lv.2 · Comunidade', 'Lv.3 · Fiéis', 'Lv.4 · TOPO!'],
     modalTitle:     'SELECIONAR MERCADO',
-    splashBanner:   'THE CLICK RACE',
-    ctaBarLabel:    'CLIQUE E CONSTRUA SUA AUDIÊNCIA!',
+    splashBanner:   '',
+    ctaBarLabel:    'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
   },
   AR: {
     flag: '🇦🇷', name: 'Argentina',
     header:    'AUMENTÁ TUS SEGUIDORES',
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     btnLabel:  'SEGUIR',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
-    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡GANÁ\nSEGUIDORES!',
-    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡CONSTRUÍ\nTU COMUNIDAD!',
+    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
     levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   'THE CLICK RACE',
-    ctaBarLabel:    '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    splashBanner:   '',
+    ctaBarLabel:    '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
   },
   CL: {
     flag: '🇨🇱', name: 'Chile',
     header:    'AUMENTA TUS SEGUIDORES',
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'SEGUIR',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
-    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡GANA\nSEGUIDORES!',
-    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡CONSTRUYE\nTU COMUNIDAD!',
+    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
     levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   'THE CLICK RACE',
-    ctaBarLabel:    '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    splashBanner:   '',
+    ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
   },
   CO: {
     flag: '🇨🇴', name: 'Colombia',
     header:    'AUMENTA TUS SEGUIDORES',
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'SEGUIR',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
-    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡GANA\nSEGUIDORES!',
-    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡CONSTRUYE\nTU COMUNIDAD!',
+    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
     levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   'THE CLICK RACE',
-    ctaBarLabel:    '¡CLICKEA Y CONSTRUYE TU AUDIENCIA!',
+    splashBanner:   '',
+    ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
   },
   UY: {
     flag: '🇺🇾', name: 'Uruguay',
     header:    'AUMENTÁ TUS SEGUIDORES',
     subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     btnLabel:  'SEGUIR',
     winner:    '¡TOP OF RETAIL MEDIA!',
     playAgain: '¡OTRA RONDA!',
-    markers:   ['AUDIENCIA', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin audiencia', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡GANÁ\nSEGUIDORES!',
-    splashSub:      'MÁS SEGUIDORES, MÁS VENTAS',
+    markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
+    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
+    splashHeadline: '¡CONSTRUÍ\nTU COMUNIDAD!',
+    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
     levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   'THE CLICK RACE',
-    ctaBarLabel:    '¡CLICKEÁ Y CONSTRUÍ TU AUDIENCIA!',
+    splashBanner:   '',
+    ctaBarLabel:    '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
   },
 };
 
@@ -213,7 +213,7 @@ function applyMarket(code) {
   setAllText('.market-modal-title', m.modalTitle ?? 'SELECCIONAR MERCADO');
 
   // ── Splash banner ──
-  setAllText('.splash-banner', m.splashBanner ?? 'THE CLICK RACE');
+  setAllText('.splash-banner', m.splashBanner ?? '');
 
   // ── Botones del market: marcar activo ──
   document.querySelectorAll('.market-btn').forEach(btn => {
@@ -665,7 +665,7 @@ function spawnParticles(player) {
 // ─── Celebration: personas suben desde abajo, más ícones por hito ─────
 // levelIdx: 1 = audiencia, 2 = leales, 3 = compradores
 const MILESTONE_FILL_PCT  = { 1: 30, 2: 65, 3: 100 };
-const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 140 };  // escala con el hito
+const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 280 };  // escala con el hito
 const CELEBRATION_COLOR   = '#111111';                  // todos negros
 
 function ensureCelebrationLayer(player) {
@@ -727,7 +727,7 @@ function spawnRisingIcons(layer, count, fillPct) {
 }
 
 function spawnFountain(layer, count) {
-  // Cada ícono nace en el borde superior, sube fuera de pantalla y cae como cascada
+  // Cada ícono aparece arriba (fuera de pantalla) y cae directamente hacia abajo
   for (let i = 0; i < count; i++) {
     const icon = document.createElement('div');
     icon.className = 'celebration-icon';
@@ -735,31 +735,28 @@ function spawnFountain(layer, count) {
 
     const size     = 4 + Math.random() * 9;          // 4–13 vmin
     const xPct     = 2 + Math.random() * 90;          // casi toda la anchura
-    const upShot   = 15 + Math.random() * 45;         // cuánto sube: 15–60 vh
-    const fallDist = 80 + Math.random() * 60;         // cuánto cae: 80–140 vh
-    const rotStart = (Math.random() - 0.5) * 40;
-    const rotEnd   = rotStart + (Math.random() - 0.5) * 140;
-    const delay    = Math.random() * 400;             // ráfaga de 0.4 s
+    const startY   = -(10 + Math.random() * 20);      // arranca entre -10 y -30 vh (fuera de pantalla)
+    const fallDist = 110 + Math.random() * 40;        // cae 110–150 vh (sale por abajo)
+    const rotStart = (Math.random() - 0.5) * 60;
+    const rotEnd   = rotStart + (Math.random() - 0.5) * 180;
+    const delay    = Math.random() * 800;             // ráfaga de 0.8 s
 
-    // Posición inicial: justo en el tope del layer
     icon.style.left   = `${xPct}%`;
     icon.style.top    = '0%';
     icon.style.bottom = 'auto';
     icon.style.width  = `${size}vmin`;
     layer.appendChild(icon);
 
-    gsap.timeline({ delay: delay / 1000 })
-      // 1) disparo hacia arriba (sale de pantalla)
-      .fromTo(icon,
-        { y: 0,            opacity: 0, scale: 0.5, rotation: rotStart },
-        { y: `-${upShot}vh`, opacity: 1, scale: 1,   rotation: rotStart,
-          duration: 0.25, ease: 'power2.out' })
-      // 2) gravedad: cae por toda la pantalla y desaparece abajo
-      .to(icon, {
+    gsap.fromTo(icon,
+      { y: `${startY}vh`, opacity: 1, scale: 0.8 + Math.random() * 0.4, rotation: rotStart },
+      {
         y: `${fallDist}vh`, opacity: 0, rotation: rotEnd,
-        duration: 0.55, ease: 'power2.in',
+        duration: 1.0 + Math.random() * 0.8,   // 1.0–1.8 s de caída
+        ease: 'power1.in',
+        delay: delay / 1000,
         onComplete: () => icon.remove(),
-      });
+      }
+    );
   }
 }
 
@@ -843,7 +840,7 @@ function finishGame(winner, players) {
         onComplete: () => startAutoReset()
       }
     );
-  }, 1400);
+  }, 2400);
 }
 
 // ─── Reset UI ─────────────────────────────────────────────────
