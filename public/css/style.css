@@ -1,3 +1,33 @@
+/* ── Proxima Nova @font-face ────────────────────────────────── */
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/Proxima Nova/Proxima Nova Light/Proxima Nova Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/Proxima Nova/Proxima Nova Regular/Proxima Nova Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/Proxima Nova/Proxima Nova Semibold/Proxima Nova Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('/Proxima Nova/Proxima Nova Extrabold/Proxima Nova Extrabold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    ClickRace - WIREFRAME MODE
    Layout: 9:16 VERTICAL NATIVO
@@ -31,7 +61,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; }
 
 body {
   background: #ffffff;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Proxima Nova', 'Inter', system-ui, sans-serif;
   color: var(--text);
 }
 
@@ -55,6 +85,8 @@ body {
   z-index: 1;
   height: 100vh;
   width: min(50vw, calc(100vh * 9 / 16));
+  container-type: inline-size;
+  container-name: shell;
 }
 
 /* En aspect ratios extremos donde dos 9:16 no caben sin solaparse,
@@ -900,20 +932,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8vmin;
-  /* Gradiente amarillo de marca con 50% de opacidad — deja ver el juego */
+  justify-content: flex-start;
+  gap: 14cqw;
+  /* Fondo opaco: degradado amarillo suave (crema arriba → amarillo pálido abajo) */
   background: linear-gradient(
-    160deg,
-    rgba(255, 248, 190, 0.50) 0%,
-    rgba(255, 230, 0,   0.50) 55%,
-    rgba(255, 210, 0,   0.50) 100%
+    180deg,
+    #FBF5E1 0%,
+    #F7EDB6 50%,
+    #EFDD78 100%
   );
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
   overflow: hidden;
   animation: splash-in 0.4s var(--ease-out) both;
-  padding: 6vmin 4vmin;
+  padding: 20cqw 6cqw 8cqw;
 }
 .splash--out {
   animation: splash-out 0.35s var(--ease-out) forwards !important;
@@ -935,7 +965,7 @@ body {
   justify-content: center;
 }
 .splash-logo img {
-  height: clamp(28px, 7vmin, 56px);
+  height: clamp(24px, 9.7cqw, 220px);
   width: auto;
   display: block;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.12));
@@ -947,12 +977,12 @@ body {
 /* ── Engrane — esquina inferior derecha ─────────────────────── */
 .splash-gear {
   position: absolute;
-  bottom: 3vmin;
-  right: 3vmin;
+  bottom: 4cqw;
+  right: 4cqw;
   z-index: 3;
   background: none;
   border: none;
-  padding: 1vmin;
+  padding: 1.5cqw;
   cursor: pointer;
   opacity: 0.55;
   transition: opacity 0.15s, transform 0.3s;
@@ -968,8 +998,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6vmin;
-  width: 88%;
+  gap: 13cqw;
+  width: 67%;
 }
 
 /* ── Banner (oculto) ─────────────────────────────────────────── */
@@ -980,12 +1010,12 @@ body {
   width: 100%;
   background: #FFE600;
   border: none;
-  border-radius: clamp(16px, 2.5vmin, 20px);
-  padding: clamp(28px, 6vmin, 48px) clamp(18px, 4vmin, 32px);
+  border-radius: clamp(12px, 2cqw, 28px);
+  padding: clamp(20px, 6cqw, 110px) clamp(14px, 4.2cqw, 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(6px, 1vmin, 8px);
+  gap: clamp(4px, 1cqw, 14px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   overflow: hidden;
   min-width: 0;
@@ -996,11 +1026,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2vmin;
+  gap: 1.5cqw;
   text-align: center;
 }
 .splash-headline-main {
-  font-size: clamp(18px, 7vmin, 48px);
+  font-size: clamp(16px, 6.8cqw, 110px);
   font-weight: 900;
   color: #1A1F6C;
   letter-spacing: -0.01em;
@@ -1012,7 +1042,7 @@ body {
   overflow: hidden;
 }
 .splash-headline-sub {
-  font-size: clamp(9px, 2.2vmin, 16px);
+  font-size: clamp(9px, 3.6cqw, 52px);
   font-weight: 700;
   color: #5a6080;
   letter-spacing: 0.10em;
@@ -1023,8 +1053,8 @@ body {
 
 /* ── Botón play — imagen PNG ──────────────────────────────────── */
 .splash-play {
-  width: clamp(56px, 17vmin, 110px);
-  height: clamp(56px, 17vmin, 110px);
+  width: clamp(48px, 27cqw, 360px);
+  height: clamp(48px, 27cqw, 360px);
   border-radius: 50%;
   background: transparent;
   border: none;

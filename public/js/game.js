@@ -17,8 +17,8 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡CONSTRUYE\nTU COMUNIDAD!',
-    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
+    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
+    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
@@ -38,8 +38,8 @@ const MARKETS = {
     playAgain: 'MAIS UMA RODADA!',
     markers:   ['COMUNIDADE', 'FIÉIS', 'COMPRADORES'],
     levels:    ['Sem comunidade', 'Interesse', 'Lealdade', 'Comprador!'],
-    splashHeadline: 'CONSTRUA\nSUA COMUNIDADE!',
-    splashSub:      'Comunidade → Fiéis → Compradores → + Vendas',
+    splashHeadline: 'AUMENTE\nSEGUIDORES!',
+    splashSub:      'CRESÇA SUA COMUNIDADE\nE GERE MAIS VENDAS',
     playerLabel:    'JOGADOR',
     playerShort:    'J',
     goLabel:        'JÁ!',
@@ -59,8 +59,8 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡CONSTRUÍ\nTU COMUNIDAD!',
-    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
+    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
+    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
@@ -80,8 +80,8 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡CONSTRUYE\nTU COMUNIDAD!',
-    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
+    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
+    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
@@ -101,8 +101,8 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡CONSTRUYE\nTU COMUNIDAD!',
-    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
+    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
+    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
@@ -122,8 +122,8 @@ const MARKETS = {
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
-    splashHeadline: '¡CONSTRUÍ\nTU COMUNIDAD!',
-    splashSub:      'Comunidad → Leales → Compradores → + Ventas',
+    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
+    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
     playerLabel:    'JUGADOR',
     playerShort:    'J',
     goLabel:        '¡YA!',
@@ -182,7 +182,7 @@ function applyMarket(code) {
 
   // ── Splash headline y subtítulo (uno por tótem) ──
   setAllHTML('.splash-headline-main', m.splashHeadline.replace('\n', '<br>'));
-  setAllText('.splash-headline-sub', m.splashSub);
+  setAllHTML('.splash-headline-sub', m.splashSub.replace('\n', '<br>'));
 
   // ── Nombres de jugadores (cada tótem tiene 1, con data-player) ──
   document.querySelectorAll('.player-name').forEach(el => {
@@ -878,4 +878,4 @@ function resetUI() {
   const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';
   if (DOM.badgeText[1]) { DOM.badgeText[1].textContent = resetLevel; delete DOM.badgeText[1].dataset.active; }
   if (DOM.badgeText[2]) { DOM.badgeText[2].textContent = resetLevel; delete DOM.badgeText[2].dataset.active; }
-}
+}
