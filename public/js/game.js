@@ -286,13 +286,15 @@ function hideAll(nodeList)    { nodeList.forEach(el => el.classList.add('hidden'
 function setAllText(nodeList, txt) { nodeList.forEach(el => el.textContent = txt); }
 
 // ─── Person Icons — sistema de partículas flotantes ───────────────────
-const PLAYER_COLORS = { 1: '#FFE600', 2: '#00D4FF' };
+const PLAYER_COLORS = { 1: '#A87EE8', 2: '#7BACD4' };
 
 function createPersonSVG(color) {
   return [
-    '<svg viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">',
-    `  <circle class="pi-head" cx="10" cy="7" r="5.5" fill="${color}"/>`,
-    `  <path   class="pi-body" d="M1 27c0-5 4-9 9-9s9 4 9 9z" fill="${color}"/>`,
+    '<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">',
+    `  <circle cx="16" cy="16" r="16" fill="${color}"/>`,
+    `  <circle cx="16" cy="16" r="13.2" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1"/>`,
+    `  <circle cx="16" cy="12.5" r="4.4" fill="none" stroke="white" stroke-width="1.7"/>`,
+    `  <path d="M7.5 25.5c0-5.8 3.8-9 8.5-9s8.5 3.2 8.5 9" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round"/>`,
     '</svg>',
   ].join('');
 }
@@ -666,7 +668,7 @@ function spawnParticles(player) {
 // levelIdx: 1 = audiencia, 2 = leales, 3 = compradores
 const MILESTONE_FILL_PCT  = { 1: 30, 2: 65, 3: 100 };
 const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 280 };  // escala con el hito
-const CELEBRATION_COLOR   = '#111111';                  // todos negros
+const CELEBRATION_COLOR   = '#A87EE8';                  // morado, igual que P1
 
 function ensureCelebrationLayer(player) {
   const shell = DOM.totem[player]?.closest('.viewport-shell');
