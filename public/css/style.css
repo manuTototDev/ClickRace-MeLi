@@ -460,14 +460,6 @@ body {
   display: flex;
   align-items: center;
   z-index: 5;
-}
-
-.bar-column--1 .bar-marker:not(.bar-marker--start) {
-  left: calc(100% + 8px);
-  transform: translateY(50%);
-}
-
-.bar-column--2 .bar-marker:not(.bar-marker--start) {
   left: calc(0% - 8px);
   transform: translate(-100%, 50%);
 }
