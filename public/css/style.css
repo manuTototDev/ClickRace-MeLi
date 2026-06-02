@@ -460,6 +460,14 @@ body {
   display: flex;
   align-items: center;
   z-index: 5;
+}
+
+.bar-column--1 .bar-marker:not(.bar-marker--start) {
+  left: calc(100% + 8px);
+  transform: translateY(50%);
+}
+
+.bar-column--2 .bar-marker:not(.bar-marker--start) {
   left: calc(0% - 8px);
   transform: translate(-100%, 50%);
 }
@@ -681,6 +689,19 @@ body {
   width: auto;
   overflow: visible;
   margin: 0;
+}
+
+/* J1: dynamic card on the left side of the progress bar */
+.player-info--1.player-info--dynamic {
+  left: auto !important;
+  right: calc(100% + 2cqw) !important;
+  align-items: flex-end !important;
+}
+.player-info--1.player-info--dynamic .player-name {
+  text-align: right !important;
+}
+.player-info--1.player-info--dynamic .click-counter {
+  text-align: right !important;
 }
 
 .player-name {
