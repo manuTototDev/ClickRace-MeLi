@@ -452,30 +452,58 @@ body {
   pointer-events: none;
 }
 
-.bar-marker {
+.bar-marker:not(.bar-marker--start) {
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, 50%);
+  width: 110px;
+  height: 26px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 0.5vmin;
   z-index: 5;
 }
 
+.bar-column--1 .bar-marker:not(.bar-marker--start) {
+  left: calc(100% + 8px);
+  transform: translateY(50%);
+}
+
+.bar-column--2 .bar-marker:not(.bar-marker--start) {
+  left: calc(0% - 8px);
+  transform: translate(-100%, 50%);
+}
+
+.bar-marker--start {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  z-index: 5;
+}
+
+.bar-marker-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+}
+
 .bar-marker-label {
-  font-size: 1.1vmin;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
+  position: relative;
+  z-index: 2;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: clamp(8px, 2.3cqw, 10px);
+  font-weight: 800;
+  color: #1A1F6C !important;
   text-transform: uppercase;
+  letter-spacing: 0.01em;
+  width: 100%;
+  text-align: center;
+  padding-left: 21%;
+  box-sizing: border-box;
   line-height: 1;
   white-space: nowrap;
 }
-
-.bar-column--1 .bar-marker { flex-direction: row; }
-.bar-column--1 .bar-marker-label { order: 2; }
-.bar-column--2 .bar-marker { flex-direction: row-reverse; }
-.bar-column--2 .bar-marker-label { order: 2; }
 
 /* ── Dots de nivel ───────────────────────────────────────────── */
 .bar-dot {
