@@ -497,7 +497,7 @@ body {
 .track-wrapper {
   position: relative;
   width: 121.5px;
-  height: 105.7cqw;
+  height: calc(85cqw + 10px); /* Altura de la barra de avance bajada 10px */
   margin-bottom: 1vmin;
 }
 
@@ -506,7 +506,7 @@ body {
   height: 100%;
   background: var(--surface);
   border-radius: 20px;
-  border: 1px solid var(--border);
+  border: none;
   overflow: hidden;
   position: relative;
 }
@@ -1187,7 +1187,8 @@ body {
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  flex: 1; /* Estirar para empujar el botón al fondo */
 }
 
 .game-area--solo .bar-column {
@@ -1196,8 +1197,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2vmin 0 1.5vmin;
+  justify-content: flex-start;
+  padding: 0; /* Sin padding superior/inferior para espaciado exacto */
 }
 
 .center-zone--solo {
@@ -1244,7 +1245,7 @@ body {
 .button-zone--solo {
   height: auto;
   padding: 0;
-  margin-bottom: 35cqw;
+  margin-bottom: 35cqw; /* Regresa a su posición original al pie */
 }
 .button-zone--solo .big-button {
   border-left: none;
@@ -1274,4 +1275,53 @@ body {
   height: auto;
   display: block;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.28));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GAMEPLAY HEADER BANNER (CINTILLO)
+   ══════════════════════════════════════════════════════════════ */
+.game-header-banner {
+  width: 100%;
+  max-width: 1080px;
+  aspect-ratio: 1080 / 120;
+  margin-top: 5%; /* separado del top 5% */
+  background-image: url('/assets/cintilloJugador.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.game-header-text {
+  font-size: clamp(14px, 3.7cqw, 40px); /* 40px bold responsive */
+  font-weight: 800; /* Bold/Extrabold */
+  color: #1A1F6C;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.game-header-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* 20px de distancia con el cintillo */
+  margin-bottom: 20px; /* 20px de distancia con la barra de progreso */
+  width: 100%;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.game-header-logo img {
+  height: clamp(24px, 9.7cqw, 220px); /* Mismo tamaño que en la pantalla inicial */
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.12));
 }
