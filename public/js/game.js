@@ -14,7 +14,7 @@ const MARKETS = {
     cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
-    winner:    '¡TOP OF RETAIL MEDIA!',
+    winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
@@ -36,7 +36,7 @@ const MARKETS = {
     cta:       'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
     btnLabel:  'Seguir',
     communityLabel: 'Sua comunidade:',
-    winner:    'TOP OF RETAIL MEDIA!',
+    winner:    'A MAIOR\nCOMUNIDADE!',
     playAgain: 'MAIS UMA RODADA!',
     markers:   ['COMUNIDADE', 'FIÉIS', 'COMPRADORES'],
     levels:    ['Sem comunidade', 'Interesse', 'Lealdade', 'Comprador!'],
@@ -58,7 +58,7 @@ const MARKETS = {
     cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
-    winner:    '¡TOP OF RETAIL MEDIA!',
+    winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
@@ -80,7 +80,7 @@ const MARKETS = {
     cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
-    winner:    '¡TOP OF RETAIL MEDIA!',
+    winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
@@ -102,7 +102,7 @@ const MARKETS = {
     cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
-    winner:    '¡TOP OF RETAIL MEDIA!',
+    winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
@@ -124,7 +124,7 @@ const MARKETS = {
     cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
-    winner:    '¡TOP OF RETAIL MEDIA!',
+    winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
     levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
@@ -271,6 +271,7 @@ const DOM = {
   overlayWinners:    $$('.overlay-winner'),
   countdownNumbers:  $$('.countdown-number'),
   winnerNames:       $$('.winner-name'),
+  winnerSlogans:     $$('.winner-slogan'),
 
   btnStart:     $('btn-start'),
   btnReset:     $('btn-reset'),
@@ -851,6 +852,9 @@ function finishGame(winner, players) {
       el.textContent = winnerLabel;
       el.dataset.winner = winner;
     });
+    DOM.winnerSlogans.forEach(el => {
+      el.innerHTML = (mWinner?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
+    });
 
     gsap.fromTo(DOM.overlayWinners,
       { y: 30, opacity: 0 },
@@ -965,6 +969,9 @@ function handleDebugRoute() {
     DOM.winnerNames.forEach(el => {
       el.textContent = winnerLabel;
       el.dataset.winner = winner;
+    });
+    DOM.winnerSlogans.forEach(el => {
+      el.innerHTML = (mWinner?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
     });
 
     const p1 = getMockPlayer(winner === 1 ? GAME_CONFIG.CLICKS_TO_WIN : 15);

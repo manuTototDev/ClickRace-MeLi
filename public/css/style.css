@@ -852,6 +852,15 @@ body {
   gap: 8cqw;
 }
 
+.winner-slogan {
+  color: #1A1F6C !important;
+}
+
+.splash-card .winner-name {
+  font-size: clamp(16px, 6.8cqw, 110px) !important;
+  color: #1A1F6C !important;
+}
+
 .overlay-content {
   text-align: center;
   display: flex;
