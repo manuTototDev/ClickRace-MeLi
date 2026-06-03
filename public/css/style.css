@@ -1176,7 +1176,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 14cqw;
+  gap: 0;
   /* Fondo semitransparente con blur */
   background: linear-gradient(
     180deg,
@@ -1188,7 +1188,7 @@ body {
   -webkit-backdrop-filter: blur(15px);
   overflow: hidden;
   animation: splash-in 0.4s var(--ease-out) both;
-  padding: 20cqw 6cqw 8cqw;
+  padding: 0 6cqw 8cqw;
 }
 .splash--out {
   animation: splash-out 0.35s var(--ease-out) forwards !important;
@@ -1208,6 +1208,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 20px;
 }
 .splash-logo img {
   height: clamp(24px, 9.7cqw, 220px);
@@ -1245,6 +1246,7 @@ body {
   align-items: center;
   gap: 13cqw;
   width: 67%;
+  margin-top: 10cqw;
 }
 
 /* ── Banner (oculto) ─────────────────────────────────────────── */
