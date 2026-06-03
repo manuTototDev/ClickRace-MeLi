@@ -198,9 +198,6 @@
     }
 
     td:first-child {
-      font-family: monospace;
-      font-weight: 700;
-      color: var(--purple);
       background: #FCFDFF;
       border-right: 1.5px solid #F1F5F9;
       position: sticky;
@@ -208,7 +205,7 @@
       z-index: 9;
       font-size: 13px;
       white-space: nowrap;
-      min-width: 160px;
+      min-width: 180px;
     }
 
     tr:hover td:first-child {
@@ -445,13 +442,36 @@
 
       // Limpiar y construir filas
       tableBody.innerHTML = '';
+      const KEY_LABELS = {
+        countdown: 'Título de Cuenta Regresiva',
+        btnLabel: 'Texto del Botón "Seguir"',
+        communityLabel: 'Etiqueta "Tu comunidad"',
+        winner: 'Eslogan de Ganador',
+        playAgain: 'Texto del Botón "Otra Ronda"',
+        markers: 'Marcadores de Progreso / Niveles',
+        splashHeadline: 'Título de Portada (Splash)',
+        splashSub: 'Subtítulo de Portada (Splash)',
+        goLabel: 'Texto de Inicio (¡YA!)',
+        modalTitle: 'Título del Selector de Mercado',
+        headerBanner: 'Cintillo Superior (Banner)',
+        watermark: 'Marca de Agua (Fondo)',
+        autoResetLabel: 'Etiqueta de Reinicio Automático',
+        difficultyTitle: 'Título de Dificultad',
+        difficultyEasy: 'Dificultad: Fácil',
+        difficultyMedium: 'Dificultad: Medio',
+        difficultyHard: 'Dificultad: Difícil',
+        clicksLabel: 'Palabra "clics"',
+        marketNames: 'Nombres de Mercados (Países)'
+      };
+
       allKeys.forEach(key => {
         const row = document.createElement('tr');
         row.setAttribute('data-key', key.toLowerCase());
         
         // Clave
         const keyTd = document.createElement('td');
-        keyTd.textContent = key;
+        const label = KEY_LABELS[key] || key;
+        keyTd.innerHTML = `<span style="font-weight: 700; color: var(--navy); display: block; margin-bottom: 2px;">${label}</span><code style="font-family: monospace; font-size: 11px; color: var(--text-light); font-weight: 500;">${key}</code>`;
         row.appendChild(keyTd);
 
         // Cada columna de país
