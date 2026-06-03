@@ -1711,3 +1711,259 @@ body {
   color: #4A35B0 !important;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   MULTIPLAYER MATCHMAKING & SPECTATOR LOBBY STYLES
+   ══════════════════════════════════════════════════════════════ */
+.lobby-multiplayer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  margin: 4vh auto 0;
+  z-index: 50;
+  position: relative;
+}
+
+.lobby-view {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vh;
+  animation: view-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lobby-view.hidden {
+  display: none !important;
+}
+
+@keyframes view-fade-in {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Name Input styling ── */
+.name-input-container {
+  width: 100%;
+  position: relative;
+}
+
+#player-name-input {
+  width: 100%;
+  height: 54px;
+  background: #FFFFFF;
+  border: 2px solid rgba(26, 31, 108, 0.15);
+  border-radius: 16px;
+  padding: 0 20px;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1F6C;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(26, 31, 108, 0.05);
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+#player-name-input:focus {
+  border-color: #4A35B0;
+  box-shadow: 0 0 0 4px rgba(74, 53, 176, 0.15), 0 4px 16px rgba(74, 53, 176, 0.1);
+}
+
+#player-name-input::placeholder {
+  color: rgba(26, 31, 108, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* ── Play Button ── */
+.btn-find-match {
+  width: 100%;
+  height: 54px;
+  background: #1A1F6C;
+  border: none;
+  border-radius: 16px;
+  color: #FFFFFF;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(26, 31, 108, 0.2);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-find-match:hover {
+  background: #4A35B0;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(74, 53, 176, 0.25);
+}
+
+.btn-find-match:active {
+  transform: translateY(-1px) scale(0.97);
+}
+
+/* ── Matchmaking Waiting View ── */
+.waiting-spinner {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.spinner-pulse {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 53, 176, 0.2) 0%, rgba(74, 53, 176, 0.01) 70%);
+  border: 3px dashed #4A35B0;
+  animation: spinner-rotate-pulse 2s linear infinite;
+}
+
+@keyframes spinner-rotate-pulse {
+  0% { transform: rotate(0deg) scale(0.9); opacity: 0.8; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+  100% { transform: rotate(360deg) scale(0.9); opacity: 0.8; }
+}
+
+.waiting-status-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1F6C;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: -1vh 0 0;
+  animation: blink-text 1.5s ease-in-out infinite;
+}
+
+@keyframes blink-text {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.waiting-player-tag {
+  background: rgba(26, 31, 108, 0.06);
+  border: 1px solid rgba(26, 31, 108, 0.12);
+  padding: 6px 16px;
+  border-radius: 12px;
+}
+
+.waiting-player-name-display {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1A1F6C;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.btn-cancel-match {
+  background: transparent;
+  border: 1.5px solid rgba(26, 31, 108, 0.3);
+  border-radius: 12px;
+  padding: 8px 20px;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1A1F6C;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-match:hover {
+  background: rgba(26, 31, 108, 0.05);
+  border-color: #1A1F6C;
+}
+
+/* ── Spectator QR Card view ── */
+.qr-code-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(26, 31, 108, 0.12);
+  border: 1.5px solid rgba(26, 31, 108, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.qr-code-image-wrapper {
+  width: 160px;
+  height: 160px;
+  background: #F8F9FC;
+  border-radius: 16px;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(26, 31, 108, 0.08);
+}
+
+.qr-code-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.qr-code-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qr-main-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1A1F6C;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.qr-sub-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #5A6080;
+  line-height: 1.3;
+}
+
+.qr-queue-status {
+  width: 100%;
+  background: #EDE9FF;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4A35B0;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.qr-queue-status .queue-count {
+  font-weight: 900;
+}
+
+/* Make spectator screen fill height adjust */
+#single-stage.spectator-mode #lobby-splash-card {
+  margin-bottom: 2vh;
+}
+
+#single-stage.spectator-mode .lobby-multiplayer {
+  max-width: 380px;
+}
+

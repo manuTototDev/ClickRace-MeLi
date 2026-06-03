@@ -464,6 +464,21 @@ function freshState() {
 
 let gameState = freshState();
 
+// ─── Sockets & Matchmaking State ──────────────────────────────
+let socket = null;
+let currentMatchId = null;
+let myRole = null; // 1 or 2
+let opponentName = '';
+let isSpectator = false;
+
+try {
+  if (typeof io !== 'undefined') {
+    socket = io();
+  }
+} catch (e) {
+  console.warn("Socket.io client script failed to load. Running in offline/serverless mode.", e);
+}
+
 // ── Auto-reset timer ──────────────────────────────────────────
 const AUTO_RESET_SECS = 8;
 let autoResetTimer  = null;
@@ -496,8 +511,12 @@ function startAutoReset() {
   // Trigger de reset
   autoResetTimer = setTimeout(function () {
     clearInterval(autoResetTick);
-    actionReset();
-    showSplash();
+    if (socket && socket.connected && currentMatchId) {
+      returnToLobby();
+    } else {
+      actionReset();
+      showSplash();
+    }
   }, AUTO_RESET_SECS * 1000);
 }
 
@@ -632,6 +651,14 @@ function actionStart() {
 
 function actionClick(player) {
   if (gameState.status !== 'playing') return;
+
+  // Sockets matchmaking mode
+  if (socket && socket.connected && currentMatchId) {
+    if (player === myRole) {
+      socket.emit('game:click', { matchId: currentMatchId });
+    }
+    return;
+  }
 
   resetIdleTimer();
 
@@ -1057,128 +1084,551 @@ function resetUI() {
   const resetLevel = currentMarket === 'BR' ? 'Lv.1 · Início' : 'Lv.1 · Inicio';
   (DOM.badgeText[1] || []).forEach(el => { if (el) { el.textContent = resetLevel; delete el.dataset.active; } });
   (DOM.badgeText[2] || []).forEach(el => { if (el) { el.textContent = resetLevel; delete el.dataset.active; } });
+
+  // Reset button visibility on single stage
+  const btn1 = document.getElementById('btn-player-1-single');
+  const btn2 = document.getElementById('btn-player-2-single');
+  if (btn1) btn1.classList.remove('hidden');
+  if (btn2) btn2.classList.remove('hidden');
+
+  // Reset name labels
+  document.querySelectorAll('.player-name-single[data-player="1"]').forEach(el => el.textContent = MARKETS[currentMarket]?.communityLabel || 'Tu comunidad:');
+  document.querySelectorAll('.player-name-single[data-player="2"]').forEach(el => el.textContent = MARKETS[currentMarket]?.communityLabel || 'Tu comunidad:');
 }
 
-// ─── Debug Route Router ───────────────────────────────────────
+// ─── Sockets Matchmaking & Spectator Logic ────────────────────────
+function showLobbyView(viewId) {
+  document.querySelectorAll('.lobby-view').forEach(v => {
+    v.classList.toggle('hidden', v.id !== viewId);
+  });
+}
+
+function searchMatch() {
+  const input = document.getElementById('player-name-input');
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) {
+    // Wobble animation to show it's empty
+    gsap.fromTo(input, 
+      { x: -10, borderColor: '#FF0000' },
+      { x: 0, borderColor: 'rgba(26, 31, 108, 0.15)', duration: 0.5, ease: 'elastic.out(2)' }
+    );
+    input.focus();
+    return;
+  }
+
+  localStorage.setItem('clickrace_player_name', name);
+  if (socket && socket.connected) {
+    socket.emit('join:queue', { name, market: currentMarket });
+    const displayName = document.getElementById('waiting-player-name-display');
+    if (displayName) displayName.textContent = name;
+  } else {
+    // Fallback if socket is disconnected: just bypass lobby and start offline game
+    console.warn("Socket not connected. Running offline fallback.");
+    document.querySelectorAll('.splash').forEach(splash => {
+      splash.classList.add('splash--out');
+      setTimeout(() => { splash.style.display = 'none'; }, 400);
+    });
+    actionStart();
+  }
+}
+
+function cancelMatch() {
+  if (socket && socket.connected) {
+    socket.emit('leave:queue');
+  }
+  showLobbyView('lobby-player-view');
+}
+
+function returnToLobby() {
+  currentMatchId = null;
+  myRole = null;
+  opponentName = '';
+  
+  // Show splash and reset game status
+  resetUI();
+  showSplash();
+  
+  // Restore lobby view
+  if (isSpectator) {
+    showLobbyView('lobby-spectator-view');
+  } else {
+    showLobbyView('lobby-player-view');
+  }
+}
+
+// Bind Sockets events
+if (socket) {
+  // Sync clicks config
+  socket.on('config:sync', (config) => {
+    if (config && config.CLICKS_TO_WIN) {
+      GAME_CONFIG.CLICKS_TO_WIN = config.CLICKS_TO_WIN;
+    }
+  });
+
+  socket.on('queue:joined', () => {
+    showLobbyView('lobby-waiting-view');
+  });
+
+  socket.on('queue:left', () => {
+    showLobbyView('lobby-player-view');
+  });
+
+  socket.on('queue:update', ({ count }) => {
+    const counts = document.querySelectorAll('.queue-count');
+    counts.forEach(el => el.textContent = count);
+  });
+
+  // ─── Matchmaking ───
+  socket.on('match:found', (data) => {
+    currentMatchId = data.matchId;
+    myRole = data.role;
+    opponentName = data.opponent;
+
+    console.log(`Match paired! Role J${myRole}. Opponent: ${opponentName}`);
+
+    // Customize labels
+    const playerLabelText = currentMarket === 'BR' ? 'Sua comunidade:' : 'Tu comunidad:';
+    document.querySelectorAll('.player-name-single').forEach(el => {
+      const p = Number(el.dataset.player);
+      if (p === myRole) {
+        el.textContent = `${playerLabelText} (${data.name})`;
+      } else {
+        el.textContent = `${playerLabelText} (${opponentName})`;
+      }
+    });
+
+    // Egoistic views: Hide opponent click button
+    const btn1 = document.getElementById('btn-player-1-single');
+    const btn2 = document.getElementById('btn-player-2-single');
+    if (myRole === 1) {
+      if (btn2) btn2.classList.add('hidden');
+      if (btn1) btn1.classList.remove('hidden');
+    } else {
+      if (btn1) btn1.classList.add('hidden');
+      if (btn2) btn2.classList.remove('hidden');
+    }
+
+    // Dismiss splash
+    document.querySelectorAll('.splash').forEach(splash => {
+      splash.classList.add('splash--out');
+      setTimeout(() => { splash.style.display = 'none'; }, 400);
+    });
+
+    gameState.status = 'countdown';
+  });
+
+  socket.on('game:countdown', ({ seconds }) => {
+    showCountdown(seconds);
+  });
+
+  socket.on('game:start', () => {
+    gameState.status = 'playing';
+    DOM.startArea.classList.add('hidden');
+    DOM.statusArea.classList.remove('hidden');
+    
+    // Clear display counters
+    document.querySelectorAll('.click-counter-single').forEach(el => el.textContent = '0');
+    
+    // Animate totems in
+    const totems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
+    gsap.fromTo(totems,
+      { scale: 0.96, opacity: 0.7 },
+      { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.5)' }
+    );
+  });
+
+  socket.on('game:update', ({ players }) => {
+    // Update player UI (progress bars, counter displays)
+    [1, 2].forEach(p => {
+      const data = players[p];
+      if (data) {
+        // Find previous clicks to compare level-ups
+        const prevClicks = gameState.players[p].clicks;
+        const prevLevel = gameState.players[p].level;
+        
+        gameState.players[p].clicks = data.clicks;
+        gameState.players[p].progress = data.progress;
+        gameState.players[p].level = data.level;
+
+        updatePlayerUI(p, data);
+
+        // Click visual anim triggers
+        if (data.clicks > prevClicks) {
+          animateButtonPress(p);
+          if (data.level > prevLevel && data.level >= 1) {
+            spawnCelebrationIcons(p, data.level);
+          }
+        }
+      }
+    });
+  });
+
+  socket.on('game:finished', ({ winner, winnerName, players }) => {
+    gameState.status = 'finished';
+    gameState.winner = winner;
+
+    // Trigger completion bar heights
+    [1, 2].forEach(p => {
+      updatePlayerUI(p, players[p]);
+    });
+
+    // Animate totem styling
+    const loser = winner === 1 ? 2 : 1;
+    (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
+    (DOM.totem[loser] || []).forEach(el => el && gsap.to(el, { opacity: 0.4, scale: 0.97, duration: 0.5 }));
+
+    // Show winner overlay
+    setTimeout(() => {
+      showAll(DOM.overlays);
+      hideAll(DOM.overlayCountdowns);
+      showAll(DOM.overlayWinners);
+
+      DOM.winnerNames.forEach(el => {
+        el.textContent = winnerName;
+        el.dataset.winner = winner;
+      });
+
+      const winnerSloganText = currentMarket === 'BR' ? 'A MAIOR<br>COMUNIDADE!' : '¡LA COMUNIDAD<br>MÁS GRANDE!';
+      DOM.winnerSlogans.forEach(el => {
+        el.innerHTML = winnerSloganText;
+      });
+
+      gsap.fromTo(DOM.overlayWinners,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)',
+          onComplete: () => startAutoReset()
+        }
+      );
+    }, 2400);
+  });
+
+  socket.on('opponent:disconnected', ({ winner, winnerName }) => {
+    gameState.status = 'finished';
+    gameState.winner = winner;
+
+    // Show disconnect/forfeit modal info
+    showAll(DOM.overlays);
+    hideAll(DOM.overlayCountdowns);
+    showAll(DOM.overlayWinners);
+
+    DOM.winnerNames.forEach(el => {
+      el.textContent = winnerName;
+    });
+
+    DOM.winnerSlogans.forEach(el => {
+      el.innerHTML = currentMarket === 'BR' 
+        ? 'OPONENTE DESCONECTOU!<br>VITÓRIA POR W.O.' 
+        : '¡EL OPONENTE SE DESCONECTÓ!<br>GANASTE POR ABANDONO';
+    });
+
+    gsap.fromTo(DOM.overlayWinners,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)',
+        onComplete: () => startAutoReset()
+      }
+    );
+  });
+
+  // ─── Spectators Listeners ───
+  socket.on('spectator:sync', ({ activeMatch, queueCount }) => {
+    const countEl = document.getElementById('qr-queue-count');
+    if (countEl) countEl.textContent = queueCount;
+
+    if (activeMatch) {
+      currentMatchId = activeMatch.matchId;
+      console.log(`Re-syncing spectator screen to match ID: ${currentMatchId}`);
+
+      // Set names
+      document.querySelectorAll('.player-name-single[data-player="1"]').forEach(el => el.textContent = `Comunidad: ${activeMatch.players[1].name}`);
+      document.querySelectorAll('.player-name-single[data-player="2"]').forEach(el => el.textContent = `Comunidad: ${activeMatch.players[2].name}`);
+
+      // Hide both click buttons
+      const btn1 = document.getElementById('btn-player-1-single');
+      const btn2 = document.getElementById('btn-player-2-single');
+      if (btn1) btn1.classList.add('hidden');
+      if (btn2) btn2.classList.add('hidden');
+
+      // Dismiss splash
+      document.querySelectorAll('.splash').forEach(splash => {
+        splash.classList.add('splash--out');
+        splash.style.display = 'none';
+      });
+
+      if (activeMatch.status === 'countdown') {
+        gameState.status = 'countdown';
+        showAll(DOM.overlays);
+        showAll(DOM.overlayCountdowns);
+      } else if (activeMatch.status === 'playing') {
+        gameState.status = 'playing';
+        DOM.startArea.classList.add('hidden');
+        DOM.statusArea.classList.remove('hidden');
+        [1, 2].forEach(p => {
+          updatePlayerUI(p, activeMatch.players[p]);
+        });
+      }
+    }
+  });
+
+  socket.on('spectator:match:found', (data) => {
+    currentMatchId = data.matchId;
+    console.log(`Spectator: Match found between ${data.players[1].name} and ${data.players[2].name}`);
+
+    // Set player tags
+    document.querySelectorAll('.player-name-single[data-player="1"]').forEach(el => el.textContent = `Comunidad: ${data.players[1].name}`);
+    document.querySelectorAll('.player-name-single[data-player="2"]').forEach(el => el.textContent = `Comunidad: ${data.players[2].name}`);
+
+    // Hide both buttons
+    const btn1 = document.getElementById('btn-player-1-single');
+    const btn2 = document.getElementById('btn-player-2-single');
+    if (btn1) btn1.classList.add('hidden');
+    if (btn2) btn2.classList.add('hidden');
+
+    // Dismiss splash
+    document.querySelectorAll('.splash').forEach(splash => {
+      splash.classList.add('splash--out');
+      setTimeout(() => { splash.style.display = 'none'; }, 400);
+    });
+
+    gameState.status = 'countdown';
+  });
+
+  socket.on('spectator:game:countdown', ({ matchId, seconds }) => {
+    if (matchId === currentMatchId) showCountdown(seconds);
+  });
+
+  socket.on('spectator:game:start', ({ matchId }) => {
+    if (matchId !== currentMatchId) return;
+    gameState.status = 'playing';
+    DOM.startArea.classList.add('hidden');
+    DOM.statusArea.classList.remove('hidden');
+    document.querySelectorAll('.click-counter-single').forEach(el => el.textContent = '0');
+  });
+
+  socket.on('spectator:game:update', ({ matchId, players }) => {
+    if (matchId !== currentMatchId) return;
+    [1, 2].forEach(p => {
+      const data = players[p];
+      if (data) {
+        const prevClicks = gameState.players[p].clicks;
+        const prevLevel = gameState.players[p].level;
+        
+        gameState.players[p].clicks = data.clicks;
+        gameState.players[p].progress = data.progress;
+        gameState.players[p].level = data.level;
+
+        updatePlayerUI(p, data);
+
+        if (data.clicks > prevClicks) {
+          animateButtonPress(p);
+          if (data.level > prevLevel && data.level >= 1) {
+            spawnCelebrationIcons(p, data.level);
+          }
+        }
+      }
+    });
+  });
+
+  socket.on('spectator:game:finished', ({ matchId, winner, winnerName, players, forfeit }) => {
+    if (matchId !== currentMatchId) return;
+    gameState.status = 'finished';
+    gameState.winner = winner;
+
+    [1, 2].forEach(p => {
+      updatePlayerUI(p, players[p]);
+    });
+
+    const loser = winner === 1 ? 2 : 1;
+    (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
+    (DOM.totem[loser] || []).forEach(el => el && gsap.to(el, { opacity: 0.4, scale: 0.97, duration: 0.5 }));
+
+    setTimeout(() => {
+      showAll(DOM.overlays);
+      hideAll(DOM.overlayCountdowns);
+      showAll(DOM.overlayWinners);
+
+      DOM.winnerNames.forEach(el => {
+        el.textContent = winnerName;
+        el.dataset.winner = winner;
+      });
+
+      DOM.winnerSlogans.forEach(el => {
+        if (forfeit) {
+          el.innerHTML = currentMarket === 'BR'
+            ? 'OPONENTE DESCONECTOU!<br>VITÓRIA POR W.O.'
+            : '¡EL OPONENTE SE DESCONECTÓ!<br>GANASTE POR ABANDONO';
+        } else {
+          el.innerHTML = currentMarket === 'BR' ? 'A MAIOR<br>COMUNIDADE!' : '¡LA COMUNIDAD<br>MÁS GRANDE!';
+        }
+      });
+
+      gsap.fromTo(DOM.overlayWinners,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)',
+          onComplete: () => startAutoReset()
+        }
+      );
+    }, 2400);
+  });
+}
+
+// ─── Debug Route Router & Initialization ──────────────────────
 function handleDebugRoute() {
   const params = new URLSearchParams(window.location.search);
   const screen = params.get('screen') || window.location.hash.replace('#', '');
   
-  const isSingle = screen && (screen === 'single' || screen.startsWith('single-') || screen.startsWith('single'));
-  
+  // Detect if spectator mode
+  isSpectator = (screen === 'stream' || screen === 'spectator');
+  const isSingle = isSpectator || screen === 'single' || screen.startsWith('single-');
+
+  // Stages display
   const dualStage = document.getElementById('dual-stage');
   const singleStage = document.getElementById('single-stage');
+  
   if (dualStage && singleStage) {
     if (isSingle) {
       dualStage.classList.add('hidden');
       singleStage.classList.remove('hidden');
+      if (isSpectator) {
+        singleStage.classList.add('spectator-mode');
+      } else {
+        singleStage.classList.remove('spectator-mode');
+      }
     } else {
       dualStage.classList.remove('hidden');
       singleStage.classList.add('hidden');
+      singleStage.classList.remove('spectator-mode');
     }
   }
 
-  if (screen === 'single') {
+  // Setup lobby views
+  if (isSpectator) {
+    // Spectator view needs QR code
+    showLobbyView('lobby-spectator-view');
+    const qrImg = document.getElementById('qr-code-img');
+    if (qrImg) {
+      const joinUrl = window.location.origin + window.location.pathname;
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=10&data=' + encodeURIComponent(joinUrl);
+    }
+    // Bind spectator sync initiation
+    if (socket && socket.connected) {
+      socket.emit('spectator:init');
+    }
+  } else {
+    // Player view
+    showLobbyView('lobby-player-view');
+    // Pre-populate player name
+    const savedName = localStorage.getItem('clickrace_player_name');
+    const nameInput = document.getElementById('player-name-input');
+    if (nameInput && savedName) {
+      nameInput.value = savedName;
+    }
+  }
+
+  // If URL parameter specifies a debug mock state, allow legacy routes
+  if (screen && !isSpectator && screen !== 'single') {
     cancelAutoReset();
     clearIdleTimer();
+
+    // Reset standard screens
     document.querySelectorAll('.splash').forEach(splash => {
-      splash.classList.remove('splash--out');
-      splash.style.display = '';
-      splash.style.pointerEvents = '';
+      splash.classList.add('splash--out');
+      splash.style.display = 'none';
     });
     hideAll(DOM.overlays);
     hideAll(DOM.overlayCountdowns);
     hideAll(DOM.overlayWinners);
-    
+
     DOM.startArea.classList.remove('hidden');
     DOM.statusArea.classList.add('hidden');
     const totems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
     totems.forEach(el => el.classList.remove('totem--winner'));
     gsap.to(totems, { opacity: 1, scale: 1, duration: 0 });
-    
-    resetUI();
-    return;
-  }
 
-  if (!screen) return;
+    const getMockPlayer = (clicks) => {
+      const p = { clicks, progress: clicks / GAME_CONFIG.CLICKS_TO_WIN };
+      p.level = 0;
+      const levels = GAME_CONFIG.LEVELS;
+      for (let i = levels.length - 1; i >= 0; i--) {
+        if (p.progress >= levels[i].threshold) { p.level = i; break; }
+      }
+      return p;
+    };
 
-  cancelAutoReset();
-  clearIdleTimer();
-
-  // Reset standard screens
-  document.querySelectorAll('.splash').forEach(splash => {
-    splash.classList.add('splash--out');
-    splash.style.display = 'none';
-  });
-  hideAll(DOM.overlays);
-  hideAll(DOM.overlayCountdowns);
-  hideAll(DOM.overlayWinners);
-
-  // Restore game state/UI to normal
-  DOM.startArea.classList.remove('hidden');
-  DOM.statusArea.classList.add('hidden');
-  const totems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
-  totems.forEach(el => el.classList.remove('totem--winner'));
-  gsap.to(totems, { opacity: 1, scale: 1, duration: 0 });
-
-  const getMockPlayer = (clicks) => {
-    const p = { clicks, progress: clicks / GAME_CONFIG.CLICKS_TO_WIN };
-    p.level = 0;
-    const levels = GAME_CONFIG.LEVELS;
-    for (let i = levels.length - 1; i >= 0; i--) {
-      if (p.progress >= levels[i].threshold) { p.level = i; break; }
+    let baseScreen = screen;
+    if (isSingle) {
+      baseScreen = screen.replace(/^single\-?/, '') || 'game';
     }
-    return p;
-  };
 
-  let baseScreen = screen;
-  if (isSingle) {
-    baseScreen = screen.replace(/^single\-?/, '') || 'game';
-  }
+    if (baseScreen === 'splash') {
+      document.querySelectorAll('.splash').forEach(splash => {
+        splash.classList.remove('splash--out');
+        splash.style.display = '';
+        splash.style.pointerEvents = '';
+      });
+    } else if (baseScreen === 'countdown') {
+      showAll(DOM.overlays);
+      showAll(DOM.overlayCountdowns);
+      hideAll(DOM.overlayWinners);
+    } else if (baseScreen === 'winner1' || baseScreen === 'winner2') {
+      const winner = baseScreen === 'winner1' ? 1 : 2;
+      const loser = winner === 1 ? 2 : 1;
+      
+      (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
+      (DOM.totem[loser] || []).forEach(el => el && gsap.to(el, { opacity: 0.4, scale: 0.97, duration: 0 }));
 
-  if (baseScreen === 'splash') {
-    document.querySelectorAll('.splash').forEach(splash => {
-      splash.classList.remove('splash--out');
-      splash.style.display = '';
-      splash.style.pointerEvents = '';
-    });
-  } else if (baseScreen === 'countdown') {
-    showAll(DOM.overlays);
-    showAll(DOM.overlayCountdowns);
-    hideAll(DOM.overlayWinners);
-  } else if (baseScreen === 'winner1' || baseScreen === 'winner2') {
-    const winner = baseScreen === 'winner1' ? 1 : 2;
-    const loser = winner === 1 ? 2 : 1;
-    
-    (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
-    (DOM.totem[loser] || []).forEach(el => el && gsap.to(el, { opacity: 0.4, scale: 0.97, duration: 0 }));
+      showAll(DOM.overlays);
+      hideAll(DOM.overlayCountdowns);
+      showAll(DOM.overlayWinners);
+      const playerLabelText = currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR';
+      const winnerLabel = `${playerLabelText} ${winner}`;
+      DOM.winnerNames.forEach(el => {
+        el.textContent = winnerLabel;
+        el.dataset.winner = winner;
+      });
+      DOM.winnerSlogans.forEach(el => {
+        el.innerHTML = (MARKETS[currentMarket]?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
+      });
 
-    showAll(DOM.overlays);
-    hideAll(DOM.overlayCountdowns);
-    showAll(DOM.overlayWinners);
-    const playerLabelText = currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR';
-    const winnerLabel = `${playerLabelText} ${winner}`;
-    DOM.winnerNames.forEach(el => {
-      el.textContent = winnerLabel;
-      el.dataset.winner = winner;
-    });
-    DOM.winnerSlogans.forEach(el => {
-      el.innerHTML = (MARKETS[currentMarket]?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
-    });
-
-    const p1 = getMockPlayer(winner === 1 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
-    const p2 = getMockPlayer(winner === 2 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
-    updatePlayerUI(1, p1);
-    updatePlayerUI(2, p2);
-  } else if (baseScreen === 'playing' || baseScreen === 'game') {
-    DOM.startArea.classList.add('hidden');
-    DOM.statusArea.classList.remove('hidden');
-    const p1 = getMockPlayer(18);
-    const p2 = getMockPlayer(25);
-    updatePlayerUI(1, p1);
-    updatePlayerUI(2, p2);
+      const p1 = getMockPlayer(winner === 1 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
+      const p2 = getMockPlayer(winner === 2 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
+      updatePlayerUI(1, p1);
+      updatePlayerUI(2, p2);
+    } else if (baseScreen === 'playing' || baseScreen === 'game') {
+      DOM.startArea.classList.add('hidden');
+      DOM.statusArea.classList.remove('hidden');
+      const p1 = getMockPlayer(18);
+      const p2 = getMockPlayer(25);
+      updatePlayerUI(1, p1);
+      updatePlayerUI(2, p2);
+    }
   }
 }
+
+// ─── Bind UI Events ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const btnFind = document.getElementById('btn-find-match');
+  const btnCancel = document.getElementById('btn-cancel-match');
+  const nameInput = document.getElementById('player-name-input');
+
+  if (btnFind) btnFind.addEventListener('click', searchMatch);
+  if (btnCancel) btnCancel.addEventListener('click', cancelMatch);
+  if (nameInput) {
+    nameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchMatch();
+    });
+  }
+
+  // Handle popstates and re-sync
+  if (socket) {
+    socket.on('connect', () => {
+      console.log("Socket connected! ID:", socket.id);
+      if (isSpectator) {
+        socket.emit('spectator:init');
+      }
+    });
+  }
+});
 
 window.addEventListener('hashchange', handleDebugRoute);
 window.addEventListener('popstate', handleDebugRoute);

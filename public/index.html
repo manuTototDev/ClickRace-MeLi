@@ -8,6 +8,7 @@
 
 
 
+  <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <link rel="stylesheet" href="/css/style.css?v=20260602o" />
 </head>
@@ -354,13 +355,58 @@
 
         <div class="splash-center">
           <div class="splash-banner"></div>
-          <div class="splash-card">
+          
+          <!-- Splash standard card (hidden in spectator mode to save space) -->
+          <div class="splash-card" id="lobby-splash-card">
             <div class="splash-headline">
               <span class="splash-headline-main">¡AUMENTA<br>SEGUIDORES!</span>
               <span class="splash-headline-sub">CRECE TU COMUNIDAD<br>Y GENERA MÁS VENTAS</span>
             </div>
           </div>
-          <button class="splash-play-btn splash-play" aria-label="Iniciar juego">
+
+          <!-- MULTIPLAYER LOBBY CONTROLS -->
+          <div class="lobby-multiplayer" id="lobby-container">
+            <!-- Player Input View -->
+            <div class="lobby-view lobby-player-view" id="lobby-player-view">
+              <div class="name-input-container">
+                <input type="text" id="player-name-input" placeholder="INGRESA TU NOMBRE" maxlength="15" autocomplete="off" />
+              </div>
+              <button class="btn-find-match" id="btn-find-match" type="button">
+                <span>BUSCAR OPONENTE</span>
+              </button>
+            </div>
+
+            <!-- Spectator QR View -->
+            <div class="lobby-view lobby-spectator-view hidden" id="lobby-spectator-view">
+              <div class="qr-code-card">
+                <div class="qr-code-image-wrapper">
+                  <img class="qr-code-img" id="qr-code-img" src="" alt="Escanea para jugar" />
+                </div>
+                <div class="qr-code-text">
+                  <span class="qr-main-title">¡ESCANEA EL QR PARA COMPETIR!</span>
+                  <span class="qr-sub-title">Ingresá tu nombre desde tu celular y jugá</span>
+                </div>
+                <div class="qr-queue-status">
+                  Jugadores esperando: <strong class="queue-count" id="qr-queue-count">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Matchmaking Waiting View -->
+            <div class="lobby-view lobby-waiting-view hidden" id="lobby-waiting-view">
+              <div class="waiting-spinner">
+                <div class="spinner-pulse"></div>
+              </div>
+              <p class="waiting-status-text">Buscando oponente...</p>
+              <div class="waiting-player-tag">
+                <span class="waiting-player-name-display" id="waiting-player-name-display">Invitado</span>
+              </div>
+              <button class="btn-cancel-match" id="btn-cancel-match" type="button">CANCELAR</button>
+            </div>
+          </div>
+
+          <!-- Hidden legacy play button to avoid breaking old handlers if any, but styled none -->
+          <button class="splash-play-btn splash-play hidden" style="display:none;" aria-label="Iniciar juego">
             <img src="/assets/Play.png" alt="Play" />
           </button>
         </div>
