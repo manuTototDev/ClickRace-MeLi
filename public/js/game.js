@@ -773,68 +773,88 @@ function spawnCelebrationIcons(player, levelIdx) {
 }
 
 function spawnRisingIcons(layer, count, fillPct) {
-  for (let i = 0; i < count; i++) {
-    const icon = document.createElement('div');
-    icon.className = 'celebration-icon';
-    icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
+  let spawned = 0;
+  const batchSize = 4; // spawn 4 icons at a time to prevent stuttering
+  
+  function spawnBatch() {
+    const toSpawn = Math.min(batchSize, count - spawned);
+    for (let i = 0; i < toSpawn; i++) {
+      const icon = document.createElement('div');
+      icon.className = 'celebration-icon';
+      icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
 
-    const size      = 5 + Math.random() * 8;
-    const xPct      = Math.random() * 92;
-    const bottomPct = Math.random() * fillPct;
-    const rotStart  = (Math.random() - 0.5) * 30;
-    const rotEnd    = rotStart + (Math.random() - 0.5) * 80;
-    const delay     = Math.random() * 200;
+      const size      = 5 + Math.random() * 8;
+      const xPct      = Math.random() * 92;
+      const bottomPct = Math.random() * fillPct;
+      const rotStart  = (Math.random() - 0.5) * 30;
+      const rotEnd    = rotStart + (Math.random() - 0.5) * 80;
 
-    icon.style.left   = `${xPct}%`;
-    icon.style.bottom = `${bottomPct}%`;
-    icon.style.width  = `${size}vmin`;
-    layer.appendChild(icon);
+      icon.style.left   = `${xPct}%`;
+      icon.style.bottom = `${bottomPct}%`;
+      icon.style.width  = `${size}vmin`;
+      layer.appendChild(icon);
 
-    gsap.timeline({ delay: delay / 1000 })
-      .fromTo(icon,
-        { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
-        { y: 0,      opacity: 1, rotation: rotStart, scale: 1,
-          duration: 0.28, ease: 'power2.out' })
-      .to(icon, {
-        y: '60vh', opacity: 0, rotation: rotEnd,
-        duration: 0.45, ease: 'power2.in', delay: 0.2,
-        onComplete: () => icon.remove(),
-      });
+      gsap.timeline()
+        .fromTo(icon,
+          { y: '50vh', opacity: 0, rotation: rotStart, scale: 0.6 },
+          { y: 0,      opacity: 1, rotation: rotStart, scale: 1,
+            duration: 0.28, ease: 'power2.out' })
+        .to(icon, {
+          y: '60vh', opacity: 0, rotation: rotEnd,
+          duration: 0.45, ease: 'power2.in', delay: 0.2,
+          onComplete: () => icon.remove(),
+        });
+    }
+    spawned += toSpawn;
+    if (spawned < count) {
+      requestAnimationFrame(spawnBatch);
+    }
   }
+  
+  spawnBatch();
 }
 
 function spawnFountain(layer, count) {
-  // Cada ícono aparece arriba (fuera de pantalla) y cae directamente hacia abajo
-  for (let i = 0; i < count; i++) {
-    const icon = document.createElement('div');
-    icon.className = 'celebration-icon';
-    icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
+  let spawned = 0;
+  const batchSize = 8; // spawn 8 icons at a time to keep frames butter smooth
+  
+  function spawnBatch() {
+    const toSpawn = Math.min(batchSize, count - spawned);
+    for (let i = 0; i < toSpawn; i++) {
+      const icon = document.createElement('div');
+      icon.className = 'celebration-icon';
+      icon.innerHTML = createPersonSVG(CELEBRATION_COLOR);
 
-    const size     = 4 + Math.random() * 9;          // 4–13 vmin
-    const xPct     = 2 + Math.random() * 90;          // casi toda la anchura
-    const startY   = -(10 + Math.random() * 20);      // arranca entre -10 y -30 vh (fuera de pantalla)
-    const fallDist = 110 + Math.random() * 40;        // cae 110–150 vh (sale por abajo)
-    const rotStart = (Math.random() - 0.5) * 60;
-    const rotEnd   = rotStart + (Math.random() - 0.5) * 180;
-    const delay    = Math.random() * 1600;             // ráfaga de 1.6 s (el doble de 0.8 s)
+      const size     = 4 + Math.random() * 9;          // 4–13 vmin
+      const xPct     = 2 + Math.random() * 90;          // casi toda la anchura
+      const startY   = -(10 + Math.random() * 20);      // arranca entre -10 y -30 vh (fuera de pantalla)
+      const fallDist = 110 + Math.random() * 40;        // cae 110–150 vh (sale por abajo)
+      const rotStart = (Math.random() - 0.5) * 60;
+      const rotEnd   = rotStart + (Math.random() - 0.5) * 180;
 
-    icon.style.left   = `${xPct}%`;
-    icon.style.top    = '0%';
-    icon.style.bottom = 'auto';
-    icon.style.width  = `${size}vmin`;
-    layer.appendChild(icon);
+      icon.style.left   = `${xPct}%`;
+      icon.style.top    = '0%';
+      icon.style.bottom = 'auto';
+      icon.style.width  = `${size}vmin`;
+      layer.appendChild(icon);
 
-    gsap.fromTo(icon,
-      { y: `${startY}vh`, opacity: 1, scale: 0.8 + Math.random() * 0.4, rotation: rotStart },
-      {
-        y: `${fallDist}vh`, opacity: 1, rotation: rotEnd,
-        duration: 2.0 + Math.random() * 1.6,   // 2.0–3.6 s de caída (el doble de 1.0–1.8 s)
-        ease: 'power1.in',
-        delay: delay / 1000,
-        onComplete: () => icon.remove(),
-      }
-    );
+      gsap.fromTo(icon,
+        { y: `${startY}vh`, opacity: 1, scale: 0.8 + Math.random() * 0.4, rotation: rotStart },
+        {
+          y: `${fallDist}vh`, opacity: 1, rotation: rotEnd,
+          duration: 2.0 + Math.random() * 1.6,   // 2.0–3.6 s de caída
+          ease: 'power1.in',
+          onComplete: () => icon.remove(),
+        }
+      );
+    }
+    spawned += toSpawn;
+    if (spawned < count) {
+      requestAnimationFrame(spawnBatch);
+    }
   }
+  
+  spawnBatch();
 }
 
 function clearCelebrationLayers() {
@@ -893,8 +913,6 @@ function startGame() {
 // ─── Game Finish ──────────────────────────────────────────────
 function finishGame(winner, players) {
   clearIdleTimer();
-  updatePlayerUI(1, players[1]);
-  updatePlayerUI(2, players[2]);
 
   const loser = winner === 1 ? 2 : 1;
   (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
