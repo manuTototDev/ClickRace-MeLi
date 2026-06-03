@@ -684,7 +684,7 @@ function spawnParticles(player) {
 // ─── Celebration: personas suben desde abajo, más ícones por hito ─────
 // levelIdx: 1 = audiencia, 2 = leales, 3 = compradores
 const MILESTONE_FILL_PCT  = { 1: 30, 2: 65, 3: 100 };
-const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 280 };  // escala con el hito
+const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 560 };  // escala con el hito
 const CELEBRATION_COLOR   = '#A87EE8';                  // morado, igual que P1
 
 function ensureCelebrationLayer(player) {
@@ -758,7 +758,7 @@ function spawnFountain(layer, count) {
     const fallDist = 110 + Math.random() * 40;        // cae 110–150 vh (sale por abajo)
     const rotStart = (Math.random() - 0.5) * 60;
     const rotEnd   = rotStart + (Math.random() - 0.5) * 180;
-    const delay    = Math.random() * 800;             // ráfaga de 0.8 s
+    const delay    = Math.random() * 1600;             // ráfaga de 1.6 s (el doble de 0.8 s)
 
     icon.style.left   = `${xPct}%`;
     icon.style.top    = '0%';
@@ -769,8 +769,8 @@ function spawnFountain(layer, count) {
     gsap.fromTo(icon,
       { y: `${startY}vh`, opacity: 1, scale: 0.8 + Math.random() * 0.4, rotation: rotStart },
       {
-        y: `${fallDist}vh`, opacity: 0, rotation: rotEnd,
-        duration: 1.0 + Math.random() * 0.8,   // 1.0–1.8 s de caída
+        y: `${fallDist}vh`, opacity: 1, rotation: rotEnd,
+        duration: 2.0 + Math.random() * 1.6,   // 2.0–3.6 s de caída (el doble de 1.0–1.8 s)
         ease: 'power1.in',
         delay: delay / 1000,
         onComplete: () => icon.remove(),
