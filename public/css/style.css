@@ -1484,7 +1484,7 @@ body {
 .bar-column--single-left .track-wrapper,
 .bar-column--single-right .track-wrapper {
   position: relative;
-  width: 12cqw;
+  width: 22cqw; /* Equal width as the progress markers (10% wider than the original 20cqw) */
   height: 52vh;
   margin-bottom: 1vmin;
 }
@@ -1512,7 +1512,7 @@ body {
   position: absolute !important;
   left: 50% !important;
   transform: translate(-50%, 50%) !important;
-  width: 20cqw !important;
+  width: 100% !important; /* Matches progress bar track width exactly */
   height: 5.5cqw !important;
   box-sizing: border-box;
   display: flex;
@@ -1642,8 +1642,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 4cqw;
-  padding: 2vmin 4cqw 6vmin;
   width: 100%;
+  height: auto;
+  padding: 0 4cqw;
+  margin-bottom: 35cqw; /* Same height/spacing as in dual screen mode */
+  box-sizing: border-box;
 }
 
 .big-button--single {
@@ -1653,28 +1656,18 @@ body {
   border-radius: 2.2cqw !important;
 }
 
-#btn-player-1-single {
-  background: #EDE9FF !important;
-  box-shadow: 0 4px 20px rgba(74, 53, 176, 0.15) !important;
-}
-
-#btn-player-1-single:active {
-  background: #DDD5F5 !important;
-}
-
-#btn-player-1-single .button-label {
-  color: #4A35B0 !important;
-}
-
+#btn-player-1-single,
 #btn-player-2-single {
   background: #E0F7FC !important;
   box-shadow: 0 4px 20px rgba(0, 136, 165, 0.15) !important;
 }
 
+#btn-player-1-single:active,
 #btn-player-2-single:active {
   background: #C2F0F9 !important;
 }
 
+#btn-player-1-single .button-label,
 #btn-player-2-single .button-label {
   color: #0088A5 !important;
 }
