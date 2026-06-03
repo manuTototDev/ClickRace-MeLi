@@ -998,7 +998,7 @@ function finishGame(winner, players) {
       el.dataset.winner = winner;
     });
     DOM.winnerSlogans.forEach(el => {
-      el.innerHTML = (mWinner?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
+      el.innerHTML = (MARKETS[currentMarket]?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
     });
 
     gsap.fromTo(DOM.overlayWinners,
@@ -1163,7 +1163,7 @@ function handleDebugRoute() {
       el.dataset.winner = winner;
     });
     DOM.winnerSlogans.forEach(el => {
-      el.innerHTML = (mWinner?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
+      el.innerHTML = (MARKETS[currentMarket]?.winner ?? '¡LA COMUNIDAD<br>MÁS GRANDE!').replace('\n', '<br>');
     });
 
     const p1 = getMockPlayer(winner === 1 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
