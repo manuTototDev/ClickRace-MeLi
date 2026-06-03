@@ -171,18 +171,18 @@ function applyMarket(code) {
   setAllText('.btn-play-again', m.playAgain);
 
   // ── Markers de las barras ──
-  const markersP1 = document.querySelectorAll('#totem-1 .bar-marker-label');
-  if (markersP1.length >= 3) {
-    markersP1[0].textContent = m.markers[2];
-    markersP1[1].textContent = m.markers[1];
-    markersP1[2].textContent = m.markers[0];
-  }
-  const markersP2 = document.querySelectorAll('#totem-2 .bar-marker-label');
-  if (markersP2.length >= 3) {
-    markersP2[0].textContent = m.markers[2];
-    markersP2[1].textContent = m.markers[1];
-    markersP2[2].textContent = m.markers[0];
-  }
+  const updateMarkersForTotem = (totemId) => {
+    const markers = document.querySelectorAll(`#${totemId} .bar-marker-label`);
+    if (markers.length >= 3) {
+      markers[0].textContent = m.markers[2];
+      markers[1].textContent = m.markers[1];
+      markers[2].textContent = m.markers[0];
+    }
+  };
+  updateMarkersForTotem('totem-1');
+  updateMarkersForTotem('totem-2');
+  updateMarkersForTotem('totem-1-single');
+  updateMarkersForTotem('totem-2-single');
 
   // ── Splash headline y subtítulo (uno por tótem) ──
   setAllHTML('.splash-headline-main', m.splashHeadline.replace('\n', '<br>'));
@@ -200,10 +200,10 @@ function applyMarket(code) {
   });
 
   // ── Badges de nivel (estado inicial) ──
-  const badge1 = document.getElementById('badge-text-1');
-  const badge2 = document.getElementById('badge-text-2');
-  if (badge1 && !badge1.dataset.active) badge1.textContent = m.levelNames[0];
-  if (badge2 && !badge2.dataset.active) badge2.textContent = m.levelNames[0];
+  const badges1 = [document.getElementById('badge-text-1'), document.getElementById('badge-text-1-single')];
+  const badges2 = [document.getElementById('badge-text-2'), document.getElementById('badge-text-2-single')];
+  badges1.forEach(b => { if (b && !b.dataset.active) b.textContent = m.levelNames[0]; });
+  badges2.forEach(b => { if (b && !b.dataset.active) b.textContent = m.levelNames[0]; });
 
   // ── Winner name si ya hay ganador (refleja en todos los tótems) ──
   document.querySelectorAll('.winner-name').forEach(el => {
@@ -258,12 +258,30 @@ const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
 
 const DOM = {
-  fill:       { 1: $('fill-1'),       2: $('fill-2')       },
-  counter:    { 1: $('counter-1'),    2: $('counter-2')    },
-  badge:      { 1: $('badge-1'),      2: $('badge-2')      },
-  badgeText:  { 1: $('badge-text-1'), 2: $('badge-text-2') },
-  totem:      { 1: $('totem-1'),      2: $('totem-2')      },
-  particles:  { 1: $('particles-1'),  2: $('particles-2')  },
+  fill:       {
+    1: [ $('fill-1'), $('fill-1-single') ].filter(Boolean),
+    2: [ $('fill-2'), $('fill-2-single') ].filter(Boolean)
+  },
+  counter:    {
+    1: [ $('counter-1'), $('counter-1-single') ].filter(Boolean),
+    2: [ $('counter-2'), $('counter-2-single') ].filter(Boolean)
+  },
+  badge:      {
+    1: [ $('badge-1') ].filter(Boolean),
+    2: [ $('badge-2') ].filter(Boolean)
+  },
+  badgeText:  {
+    1: [ $('badge-text-1'), $('badge-text-1-single') ].filter(Boolean),
+    2: [ $('badge-text-2'), $('badge-text-2-single') ].filter(Boolean)
+  },
+  totem:      {
+    1: [ $('totem-1'), $('totem-1-single') ].filter(Boolean),
+    2: [ $('totem-2'), $('totem-2-single') ].filter(Boolean)
+  },
+  particles:  {
+    1: [ $('particles-1'), $('particles-1-single') ].filter(Boolean),
+    2: [ $('particles-2'), $('particles-2-single') ].filter(Boolean)
+  },
 
   // Compartidos: hay una instancia en cada tótem, se controlan en simultáneo
   overlays:          $$('.overlay-shared'),
@@ -305,46 +323,58 @@ function createPersonSVG(color) {
 
 // Spawnea 4 personas flotantes en la altura Y del progreso actual
 function spawnPersonIcons(player, progress) {
-  const container = DOM.fill[player];
-  if (!container) return;
+  const containers = DOM.fill[player] || [];
+  if (!containers.length) return;
 
   const color      = PLAYER_COLORS[player];
   // Y base sube con el progreso: 0% = fondo, ~88% = tope
   const baseBottom = progress * 88;
 
-  for (let i = 0; i < 4; i++) {
-    const icon = document.createElement('div');
-    icon.className = 'float-person';
+  containers.forEach(container => {
+    if (!container) return;
+    const shell = container.closest('.viewport-shell');
+    if (shell && shell.parentElement && shell.parentElement.classList.contains('hidden')) {
+      return;
+    }
 
-    const x      = -5 + Math.random() * 75;       // X: -5% – 70% (bordes recortados por overflow)
-    const yOff   = (Math.random() - 0.5) * 5;     // ±2.5% jitter en Y
-    const bottom = Math.max(0, Math.min(90, baseBottom + yOff));
-    const rot    = (Math.random() - 0.5) * 50;    // rotación: −25° – +25°
-    const size   = 28 + Math.random() * 14;        // ancho: 28% – 42% del track
-    const delay  = i * 55;                         // stagger entre los 4
+    for (let i = 0; i < 4; i++) {
+      const icon = document.createElement('div');
+      icon.className = 'float-person';
 
-    icon.style.left           = `${x}%`;
-    icon.style.bottom         = `${bottom}%`;
-    icon.style.width          = `${size}%`;
-    icon.style.animationDelay = `${delay}ms`;
-    icon.style.setProperty('--rot', `${rot}deg`);
-    icon.innerHTML = createPersonSVG(color);
+      const x      = -5 + Math.random() * 75;       // X: -5% – 70% (bordes recortados por overflow)
+      const yOff   = (Math.random() - 0.5) * 5;     // ±2.5% jitter en Y
+      const bottom = Math.max(0, Math.min(90, baseBottom + yOff));
+      const rot    = (Math.random() - 0.5) * 50;    // rotación: −25° – +25°
+      const size   = 28 + Math.random() * 14;        // ancho: 28% – 42% del track
+      const delay  = i * 55;                         // stagger entre los 4
 
-    container.appendChild(icon);
-    // Los iconos se quedan fijos — no hay setTimeout de borrado
-  }
+      icon.style.left           = `${x}%`;
+      icon.style.bottom         = `${bottom}%`;
+      icon.style.width          = `${size}%`;
+      icon.style.animationDelay = `${delay}ms`;
+      icon.style.setProperty('--rot', `${rot}deg`);
+      icon.innerHTML = createPersonSVG(color);
+
+      container.appendChild(icon);
+    }
+  });
 }
 
 // Watermark — fondo tenue que crece con el progreso
-function ensureWatermark(player) {
-  if (!DOM.fill[player]) return null;
-  let wm = DOM.fill[player].querySelector('.bar-watermark');
-  if (!wm) {
-    wm = document.createElement('div');
-    wm.className = `bar-watermark bar-watermark--p${player}`;
-    DOM.fill[player].prepend(wm);
-  }
-  return wm;
+function ensureWatermarks(player) {
+  const containers = DOM.fill[player] || [];
+  const watermarks = [];
+  containers.forEach(container => {
+    if (!container) return;
+    let wm = container.querySelector('.bar-watermark');
+    if (!wm) {
+      wm = document.createElement('div');
+      wm.className = `bar-watermark bar-watermark--p${player}`;
+      container.prepend(wm);
+    }
+    watermarks.push(wm);
+  });
+  return watermarks;
 }
 
 
@@ -448,8 +478,12 @@ DOM.btnsPlayAgain.forEach(btn => {
   });
 });
 DOM.btnReset.addEventListener('click',     () => actionReset());
-DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
-DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
+if (DOM.btnPlayer1) DOM.btnPlayer1.addEventListener('click',   () => actionClick(1));
+if (DOM.btnPlayer2) DOM.btnPlayer2.addEventListener('click',   () => actionClick(2));
+const btnP1Single = $('btn-player-1-single');
+const btnP2Single = $('btn-player-2-single');
+if (btnP1Single) btnP1Single.addEventListener('click', () => actionClick(1));
+if (btnP2Single) btnP2Single.addEventListener('click', () => actionClick(2));
 
 // Atajos de teclado (debug/escritorio)
 document.addEventListener('keydown', e => {
@@ -579,8 +613,17 @@ function formatFollowers(n) {
 
 // ─── Animations ───────────────────────────────────────────────
 function animateButtonPress(player) {
-  const btn = player === 1 ? DOM.btnPlayer1 : DOM.btnPlayer2;
-  gsap.fromTo(btn,
+  const buttons = [];
+  if (player === 1) {
+    if (DOM.btnPlayer1) buttons.push(DOM.btnPlayer1);
+    const sBtn = $('btn-player-1-single');
+    if (sBtn) buttons.push(sBtn);
+  } else {
+    if (DOM.btnPlayer2) buttons.push(DOM.btnPlayer2);
+    const sBtn = $('btn-player-2-single');
+    if (sBtn) buttons.push(sBtn);
+  }
+  gsap.fromTo(buttons,
     { scale: 0.88 },
     { scale: 1, duration: 0.3, ease: 'back.out(2)' }
   );
@@ -593,8 +636,8 @@ function updatePlayerUI(player, data) {
 
   // ── Personas flotantes + watermark de nivel ───────────────────────
   spawnPersonIcons(player, data.progress);
-  const wm = ensureWatermark(player);
-  if (wm) gsap.to(wm, { height: `${data.progress * 85}%`, duration: 0.4, ease: 'power2.out' });
+  const wms = ensureWatermarks(player);
+  if (wms.length) gsap.to(wms, { height: `${data.progress * 85}%`, duration: 0.4, ease: 'power2.out' });
 
   // Mover el panel de comunidad junto con la altura del avance (define el punto de spawn de iconos)
   const infoEl = document.getElementById(`player-info-${player}`);
@@ -603,7 +646,7 @@ function updatePlayerUI(player, data) {
   }
 
   // Actualizar opacidad de marcadores según progreso (umbral)
-  const markers = document.querySelectorAll(`#totem-${player} .bar-marker[data-threshold]`);
+  const markers = document.querySelectorAll(`#totem-${player} .bar-marker[data-threshold], #totem-${player}-single .bar-marker[data-threshold]`);
   markers.forEach(marker => {
     const threshold = parseFloat(marker.getAttribute('data-threshold'));
     const targetOpacity = data.progress >= threshold ? 1 : 0.3;
@@ -611,12 +654,16 @@ function updatePlayerUI(player, data) {
   });
 
   // Contador con tamaño dinámico en cqw
-  DOM.counter[player].textContent = display;
-  const len = display.length;
-  DOM.counter[player].style.fontSize =
-    len >= 6 ? '7.5cqw' : len >= 5 ? '9cqw' : '11cqw';
+  const counters = DOM.counter[player] || [];
+  counters.forEach(counter => {
+    if (!counter) return;
+    counter.textContent = display;
+    const len = display.length;
+    counter.style.fontSize =
+      len >= 6 ? '7.5cqw' : len >= 5 ? '9cqw' : '11cqw';
+  });
 
-  gsap.fromTo(DOM.counter[player],
+  gsap.fromTo(counters,
     { scale: 1.3 },
     { scale: 1, duration: 0.2, ease: 'back.out(2)' }
   );
@@ -629,14 +676,17 @@ function updatePlayerUI(player, data) {
     'Lv.3 · Leales',
     'Lv.4 · ¡CIMA!',
   ];
-  if (DOM.badgeText[player]) {
-    DOM.badgeText[player].dataset.active = '1';
-    DOM.badgeText[player].textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
-  }
+  const badgesText = DOM.badgeText[player] || [];
+  badgesText.forEach(badge => {
+    if (badge) {
+      badge.dataset.active = '1';
+      badge.textContent = levelNames[data.level] ?? `Lv.${data.level + 1}`;
+    }
+  });
 
   // Dots de nivel en la barra
-  const zoneEl = document.getElementById(`totem-${player}`);
-  if (zoneEl) {
+  const zoneEls = [document.getElementById(`totem-${player}`), document.getElementById(`totem-${player}-single`)].filter(Boolean);
+  zoneEls.forEach(zoneEl => {
     const dots = Array.from(zoneEl.querySelectorAll('.bar-dot')).reverse();
     dots.forEach((dot, i) => {
       if (i <= data.level) {
@@ -647,10 +697,7 @@ function updatePlayerUI(player, data) {
         dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
       }
     });
-  }
-
-  // (la celebración por cruce de hito se dispara desde actionClick, donde
-  // tenemos el level previo para comparar)
+  });
 }
 
 function spawnParticles(player) {
@@ -687,31 +734,42 @@ const MILESTONE_FILL_PCT  = { 1: 30, 2: 65, 3: 100 };
 const CELEBRATION_COUNTS  = { 1: 30, 2: 70, 3: 560 };  // escala con el hito
 const CELEBRATION_COLOR   = '#A87EE8';                  // morado, igual que P1
 
-function ensureCelebrationLayer(player) {
-  const shell = DOM.totem[player]?.closest('.viewport-shell');
-  if (!shell) return null;
-  let layer = shell.querySelector('.celebration-layer');
-  if (!layer) {
-    layer = document.createElement('div');
-    layer.className = 'celebration-layer';
-    shell.appendChild(layer);
-  }
-  return layer;
+function ensureCelebrationLayers(player) {
+  const totems = DOM.totem[player] || [];
+  const layers = [];
+  totems.forEach(totem => {
+    if (!totem) return;
+    const shell = totem.closest('.viewport-shell');
+    if (!shell) return;
+    if (shell.parentElement && shell.parentElement.classList.contains('hidden')) {
+      return;
+    }
+    let layer = shell.querySelector('.celebration-layer');
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.className = 'celebration-layer';
+      shell.appendChild(layer);
+    }
+    layers.push(layer);
+  });
+  return layers;
 }
 
 function spawnCelebrationIcons(player, levelIdx) {
-  const layer = ensureCelebrationLayer(player);
-  if (!layer) return;
+  const layers = ensureCelebrationLayers(player);
+  if (!layers.length) return;
 
   const count = CELEBRATION_COUNTS[levelIdx] ?? 20;
 
-  if (levelIdx === 3) {
-    // ── FUENTE: íconos salen disparados desde la cima y caen en cascada ──
-    spawnFountain(layer, count);
-  } else {
-    // ── HITOS 1-2: íconos suben desde abajo y caen ──
-    spawnRisingIcons(layer, count, MILESTONE_FILL_PCT[levelIdx] ?? 50);
-  }
+  layers.forEach(layer => {
+    if (levelIdx === 3) {
+      // ── FUENTE: íconos salen disparados desde la cima y caen en cascada ──
+      spawnFountain(layer, count);
+    } else {
+      // ── HITOS 1-2: íconos suben desde abajo y caen ──
+      spawnRisingIcons(layer, count, MILESTONE_FILL_PCT[levelIdx] ?? 50);
+    }
+  });
 }
 
 function spawnRisingIcons(layer, count, fillPct) {
@@ -820,10 +878,11 @@ function startGame() {
   DOM.startArea.classList.add('hidden');
   DOM.statusArea.classList.remove('hidden');
 
-  DOM.counter[1].textContent = '0';
-  DOM.counter[2].textContent = '0';
+  (DOM.counter[1] || []).forEach(el => { if (el) el.textContent = '0'; });
+  (DOM.counter[2] || []).forEach(el => { if (el) el.textContent = '0'; });
 
-  gsap.fromTo([DOM.totem[1], DOM.totem[2]],
+  const allTotems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
+  gsap.fromTo(allTotems,
     { scale: 0.96, opacity: 0.7 },
     { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.5)' }
   );
@@ -838,8 +897,8 @@ function finishGame(winner, players) {
   updatePlayerUI(2, players[2]);
 
   const loser = winner === 1 ? 2 : 1;
-  DOM.totem[winner].classList.add('totem--winner');
-  gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0.5 });
+  (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
+  (DOM.totem[loser] || []).forEach(el => el && gsap.to(el, { opacity: 0.4, scale: 0.97, duration: 0.5 }));
 
   // Dejamos que la celebración de COMPRADORES llene la pantalla antes del winner
   setTimeout(() => {
@@ -870,32 +929,37 @@ function resetUI() {
   hideAll(DOM.overlays);
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
-  DOM.totem[1].classList.remove('totem--winner');
-  DOM.totem[2].classList.remove('totem--winner');
+  
+  (DOM.totem[1] || []).forEach(el => el && el.classList.remove('totem--winner'));
+  (DOM.totem[2] || []).forEach(el => el && el.classList.remove('totem--winner'));
 
-  gsap.to([DOM.totem[1], DOM.totem[2]], { opacity: 1, scale: 1, duration: 0.4 });
+  const allTotems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
+  gsap.to(allTotems, { opacity: 1, scale: 1, duration: 0.4 });
 
   // Limpiar personas flotantes y resetear watermarks
   [1, 2].forEach(p => {
-    if (!DOM.fill[p]) return;
-    DOM.fill[p].querySelectorAll('.float-person').forEach(el => el.remove());
-    const wm = DOM.fill[p].querySelector('.bar-watermark');
-    if (wm) gsap.to(wm, { height: '0%', duration: 0.5, ease: 'power2.inOut' });
+    const containers = DOM.fill[p] || [];
+    containers.forEach(container => {
+      if (!container) return;
+      container.querySelectorAll('.float-person').forEach(el => el.remove());
+      const wm = container.querySelector('.bar-watermark');
+      if (wm) gsap.to(wm, { height: '0%', duration: 0.5, ease: 'power2.inOut' });
+    });
 
     // Resetear posición de la tarjeta de comunidad dinámica
     const infoEl = document.getElementById(`player-info-${p}`);
     if (infoEl) gsap.to(infoEl, { bottom: '0%', duration: 0.5, ease: 'power2.inOut' });
 
     // Resetear opacidad de marcadores
-    const markers = document.querySelectorAll(`#totem-${p} .bar-marker[data-threshold]`);
+    const markers = document.querySelectorAll(`#totem-${p} .bar-marker[data-threshold], #totem-${p}-single .bar-marker[data-threshold]`);
     markers.forEach(marker => gsap.to(marker, { opacity: 0.3, duration: 0.5, ease: 'power2.inOut' }));
   });
 
   // Limpiar capas de celebración
   clearCelebrationLayers();
 
-  DOM.counter[1].textContent = '0';
-  DOM.counter[2].textContent = '0';
+  (DOM.counter[1] || []).forEach(el => { if (el) el.textContent = '0'; });
+  (DOM.counter[2] || []).forEach(el => { if (el) el.textContent = '0'; });
 
   document.querySelectorAll('.bar-dot').forEach(dot => {
     dot.style.background = dot.style.borderColor = dot.style.boxShadow = '';
@@ -906,14 +970,51 @@ function resetUI() {
 
   const mReset = MARKETS[currentMarket];
   const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';
-  if (DOM.badgeText[1]) { DOM.badgeText[1].textContent = resetLevel; delete DOM.badgeText[1].dataset.active; }
-  if (DOM.badgeText[2]) { DOM.badgeText[2].textContent = resetLevel; delete DOM.badgeText[2].dataset.active; }
+  (DOM.badgeText[1] || []).forEach(el => { if (el) { el.textContent = resetLevel; delete el.dataset.active; } });
+  (DOM.badgeText[2] || []).forEach(el => { if (el) { el.textContent = resetLevel; delete el.dataset.active; } });
 }
 
 // ─── Debug Route Router ───────────────────────────────────────
 function handleDebugRoute() {
   const params = new URLSearchParams(window.location.search);
   const screen = params.get('screen') || window.location.hash.replace('#', '');
+  
+  const isSingle = screen && (screen === 'single' || screen.startsWith('single-') || screen.startsWith('single'));
+  
+  const dualStage = document.getElementById('dual-stage');
+  const singleStage = document.getElementById('single-stage');
+  if (dualStage && singleStage) {
+    if (isSingle) {
+      dualStage.classList.add('hidden');
+      singleStage.classList.remove('hidden');
+    } else {
+      dualStage.classList.remove('hidden');
+      singleStage.classList.add('hidden');
+    }
+  }
+
+  if (screen === 'single') {
+    cancelAutoReset();
+    clearIdleTimer();
+    document.querySelectorAll('.splash').forEach(splash => {
+      splash.classList.remove('splash--out');
+      splash.style.display = '';
+      splash.style.pointerEvents = '';
+    });
+    hideAll(DOM.overlays);
+    hideAll(DOM.overlayCountdowns);
+    hideAll(DOM.overlayWinners);
+    
+    DOM.startArea.classList.remove('hidden');
+    DOM.statusArea.classList.add('hidden');
+    const totems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
+    totems.forEach(el => el.classList.remove('totem--winner'));
+    gsap.to(totems, { opacity: 1, scale: 1, duration: 0 });
+    
+    resetUI();
+    return;
+  }
+
   if (!screen) return;
 
   cancelAutoReset();
@@ -931,9 +1032,9 @@ function handleDebugRoute() {
   // Restore game state/UI to normal
   DOM.startArea.classList.remove('hidden');
   DOM.statusArea.classList.add('hidden');
-  DOM.totem[1].classList.remove('totem--winner');
-  DOM.totem[2].classList.remove('totem--winner');
-  gsap.to([DOM.totem[1], DOM.totem[2]], { opacity: 1, scale: 1, duration: 0 });
+  const totems = [...(DOM.totem[1] || []), ...(DOM.totem[2] || [])].filter(Boolean);
+  totems.forEach(el => el.classList.remove('totem--winner'));
+  gsap.to(totems, { opacity: 1, scale: 1, duration: 0 });
 
   const getMockPlayer = (clicks) => {
     const p = { clicks, progress: clicks / GAME_CONFIG.CLICKS_TO_WIN };
@@ -945,21 +1046,27 @@ function handleDebugRoute() {
     return p;
   };
 
-  if (screen === 'splash') {
+  let baseScreen = screen;
+  if (isSingle) {
+    baseScreen = screen.replace(/^single\-?/, '') || 'game';
+  }
+
+  if (baseScreen === 'splash') {
     document.querySelectorAll('.splash').forEach(splash => {
       splash.classList.remove('splash--out');
       splash.style.display = '';
       splash.style.pointerEvents = '';
     });
-  } else if (screen === 'countdown') {
+  } else if (baseScreen === 'countdown') {
     showAll(DOM.overlays);
     showAll(DOM.overlayCountdowns);
     hideAll(DOM.overlayWinners);
-  } else if (screen === 'winner1' || screen === 'winner2') {
-    const winner = screen === 'winner1' ? 1 : 2;
+  } else if (baseScreen === 'winner1' || baseScreen === 'winner2') {
+    const winner = baseScreen === 'winner1' ? 1 : 2;
     const loser = winner === 1 ? 2 : 1;
-    DOM.totem[winner].classList.add('totem--winner');
-    gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0 });
+    
+    (DOM.totem[winner] || []).forEach(el => el && el.classList.add('totem--winner'));
+    (DOM.totem[loser] || []).forEach(el => el && gsap.to(el, { opacity: 0.4, scale: 0.97, duration: 0 }));
 
     showAll(DOM.overlays);
     hideAll(DOM.overlayCountdowns);
@@ -978,7 +1085,7 @@ function handleDebugRoute() {
     const p2 = getMockPlayer(winner === 2 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
     updatePlayerUI(1, p1);
     updatePlayerUI(2, p2);
-  } else if (screen === 'playing' || screen === 'game') {
+  } else if (baseScreen === 'playing' || baseScreen === 'game') {
     DOM.startArea.classList.add('hidden');
     DOM.statusArea.classList.remove('hidden');
     const p1 = getMockPlayer(18);

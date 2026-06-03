@@ -1432,3 +1432,250 @@ body {
   display: block;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.12));
 }
+
+/* ══════════════════════════════════════════════════════════════
+   SINGLE SCREEN — REDUNDANCIA (1 pantalla unificada)
+   ══════════════════════════════════════════════════════════════ */
+#single-stage {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #111111; /* Letterbox background */
+}
+
+#single-stage .viewport-shell {
+  width: min(100vw, calc(100vh * 9 / 16));
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  container-type: inline-size;
+  container-name: shell;
+}
+
+/* Distribución de la Arena en una Pantalla */
+.game-area--single-screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 4cqw;
+  box-sizing: border-box;
+}
+
+.bar-column--single-left,
+.bar-column--single-right {
+  width: 20%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2vmin 0 1.5vmin;
+  position: relative;
+  overflow: visible;
+}
+
+.bar-column--single-left .track-wrapper,
+.bar-column--single-right .track-wrapper {
+  position: relative;
+  width: 12cqw;
+  height: 52vh;
+  margin-bottom: 1vmin;
+}
+
+.bar-column--single-left .bar-track,
+.bar-column--single-right .bar-track {
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #cccccc;
+}
+
+/* Centrar marcadores directamente sobre las barras de avance */
+.bar-level-markers--on-track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.bar-marker--on-track {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translate(-50%, 50%) !important;
+  width: 20cqw !important;
+  height: 5.5cqw !important;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.bar-marker--on-track .bar-marker-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+}
+
+.bar-marker--on-track .bar-marker-label {
+  position: relative;
+  z-index: 2;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: clamp(6px, 1.8cqw, 10px);
+  font-weight: 800;
+  color: #1A1F6C !important;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  width: 100%;
+  text-align: center;
+  padding-left: 21%;
+  box-sizing: border-box;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Zona Central: Avance y número de clicks */
+.center-zone--single-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2vh;
+  padding: 0 2cqw;
+  position: relative;
+  z-index: 10;
+}
+
+.player-info-single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5vh;
+  width: 100%;
+}
+
+.player-tag-single {
+  font-size: clamp(9px, 3.2cqw, 13px);
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.player-info-single--1 .player-tag-single {
+  background: rgba(74, 53, 176, 0.1);
+  color: #4A35B0;
+  border: 1px solid rgba(74, 53, 176, 0.3);
+}
+
+.player-info-single--2 .player-tag-single {
+  background: rgba(0, 136, 165, 0.1);
+  color: #0088A5;
+  border: 1px solid rgba(0, 136, 165, 0.3);
+}
+
+.player-name-single {
+  font-size: clamp(9px, 2.8cqw, 12px);
+  font-weight: 700;
+  color: #1A1F6C;
+  opacity: 0.8;
+}
+
+.click-counter-single {
+  font-size: clamp(20px, 9.5cqw, 40px);
+  font-weight: 900;
+  color: #1A1F6C;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  transition: transform 0.2s var(--ease-bounce);
+}
+
+.level-badge-single {
+  font-size: clamp(7px, 2.3cqw, 10px);
+  font-weight: 700;
+  color: #4A35B0;
+  background: #EDE9FF;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: inline-block;
+  box-shadow: 0 2px 8px rgba(74, 53, 176, 0.06);
+}
+
+.player-info-single--2 .level-badge-single {
+  color: #0088A5;
+  background: #E0F7FC;
+  box-shadow: 0 2px 8px rgba(0, 136, 165, 0.06);
+}
+
+.center-divider {
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(26, 31, 108, 0.15), transparent);
+  margin: 0.5vh 0;
+}
+
+/* Botones de Seguir al pie en una sola pantalla */
+.button-zone--single-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4cqw;
+  padding: 2vmin 4cqw 6vmin;
+  width: 100%;
+}
+
+.big-button--single {
+  flex: 1 !important;
+  width: auto !important;
+  height: 11.5cqw !important;
+  border-radius: 2.2cqw !important;
+}
+
+#btn-player-1-single {
+  background: #EDE9FF !important;
+  box-shadow: 0 4px 20px rgba(74, 53, 176, 0.15) !important;
+}
+
+#btn-player-1-single:active {
+  background: #DDD5F5 !important;
+}
+
+#btn-player-1-single .button-label {
+  color: #4A35B0 !important;
+}
+
+#btn-player-2-single {
+  background: #E0F7FC !important;
+  box-shadow: 0 4px 20px rgba(0, 136, 165, 0.15) !important;
+}
+
+#btn-player-2-single:active {
+  background: #C2F0F9 !important;
+}
+
+#btn-player-2-single .button-label {
+  color: #0088A5 !important;
+}
+

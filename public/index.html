@@ -325,7 +325,199 @@
 
 </div>
 
-<script src="/js/game.js?v=20260602p"></script>
+  <!-- ════════════════════════════════════════════════════════
+       SINGLE SCREEN — REDUNDANCIA (1 pantalla con ambos jugadores)
+  ════════════════════════════════════════════════════════ -->
+  <div id="single-stage" class="hidden">
+    <div class="viewport-shell" data-totem="single">
+
+      <!-- ── SPLASH ── -->
+      <div class="splash">
+        <div class="splash-logo">
+          <img src="/assets/logo.png" alt="Mercado Ads" />
+        </div>
+
+        <div class="splash-center">
+          <div class="splash-banner"></div>
+          <div class="splash-card">
+            <div class="splash-headline">
+              <span class="splash-headline-main">¡AUMENTA<br>SEGUIDORES!</span>
+              <span class="splash-headline-sub">CRECE TU COMUNIDAD<br>Y GENERA MÁS VENTAS</span>
+            </div>
+          </div>
+          <button class="splash-play-btn splash-play" aria-label="Iniciar juego">
+            <img src="/assets/Play.png" alt="Play" />
+          </button>
+        </div>
+
+        <button class="splash-gear-btn splash-gear" aria-label="Seleccionar mercado">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="#555" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ── MARKET MODAL ── -->
+      <div class="market-modal hidden">
+        <div class="market-modal-box">
+          <p class="market-modal-title">SELECCIONAR MERCADO</p>
+          <div class="market-grid">
+            <button class="market-btn" data-market="MX"><span class="market-flag">🇲🇽</span><span class="market-name">México</span></button>
+            <button class="market-btn" data-market="BR"><span class="market-flag">🇧🇷</span><span class="market-name">Brasil</span></button>
+            <button class="market-btn" data-market="AR"><span class="market-flag">🇦🇷</span><span class="market-name">Argentina</span></button>
+            <button class="market-btn" data-market="CL"><span class="market-flag">🇨🇱</span><span class="market-name">Chile</span></button>
+            <button class="market-btn" data-market="CO"><span class="market-flag">🇨🇴</span><span class="market-name">Colombia</span></button>
+            <button class="market-btn" data-market="UY"><span class="market-flag">🇺🇾</span><span class="market-name">Uruguay</span></button>
+          </div>
+          <div class="difficulty-section">
+            <p class="difficulty-title">DIFICULTAD</p>
+            <div class="difficulty-grid">
+              <button class="difficulty-btn" data-difficulty="easy">EASY<span class="difficulty-sub">60 clicks</span></button>
+              <button class="difficulty-btn" data-difficulty="medium">MEDIUM<span class="difficulty-sub">80 clicks</span></button>
+              <button class="difficulty-btn" data-difficulty="hard">HARD<span class="difficulty-sub">120 clicks</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OVERLAY (Countdown / Winner) ── -->
+      <div class="overlay overlay-shared hidden">
+        <div class="overlay-content overlay-countdown hidden">
+          <img src="/assets/logo.png" class="overlay-logo" alt="Mercado Ads" />
+          <p class="overlay-label">¡A AUMENTAR SEGUIDORES!</p>
+          <div class="countdown-number">3</div>
+        </div>
+        <div class="overlay-content overlay-winner hidden">
+          <img src="/assets/logo.png" class="overlay-logo" alt="Mercado Ads" />
+          <div class="splash-center">
+            <div class="splash-card">
+              <div class="splash-headline">
+                <span class="splash-headline-sub winner-slogan">¡LA COMUNIDAD<br>MÁS GRANDE!</span>
+                <span class="splash-headline-main winner-name">JUGADOR 1</span>
+              </div>
+            </div>
+          </div>
+          <div class="winner-bottom-zone">
+            <button class="btn-play-again">¡OTRA RONDA!</button>
+            <div class="auto-reset-wrap">
+              <div class="auto-reset-bar"></div>
+              <span class="auto-reset-label">volviendo en <strong class="auto-reset-count">8</strong>s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ARENA — vista unificada de 1 pantalla ── -->
+      <main class="arena">
+        <div class="totem-screen">
+          <!-- Cintillo -->
+          <div class="game-header-banner">
+            <span class="game-header-text">MÁS SEGUIDORES, MÁS VENTAS</span>
+          </div>
+          <!-- Logo Mercado Ads -->
+          <div class="game-header-logo">
+            <img src="/assets/logo.png" alt="Mercado Ads" />
+          </div>
+
+          <div class="game-area game-area--single-screen">
+
+            <!-- Barra J1 (Izquierda) -->
+            <div class="bar-column bar-column--single-left" id="totem-1-single">
+              <div class="track-wrapper">
+                <div class="bar-level-markers bar-level-markers--on-track">
+                  <div class="bar-marker bar-marker--on-track" style="bottom: 100%" data-threshold="1.0">
+                    <span class="bar-marker-label">COMPRADORES</span>
+                    <img src="/assets/marcadorCompardores.png" class="bar-marker-img" alt="Compradores">
+                  </div>
+                  <div class="bar-marker bar-marker--on-track" style="bottom: 55%" data-threshold="0.55">
+                    <span class="bar-marker-label">LEALES</span>
+                    <img src="/assets/marcadorLeales.png" class="bar-marker-img" alt="Leales">
+                  </div>
+                  <div class="bar-marker bar-marker--on-track" style="bottom: 25%" data-threshold="0.25">
+                    <span class="bar-marker-label">AUDIENCIA</span>
+                    <img src="/assets/marcadorAudicencia.png" class="bar-marker-img" alt="Audiencia">
+                  </div>
+                </div>
+
+                <div class="bar-track">
+                  <div class="bar-fill" id="fill-1-single">
+                    <div class="particle-container" id="particles-1-single"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zona Central (Avance y número de clicks) -->
+            <div class="center-zone center-zone--single-screen">
+              <!-- Info J1 -->
+              <div class="player-info-single player-info-single--1" id="player-info-1-single">
+                <span class="player-tag-single">J1</span>
+                <span class="player-name-single" data-player="1">Tu comunidad:</span>
+                <div class="click-counter-single" id="counter-1-single">0</div>
+                <div class="level-badge-single" id="badge-text-1-single">Lv.1 · Inicio</div>
+              </div>
+
+              <div class="center-divider"></div>
+
+              <!-- Info J2 -->
+              <div class="player-info-single player-info-single--2" id="player-info-2-single">
+                <span class="player-tag-single">J2</span>
+                <span class="player-name-single" data-player="2">Tu comunidad:</span>
+                <div class="click-counter-single" id="counter-2-single">0</div>
+                <div class="level-badge-single" id="badge-text-2-single">Lv.1 · Inicio</div>
+              </div>
+            </div>
+
+            <!-- Barra J2 (Derecha) -->
+            <div class="bar-column bar-column--single-right" id="totem-2-single">
+              <div class="track-wrapper">
+                <div class="bar-level-markers bar-level-markers--on-track">
+                  <div class="bar-marker bar-marker--on-track" style="bottom: 100%" data-threshold="1.0">
+                    <span class="bar-marker-label">COMPRADORES</span>
+                    <img src="/assets/marcadorCompardores.png" class="bar-marker-img" alt="Compradores">
+                  </div>
+                  <div class="bar-marker bar-marker--on-track" style="bottom: 55%" data-threshold="0.55">
+                    <span class="bar-marker-label">LEALES</span>
+                    <img src="/assets/marcadorLeales.png" class="bar-marker-img" alt="Leales">
+                  </div>
+                  <div class="bar-marker bar-marker--on-track" style="bottom: 25%" data-threshold="0.25">
+                    <span class="bar-marker-label">AUDIENCIA</span>
+                    <img src="/assets/marcadorAudicencia.png" class="bar-marker-img" alt="Audiencia">
+                  </div>
+                </div>
+
+                <div class="bar-track">
+                  <div class="bar-fill bar-fill--2" id="fill-2-single">
+                    <div class="particle-container" id="particles-2-single"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Botones de Seguir al pie -->
+          <div class="button-zone button-zone--single-screen">
+            <button type="button" class="andes-button big-button big-button--single" id="btn-player-1-single" data-player="1">
+              <span class="andes-button__content button-label">Seguir</span>
+            </button>
+            <button type="button" class="andes-button big-button big-button--single" id="btn-player-2-single" data-player="2">
+              <span class="andes-button__content button-label">Seguir</span>
+            </button>
+          </div>
+
+          <div class="cta-bar">¡CLICKEA Y CONSTRUÍ TU AUDIENCIA!</div>
+          <!-- Watermark bottom -->
+          <div class="game-watermark" aria-hidden="true">¡AUMENTA<br>SEGUIDORES!</div>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/js/game.js?v=20260602p"></script>
 <script>
   // ── Splash: play -> iniciar juego | engrane -> modal de mercado (sincronizado en ambos tótems) ──
   (function () {
