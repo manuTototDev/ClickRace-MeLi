@@ -43,6 +43,7 @@ app.use(express.json());
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
 app.get('/emojis', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'emojis.html')));
+app.get('/copys',  (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'copys.html')));
 
 // ─── REST API ─────────────────────────────────────────────────────────────────
 app.get('/api/config', (req, res) => res.json(GAME_CONFIG));

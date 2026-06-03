@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro de Localización y Copys — ClickRace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F4F7FC;
+      --navy: #1A1F6C;
+      --yellow: #FFE600;
+      --purple: #4A35B0;
+      --purple-light: #EDE9FF;
+      --text: #2A3B50;
+      --text-light: #60738C;
+      --border: rgba(26, 31, 108, 0.08);
+      --card-bg: #FFFFFF;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, #0F1240 100%);
+      border-radius: 24px;
+      padding: 40px 48px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(26, 31, 108, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 230, 0, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo-badge {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--navy);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #CBD5E1;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* ── Controls / Search ── */
+    .controls-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(26, 31, 108, 0.03);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      background: #F8FAFC;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      background: #FFFFFF;
+      border-color: var(--purple);
+      box-shadow: 0 0 0 4px rgba(74, 53, 176, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-light);
+    }
+
+    /* ── Table Card ── */
+    .table-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(26, 31, 108, 0.04);
+      border: 1px solid var(--border);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: var(--navy);
+      color: #FFFFFF;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 18px 24px;
+      border-bottom: 2px solid rgba(0,0,0,0.15);
+      white-space: nowrap;
+    }
+
+    th:first-child {
+      background: #141852;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+    }
+
+    td {
+      padding: 20px 24px;
+      border-bottom: 1.5px solid #F1F5F9;
+      vertical-align: top;
+      transition: background 0.15s ease;
+    }
+
+    tr:hover td {
+      background: #F8FAFC;
+    }
+
+    td:first-child {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--purple);
+      background: #FCFDFF;
+      border-right: 1.5px solid #F1F5F9;
+      position: sticky;
+      left: 0;
+      z-index: 9;
+      font-size: 13px;
+      white-space: nowrap;
+      min-width: 160px;
+    }
+
+    tr:hover td:first-child {
+      background: #F4F6FC;
+    }
+
+    /* ── Copy Action & Utilities ── */
+    .copy-cell {
+      position: relative;
+      cursor: pointer;
+      min-height: 24px;
+    }
+
+    .copy-icon {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      width: 16px;
+      height: 16px;
+      stroke: var(--purple);
+      pointer-events: none;
+    }
+
+    .copy-cell:hover .copy-icon {
+      opacity: 0.6;
+    }
+
+    .copy-cell:hover .copy-icon:hover {
+      opacity: 1;
+    }
+
+    /* Visual tags for lists */
+    .copy-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .copy-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy);
+      background: #ECEFF5;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(26, 31, 108, 0.08);
+      white-space: nowrap;
+    }
+
+    .difficulty-tag {
+      background: var(--purple-light);
+      color: var(--purple);
+      border-color: rgba(74, 53, 176, 0.12);
+    }
+
+    /* Toast Notification overlay */
+    .toast-notif {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--navy);
+      color: #FFFFFF;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(26, 31, 108, 0.25);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast-notif.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Loading Spinner */
+    .loader-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--purple-light);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-weight: 600;
+      color: var(--text-light);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Encabezado de la página -->
+  <header>
+    <div class="header-content">
+      <span class="logo-badge">Mercado Ads</span>
+      <h1>ClickRace — Centro de Localización y Copys</h1>
+      <p class="subtitle">Inspección, búsqueda y copia rápida de copys de la aplicación por mercado regional.</p>
+    </div>
+  </header>
+
+  <!-- Barra de control / Búsqueda -->
+  <div class="controls-card">
+    <div class="search-wrapper">
+      <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input type="text" id="search-input" class="search-input" placeholder="Buscar por clave de copy o por traducción en cualquier mercado...">
+    </div>
+  </div>
+
+  <!-- Contenido de la Tabla -->
+  <div class="table-card" id="table-card">
+    <div class="loader-wrap" id="loader">
+      <div class="spinner"></div>
+      <div class="loader-text">Cargando y procesando copys desde el código fuente...</div>
+    </div>
+    
+    <div class="table-wrapper" style="display: none;" id="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Clave</th>
+            <th>México 🇲🇽</th>
+            <th>Brasil 🇧🇷</th>
+            <th>Argentina 🇦🇷</th>
+            <th>Chile 🇨🇱</th>
+            <th>Colombia 🇨🇴</th>
+            <th>Uruguay 🇺🇾</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Las filas se construirán dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Notificación emergente (Toast) -->
+<div class="toast-notif" id="toast">
+  <svg style="width: 18px; height: 18px; stroke: var(--yellow);" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+  </svg>
+  <span>¡Copiado al portapapeles!</span>
+</div>
+
+<script>
+  (function () {
+    const loader = document.getElementById('loader');
+    const tableWrapper = document.getElementById('table-wrapper');
+    const tableBody = document.getElementById('table-body');
+    const searchInput = document.getElementById('search-input');
+    const toast = document.getElementById('toast');
+    
+    let marketsData = null;
+    let toastTimeout = null;
+
+    // Función para mostrar toast de éxito
+    function showToast() {
+      clearTimeout(toastTimeout);
+      toast.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1800);
+    }
+
+    // Copiar contenido al portapapeles
+    window.copyText = function (element) {
+      const textToCopy = element.getAttribute('data-value');
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => showToast())
+        .catch(err => console.error('Error al copiar:', err));
+    };
+
+    // Renderizar tags de arreglos u objetos
+    function formatValue(key, val) {
+      if (typeof val === 'string') {
+        return `<div class="copy-cell" data-value="${val.replace(/"/g, '&quot;')}" onclick="copyText(this)">
+                  <span>${val.replace(/\n/g, '<br>').replace(/<br>/g, '<br>')}</span>
+                  <svg class="copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>`;
+      }
+      
+      if (Array.isArray(val)) {
+        const isDifficulty = key.toLowerCase().includes('diff') || key.toLowerCase().includes('level') || key === 'markers';
+        const tags = val.map(item => `<span class="copy-tag ${isDifficulty ? 'difficulty-tag' : ''}">${item}</span>`).join('');
+        const rawText = val.join(', ');
+        return `<div class="copy-cell" data-value="${rawText.replace(/"/g, '&quot;')}" onclick="copyText(this)">
+                  <div class="copy-tags-wrap">${tags}</div>
+                  <svg class="copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>`;
+      }
+
+      if (typeof val === 'object' && val !== null) {
+        // Objeto de diccionarios, ej. marketNames
+        const pairs = Object.entries(val).map(([k, v]) => `<span class="copy-tag">${k}: ${v}</span>`).join('');
+        const rawText = Object.entries(val).map(([k, v]) => `${k}:${v}`).join(', ');
+        return `<div class="copy-cell" data-value="${rawText.replace(/"/g, '&quot;')}" onclick="copyText(this)">
+                  <div class="copy-tags-wrap">${pairs}</div>
+                  <svg class="copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>`;
+      }
+
+      return String(val);
+    }
+
+    // Renderizar la tabla de copys completa
+    function renderTable(markets) {
+      marketsData = markets;
+      const marketsList = ['MX', 'BR', 'AR', 'CL', 'CO', 'UY'];
+      
+      // Obtener todas las claves únicas basándonos en MX (o la unión de todos los mercados)
+      const allKeys = [];
+      marketsList.forEach(mCode => {
+        if (markets[mCode]) {
+          Object.keys(markets[mCode]).forEach(k => {
+            if (!['flag', 'name'].includes(k) && !allKeys.includes(k)) {
+              allKeys.push(k);
+            }
+          });
+        }
+      });
+
+      // Limpiar y construir filas
+      tableBody.innerHTML = '';
+      allKeys.forEach(key => {
+        const row = document.createElement('tr');
+        row.setAttribute('data-key', key.toLowerCase());
+        
+        // Clave
+        const keyTd = document.createElement('td');
+        keyTd.textContent = key;
+        row.appendChild(keyTd);
+
+        // Cada columna de país
+        let combinedText = key;
+        marketsList.forEach(mCode => {
+          const td = document.createElement('td');
+          const value = markets[mCode] ? markets[mCode][key] : '';
+          
+          td.innerHTML = formatValue(key, value);
+          
+          // Aglutinar valores para facilitar búsqueda en texto completo de fila
+          if (typeof value === 'string') combinedText += ' ' + value;
+          else if (Array.isArray(value)) combinedText += ' ' + value.join(' ');
+          else if (typeof value === 'object' && value !== null) combinedText += ' ' + Object.values(value).join(' ');
+
+          row.appendChild(td);
+        });
+
+        row.setAttribute('data-search', combinedText.toLowerCase());
+        tableBody.appendChild(row);
+      });
+
+      // Quitar loader y mostrar tabla
+      loader.style.display = 'none';
+      tableWrapper.style.display = 'block';
+    }
+
+    // Filtro interactivo de búsqueda
+    searchInput.addEventListener('input', function (e) {
+      const query = e.target.value.trim().toLowerCase();
+      const rows = tableBody.querySelectorAll('tr');
+      
+      rows.forEach(row => {
+        const searchText = row.getAttribute('data-search');
+        if (searchText.includes(query)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+
+    // Cargar game.js y parsear el objeto MARKETS
+    fetch('/js/game.js')
+      .then(res => {
+        if (!res.ok) throw new Error('Error al cargar /js/game.js: ' + res.statusText);
+        return res.text();
+      })
+      .then(code => {
+        // Encontrar declaración de MARKETS
+        const startIdx = code.indexOf('const MARKETS = {');
+        if (startIdx === -1) {
+          throw new Error('No se encontró la definición de "const MARKETS =" en game.js');
+        }
+
+        // Buscar cierre por balance de llaves
+        let depth = 0;
+        let endIdx = -1;
+        for (let i = startIdx + 16; i < code.length; i++) {
+          if (code[i] === '{') depth++;
+          else if (code[i] === '}') {
+            depth--;
+            if (depth === 0) {
+              endIdx = i;
+              break;
+            }
+          }
+        }
+
+        if (endIdx === -1) {
+          throw new Error('Llaves desbalanceadas al extraer la estructura MARKETS');
+        }
+
+        const marketsDeclaration = code.slice(startIdx, endIdx + 1);
+
+        // Evaluarla de manera segura en un ámbito cerrado
+        const MARKETS = new Function(`"use strict"; ${marketsDeclaration}; return MARKETS;`)();
+        renderTable(MARKETS);
+      })
+      .catch(err => {
+        console.error(err);
+        loader.innerHTML = `
+          <div style="color: #EF4444; font-weight: 800; font-size: 24px; text-transform: uppercase;">⚠️ Error</div>
+          <div class="loader-text" style="color: #EF4444;">${err.message}</div>
+        `;
+      });
+  })();
+</script>
+</body>
+</html>
