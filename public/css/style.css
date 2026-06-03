@@ -1658,17 +1658,17 @@ body {
 
 #btn-player-1-single,
 #btn-player-2-single {
-  background: #E0F7FC !important;
-  box-shadow: 0 4px 20px rgba(0, 136, 165, 0.15) !important;
+  background: #EDE9FF !important;
+  box-shadow: 0 4px 20px rgba(74, 53, 176, 0.15) !important;
 }
 
 #btn-player-1-single:active,
 #btn-player-2-single:active {
-  background: #C2F0F9 !important;
+  background: #DDD5F5 !important;
 }
 
 #btn-player-1-single .button-label,
 #btn-player-2-single .button-label {
-  color: #0088A5 !important;
+  color: #4A35B0 !important;
 }
 
