@@ -27,6 +27,22 @@ const MARKETS = {
     modalTitle:     'SELECCIONAR MERCADO',
     splashBanner:   '',
     ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
+    headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
+    watermark:      '¡AUMENTA<br>SEGUIDORES!',
+    autoResetLabel: 'volviendo en',
+    difficultyTitle: 'DIFICULTAD',
+    difficultyEasy:   'FÁCIL',
+    difficultyMedium: 'MEDIO',
+    difficultyHard:   'DIFÍCIL',
+    clicksLabel:      'clics',
+    marketNames: {
+      MX: 'México',
+      BR: 'Brasil',
+      AR: 'Argentina',
+      CL: 'Chile',
+      CO: 'Colombia',
+      UY: 'Uruguay',
+    },
   },
   BR: {
     flag: '🇧🇷', name: 'Brasil',
@@ -49,6 +65,22 @@ const MARKETS = {
     modalTitle:     'SELECIONAR MERCADO',
     splashBanner:   '',
     ctaBarLabel:    'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
+    headerBanner:   'MAIS SEGUIDORES, MAIS VENDAS',
+    watermark:      'AUMENTE<br>SEGUIDORES!',
+    autoResetLabel: 'voltando em',
+    difficultyTitle: 'DIFICULDADE',
+    difficultyEasy:   'FÁCIL',
+    difficultyMedium: 'MÉDIO',
+    difficultyHard:   'DIFÍCIL',
+    clicksLabel:      'cliques',
+    marketNames: {
+      MX: 'México',
+      BR: 'Brasil',
+      AR: 'Argentina',
+      CL: 'Chile',
+      CO: 'Colombia',
+      UY: 'Uruguai',
+    },
   },
   AR: {
     flag: '🇦🇷', name: 'Argentina',
@@ -71,6 +103,22 @@ const MARKETS = {
     modalTitle:     'SELECCIONAR MERCADO',
     splashBanner:   '',
     ctaBarLabel:    '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
+    headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
+    watermark:      '¡AUMENTA<br>SEGUIDORES!',
+    autoResetLabel: 'volviendo en',
+    difficultyTitle: 'DIFICULTAD',
+    difficultyEasy:   'FÁCIL',
+    difficultyMedium: 'MEDIO',
+    difficultyHard:   'DIFÍCIL',
+    clicksLabel:      'clics',
+    marketNames: {
+      MX: 'México',
+      BR: 'Brasil',
+      AR: 'Argentina',
+      CL: 'Chile',
+      CO: 'Colombia',
+      UY: 'Uruguay',
+    },
   },
   CL: {
     flag: '🇨🇱', name: 'Chile',
@@ -93,6 +141,22 @@ const MARKETS = {
     modalTitle:     'SELECCIONAR MERCADO',
     splashBanner:   '',
     ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
+    headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
+    watermark:      '¡AUMENTA<br>SEGUIDORES!',
+    autoResetLabel: 'volviendo en',
+    difficultyTitle: 'DIFICULTAD',
+    difficultyEasy:   'FÁCIL',
+    difficultyMedium: 'MEDIO',
+    difficultyHard:   'DIFÍCIL',
+    clicksLabel:      'clics',
+    marketNames: {
+      MX: 'México',
+      BR: 'Brasil',
+      AR: 'Argentina',
+      CL: 'Chile',
+      CO: 'Colombia',
+      UY: 'Uruguay',
+    },
   },
   CO: {
     flag: '🇨🇴', name: 'Colombia',
@@ -115,6 +179,22 @@ const MARKETS = {
     modalTitle:     'SELECCIONAR MERCADO',
     splashBanner:   '',
     ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
+    headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
+    watermark:      '¡AUMENTA<br>SEGUIDORES!',
+    autoResetLabel: 'volviendo en',
+    difficultyTitle: 'DIFICULTAD',
+    difficultyEasy:   'FÁCIL',
+    difficultyMedium: 'MEDIO',
+    difficultyHard:   'DIFÍCIL',
+    clicksLabel:      'clics',
+    marketNames: {
+      MX: 'México',
+      BR: 'Brasil',
+      AR: 'Argentina',
+      CL: 'Chile',
+      CO: 'Colombia',
+      UY: 'Uruguay',
+    },
   },
   UY: {
     flag: '🇺🇾', name: 'Uruguay',
@@ -137,6 +217,22 @@ const MARKETS = {
     modalTitle:     'SELECCIONAR MERCADO',
     splashBanner:   '',
     ctaBarLabel:    '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
+    headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
+    watermark:      '¡AUMENTA<br>SEGUIDORES!',
+    autoResetLabel: 'volviendo en',
+    difficultyTitle: 'DIFICULTAD',
+    difficultyEasy:   'FÁCIL',
+    difficultyMedium: 'MEDIO',
+    difficultyHard:   'DIFÍCIL',
+    clicksLabel:      'clics',
+    marketNames: {
+      MX: 'México',
+      BR: 'Brasil',
+      AR: 'Argentina',
+      CL: 'Chile',
+      CO: 'Colombia',
+      UY: 'Uruguay',
+    },
   },
 };
 
@@ -189,12 +285,12 @@ function applyMarket(code) {
   setAllHTML('.splash-headline-sub', m.splashSub.replace('\n', '<br>'));
 
   // ── Nombres de jugadores (cada tótem tiene 1, con data-player) ──
-  document.querySelectorAll('.player-name').forEach(el => {
+  document.querySelectorAll('.player-name, .player-name-single').forEach(el => {
     el.textContent = m.communityLabel;
   });
 
   // ── Etiquetas cortas (J1 / J2), con data-player ──
-  document.querySelectorAll('.player-tag').forEach(tag => {
+  document.querySelectorAll('.player-tag, .player-tag-single').forEach(tag => {
     const p = tag.dataset.player ?? '1';
     tag.textContent = `${m.playerShort}${p}`;
   });
@@ -222,6 +318,41 @@ function applyMarket(code) {
   document.querySelectorAll('.market-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.market === code);
   });
+
+  // ── Localizar nombres de mercado en los botones del selector ──
+  if (m.marketNames) {
+    document.querySelectorAll('.market-btn').forEach(btn => {
+      const mCode = btn.dataset.market;
+      const nameSpan = btn.querySelector('.market-name');
+      if (nameSpan && m.marketNames[mCode]) {
+        nameSpan.textContent = m.marketNames[mCode];
+      }
+    });
+  }
+
+  // ── Localizar botones de dificultad ──
+  document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    const diff = btn.dataset.difficulty;
+    const diffTextSpan = btn.querySelector('.diff-text');
+    const diffSubSpan = btn.querySelector('.difficulty-sub');
+    
+    if (diff === 'easy') {
+      if (diffTextSpan) diffTextSpan.textContent = m.difficultyEasy;
+      if (diffSubSpan) diffSubSpan.textContent = `60 ${m.clicksLabel}`;
+    } else if (diff === 'medium') {
+      if (diffTextSpan) diffTextSpan.textContent = m.difficultyMedium;
+      if (diffSubSpan) diffSubSpan.textContent = `80 ${m.clicksLabel}`;
+    } else if (diff === 'hard') {
+      if (diffTextSpan) diffTextSpan.textContent = m.difficultyHard;
+      if (diffSubSpan) diffSubSpan.textContent = `120 ${m.clicksLabel}`;
+    }
+  });
+
+  // ── Nuevas localizaciones de copys ──
+  setAllText('.game-header-text', m.headerBanner);
+  setAllHTML('.game-watermark', m.watermark);
+  setAllText('.auto-reset-text', m.autoResetLabel);
+  setAllText('.difficulty-title', m.difficultyTitle);
 }
 
 // ─── Config ───────────────────────────────────────────────────
