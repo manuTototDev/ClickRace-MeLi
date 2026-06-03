@@ -852,6 +852,29 @@ body {
   gap: 8cqw;
 }
 
+.winner-bottom-zone {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.winner-bottom-zone .btn-play-again {
+  margin-bottom: 35cqw;
+  margin-top: 0;
+}
+
+.winner-bottom-zone .auto-reset-wrap {
+  position: absolute;
+  bottom: 18cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0;
+}
+
+
 .winner-slogan {
   color: #1A1F6C !important;
 }
@@ -994,9 +1017,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2vmin;
-  margin-top: 1vmin;
-  width: 28vmin;
+  gap: 2cqw;
+  width: 45cqw;
   opacity: 0;
   animation: fade-in-timer 0.5s 0.3s ease forwards;
 }
@@ -1006,8 +1028,8 @@ body {
 
 .auto-reset-bar {
   width: 100%;
-  height: 3px;
-  background: var(--border);
+  height: 5px;
+  background: rgba(74, 53, 176, 0.15);
   border-radius: 99px;
   overflow: hidden;
   position: relative;
@@ -1016,7 +1038,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--text);
+  background: linear-gradient(90deg, #A87EE8, #4A35B0);
   border-radius: 99px;
   transform-origin: left;
   transform: scaleX(1);
@@ -1032,15 +1054,18 @@ body {
 }
 
 .auto-reset-label {
-  font-size: 1.6vmin;
-  font-weight: 500;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 2.8cqw;
+  font-weight: 700;
+  color: rgba(74, 53, 176, 0.65);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .auto-reset-label strong {
-  font-weight: 900;
-  color: var(--text);
+  font-weight: 800;
+  color: #4A35B0;
 }
+
 
 /* ── Utilidades ─────────────────────────────────────────────── */
 .hidden { display: none !important; }
