@@ -904,4 +904,83 @@ function resetUI() {
   const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';
   if (DOM.badgeText[1]) { DOM.badgeText[1].textContent = resetLevel; delete DOM.badgeText[1].dataset.active; }
   if (DOM.badgeText[2]) { DOM.badgeText[2].textContent = resetLevel; delete DOM.badgeText[2].dataset.active; }
-}
+}
+
+// ─── Debug Route Router ───────────────────────────────────────
+function handleDebugRoute() {
+  const params = new URLSearchParams(window.location.search);
+  const screen = params.get('screen') || window.location.hash.replace('#', '');
+  if (!screen) return;
+
+  cancelAutoReset();
+  clearIdleTimer();
+
+  // Reset standard screens
+  document.querySelectorAll('.splash').forEach(splash => {
+    splash.classList.add('splash--out');
+    splash.style.display = 'none';
+  });
+  hideAll(DOM.overlays);
+  hideAll(DOM.overlayCountdowns);
+  hideAll(DOM.overlayWinners);
+
+  // Restore game state/UI to normal
+  DOM.startArea.classList.remove('hidden');
+  DOM.statusArea.classList.add('hidden');
+  DOM.totem[1].classList.remove('totem--winner');
+  DOM.totem[2].classList.remove('totem--winner');
+  gsap.to([DOM.totem[1], DOM.totem[2]], { opacity: 1, scale: 1, duration: 0 });
+
+  const getMockPlayer = (clicks) => {
+    const p = { clicks, progress: clicks / GAME_CONFIG.CLICKS_TO_WIN };
+    p.level = 0;
+    const levels = GAME_CONFIG.LEVELS;
+    for (let i = levels.length - 1; i >= 0; i--) {
+      if (p.progress >= levels[i].threshold) { p.level = i; break; }
+    }
+    return p;
+  };
+
+  if (screen === 'splash') {
+    document.querySelectorAll('.splash').forEach(splash => {
+      splash.classList.remove('splash--out');
+      splash.style.display = '';
+      splash.style.pointerEvents = '';
+    });
+  } else if (screen === 'countdown') {
+    showAll(DOM.overlays);
+    showAll(DOM.overlayCountdowns);
+    hideAll(DOM.overlayWinners);
+  } else if (screen === 'winner1' || screen === 'winner2') {
+    const winner = screen === 'winner1' ? 1 : 2;
+    const loser = winner === 1 ? 2 : 1;
+    DOM.totem[winner].classList.add('totem--winner');
+    gsap.to(DOM.totem[loser], { opacity: 0.4, scale: 0.97, duration: 0 });
+
+    showAll(DOM.overlays);
+    hideAll(DOM.overlayCountdowns);
+    showAll(DOM.overlayWinners);
+    const mWinner = MARKETS[currentMarket];
+    const winnerLabel = `${mWinner?.playerLabel ?? 'JUGADOR'} ${winner}`;
+    DOM.winnerNames.forEach(el => {
+      el.textContent = winnerLabel;
+      el.dataset.winner = winner;
+    });
+
+    const p1 = getMockPlayer(winner === 1 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
+    const p2 = getMockPlayer(winner === 2 ? GAME_CONFIG.CLICKS_TO_WIN : 15);
+    updatePlayerUI(1, p1);
+    updatePlayerUI(2, p2);
+  } else if (screen === 'playing' || screen === 'game') {
+    DOM.startArea.classList.add('hidden');
+    DOM.statusArea.classList.remove('hidden');
+    const p1 = getMockPlayer(18);
+    const p2 = getMockPlayer(25);
+    updatePlayerUI(1, p1);
+    updatePlayerUI(2, p2);
+  }
+}
+
+window.addEventListener('hashchange', handleDebugRoute);
+window.addEventListener('popstate', handleDebugRoute);
+handleDebugRoute();
