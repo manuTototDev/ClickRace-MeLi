@@ -6,7 +6,7 @@ const path = require('path');
 const fs   = require('fs');
 
 // ── Data directory ──────────────────────────────────────────
-const dataDir = path.join(__dirname, '..', 'data');
+const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
 const DB_PATH = path.join(dataDir, 'clickrace.db');

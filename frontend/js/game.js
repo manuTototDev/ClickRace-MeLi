@@ -471,9 +471,14 @@ let myRole = null; // 1 or 2
 let opponentName = '';
 let isSpectator = false;
 
+// Configuración dinámica del servidor de sockets para producción/despliegue
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? window.location.origin
+  : 'https://clickrace-meli-backend.onrender.com'; // TODO: Reemplaza con tu URL de Render o Railway
+
 try {
   if (typeof io !== 'undefined') {
-    socket = io();
+    socket = io(BACKEND_URL);
   }
 } catch (e) {
   console.warn("Socket.io client script failed to load. Running in offline/serverless mode.", e);

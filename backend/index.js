@@ -38,12 +38,12 @@ function createFreshState() {
 }
 
 // ─── Static ───────────────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use(express.json());
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
-app.get('/emojis', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'emojis.html')));
-app.get('/copys',  (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'copys.html')));
+app.get('/emojis', (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'emojis.html')));
+app.get('/copys',  (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'copys.html')));
 
 // ─── REST API ─────────────────────────────────────────────────────────────────
 app.get('/api/config', (req, res) => res.json(GAME_CONFIG));
