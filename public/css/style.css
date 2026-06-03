@@ -852,8 +852,18 @@ body {
   gap: 8cqw;
 }
 
-.winner-bottom-zone {
+.overlay-winner .splash-center {
   margin-top: auto;
+  margin-bottom: auto;
+  width: 90%;
+}
+
+.overlay-winner .splash-card {
+  padding: 8cqw 4cqw;
+}
+
+.winner-bottom-zone {
+  margin-top: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -874,15 +884,22 @@ body {
   margin-top: 0;
 }
 
-
 .winner-slogan {
   color: #1A1F6C !important;
+  font-size: clamp(18px, 7.2cqw, 104px) !important;
 }
 
 .splash-card .winner-name {
   font-size: clamp(16px, 6.8cqw, 110px) !important;
   color: #1A1F6C !important;
 }
+
+.overlay-winner .splash-card .winner-name {
+  font-size: clamp(32px, 12cqw, 220px) !important;
+  white-space: nowrap;
+}
+
+
 
 .overlay-content {
   text-align: center;
