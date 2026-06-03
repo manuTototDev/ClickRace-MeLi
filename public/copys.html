@@ -325,25 +325,6 @@
 <body>
 
 <div class="container">
-  <!-- Encabezado de la página -->
-  <header>
-    <div class="header-content">
-      <span class="logo-badge">Mercado Ads</span>
-      <h1>ClickRace — Centro de Localización y Copys</h1>
-      <p class="subtitle">Inspección, búsqueda y copia rápida de copys de la aplicación por mercado regional.</p>
-    </div>
-  </header>
-
-  <!-- Barra de control / Búsqueda -->
-  <div class="controls-card">
-    <div class="search-wrapper">
-      <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-      <input type="text" id="search-input" class="search-input" placeholder="Buscar por elemento de interfaz o por traducción en cualquier mercado...">
-    </div>
-  </div>
-
   <!-- Contenido de la Tabla -->
   <div class="table-card" id="table-card">
     <div class="loader-wrap" id="loader">
@@ -355,7 +336,7 @@
       <table>
         <thead>
           <tr>
-            <th>Elemento de Interfaz</th>
+            <th>Identificador / Clave (Key)</th>
             <th>México 🇲🇽</th>
             <th>Brasil 🇧🇷</th>
             <th>Argentina 🇦🇷</th>
@@ -385,7 +366,6 @@
     const loader = document.getElementById('loader');
     const tableWrapper = document.getElementById('table-wrapper');
     const tableBody = document.getElementById('table-body');
-    const searchInput = document.getElementById('search-input');
     const toast = document.getElementById('toast');
     
     let marketsData = null;
@@ -499,20 +479,7 @@
       tableWrapper.style.display = 'block';
     }
 
-    // Filtro interactivo de búsqueda
-    searchInput.addEventListener('input', function (e) {
-      const query = e.target.value.trim().toLowerCase();
-      const rows = tableBody.querySelectorAll('tr');
-      
-      rows.forEach(row => {
-        const searchText = row.getAttribute('data-search');
-        if (searchText.includes(query)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    });
+
 
     // Cargar game.js y parsear el objeto MARKETS
     fetch('/js/game.js')
