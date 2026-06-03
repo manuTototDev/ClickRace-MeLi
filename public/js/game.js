@@ -8,25 +8,16 @@
 const MARKETS = {
   MX: {
     flag: '🇲🇽', name: 'México',
-    header:    'AUMENTA TUS SEGUIDORES',
-    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
-    playerLabel:    'JUGADOR',
-    playerShort:    'J',
     goLabel:        '¡YA!',
-    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   '',
-    ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
     watermark:      '¡AUMENTA<br>SEGUIDORES!',
     autoResetLabel: 'volviendo en',
@@ -46,25 +37,16 @@ const MARKETS = {
   },
   BR: {
     flag: '🇧🇷', name: 'Brasil',
-    header:    'AUMENTE SEUS SEGUIDORES',
-    subtitle:  'QUEM CHEGA PRIMEIRO?',
     countdown: 'A AUMENTAR SEGUIDORES!',
-    cta:       'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
     btnLabel:  'Seguir',
     communityLabel: 'Sua comunidade:',
     winner:    'A MAIOR\nCOMUNIDADE!',
     playAgain: 'MAIS UMA RODADA!',
     markers:   ['COMUNIDADE', 'FIÉIS', 'COMPRADORES'],
-    levels:    ['Sem comunidade', 'Interesse', 'Lealdade', 'Comprador!'],
     splashHeadline: 'AUMENTE\nSEGUIDORES!',
     splashSub:      'CRESÇA SUA COMUNIDADE\nE GERE MAIS VENDAS',
-    playerLabel:    'JOGADOR',
-    playerShort:    'J',
     goLabel:        'JÁ!',
-    levelNames:     ['Lv.1 · Início', 'Lv.2 · Comunidade', 'Lv.3 · Fiéis', 'Lv.4 · TOPO!'],
     modalTitle:     'SELECIONAR MERCADO',
-    splashBanner:   '',
-    ctaBarLabel:    'CLIQUE E FAÇA CRESCER SUA COMUNIDADE!',
     headerBanner:   'MAIS SEGUIDORES, MAIS VENDAS',
     watermark:      'AUMENTE<br>SEGUIDORES!',
     autoResetLabel: 'voltando em',
@@ -84,25 +66,16 @@ const MARKETS = {
   },
   AR: {
     flag: '🇦🇷', name: 'Argentina',
-    header:    'AUMENTÁ TUS SEGUIDORES',
-    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
-    playerLabel:    'JUGADOR',
-    playerShort:    'J',
     goLabel:        '¡YA!',
-    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   '',
-    ctaBarLabel:    '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
     watermark:      '¡AUMENTA<br>SEGUIDORES!',
     autoResetLabel: 'volviendo en',
@@ -122,25 +95,16 @@ const MARKETS = {
   },
   CL: {
     flag: '🇨🇱', name: 'Chile',
-    header:    'AUMENTA TUS SEGUIDORES',
-    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
-    playerLabel:    'JUGADOR',
-    playerShort:    'J',
     goLabel:        '¡YA!',
-    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   '',
-    ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
     watermark:      '¡AUMENTA<br>SEGUIDORES!',
     autoResetLabel: 'volviendo en',
@@ -160,25 +124,16 @@ const MARKETS = {
   },
   CO: {
     flag: '🇨🇴', name: 'Colombia',
-    header:    'AUMENTA TUS SEGUIDORES',
-    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
-    playerLabel:    'JUGADOR',
-    playerShort:    'J',
     goLabel:        '¡YA!',
-    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   '',
-    ctaBarLabel:    '¡CLICKEA Y HAZ CRECER TU COMUNIDAD!',
     headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
     watermark:      '¡AUMENTA<br>SEGUIDORES!',
     autoResetLabel: 'volviendo en',
@@ -198,25 +153,16 @@ const MARKETS = {
   },
   UY: {
     flag: '🇺🇾', name: 'Uruguay',
-    header:    'AUMENTÁ TUS SEGUIDORES',
-    subtitle:  '¿QUIÉN LLEGA PRIMERO?',
     countdown: '¡A AUMENTAR SEGUIDORES!',
-    cta:       '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
     playAgain: '¡OTRA RONDA!',
     markers:   ['COMUNIDAD', 'LEALES', 'COMPRADORES'],
-    levels:    ['Sin comunidad', 'Interés', 'Lealtad', '¡Comprador!'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
-    playerLabel:    'JUGADOR',
-    playerShort:    'J',
     goLabel:        '¡YA!',
-    levelNames:     ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'],
     modalTitle:     'SELECCIONAR MERCADO',
-    splashBanner:   '',
-    ctaBarLabel:    '¡CLICKEÁ Y HACÉ CRECER TU COMUNIDAD!',
     headerBanner:   'MÁS SEGUIDORES, MÁS VENTAS',
     watermark:      '¡AUMENTA<br>SEGUIDORES!',
     autoResetLabel: 'volviendo en',
@@ -247,12 +193,6 @@ function applyMarket(code) {
   // Helper: set textContent en todos los elementos por selector
   const setAllText = (sel, txt) => document.querySelectorAll(sel).forEach(el => el.textContent = txt);
   const setAllHTML = (sel, html) => document.querySelectorAll(sel).forEach(el => el.innerHTML = html);
-
-  // ── challenge title (game area) ──
-  setAllHTML('.challenge-title', `${m.header} <span>${m.subtitle}</span>`);
-
-  // ── CTA bar (una por tótem) ──
-  setAllText('.cta-bar', m.cta);
 
   // ── Botones SEGUIR (cada botón ya tiene data-player) ──
   document.querySelectorAll('.button-label').forEach(el => {
@@ -292,27 +232,28 @@ function applyMarket(code) {
   // ── Etiquetas cortas (J1 / J2), con data-player ──
   document.querySelectorAll('.player-tag, .player-tag-single').forEach(tag => {
     const p = tag.dataset.player ?? '1';
-    tag.textContent = `${m.playerShort}${p}`;
+    tag.textContent = `J${p}`;
   });
 
   // ── Badges de nivel (estado inicial) ──
+  const levelNames = code === 'BR'
+    ? ['Lv.1 · Início', 'Lv.2 · Comunidade', 'Lv.3 · Fiéis', 'Lv.4 · TOPO!']
+    : ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'];
   const badges1 = [document.getElementById('badge-text-1'), document.getElementById('badge-text-1-single')];
   const badges2 = [document.getElementById('badge-text-2'), document.getElementById('badge-text-2-single')];
-  badges1.forEach(b => { if (b && !b.dataset.active) b.textContent = m.levelNames[0]; });
-  badges2.forEach(b => { if (b && !b.dataset.active) b.textContent = m.levelNames[0]; });
+  badges1.forEach(b => { if (b && !b.dataset.active) b.textContent = levelNames[0]; });
+  badges2.forEach(b => { if (b && !b.dataset.active) b.textContent = levelNames[0]; });
 
   // ── Winner name si ya hay ganador (refleja en todos los tótems) ──
   document.querySelectorAll('.winner-name').forEach(el => {
     if (el.dataset.winner) {
-      el.textContent = `${m.playerLabel} ${el.dataset.winner}`;
+      const playerLabelText = code === 'BR' ? 'JOGADOR' : 'JUGADOR';
+      el.textContent = `${playerLabelText} ${el.dataset.winner}`;
     }
   });
 
   // ── Título del modal ──
   setAllText('.market-modal-title', m.modalTitle ?? 'SELECCIONAR MERCADO');
-
-  // ── Splash banner ──
-  setAllText('.splash-banner', m.splashBanner ?? '');
 
   // ── Botones del market: marcar activo ──
   document.querySelectorAll('.market-btn').forEach(btn => {
@@ -799,14 +740,10 @@ function updatePlayerUI(player, data) {
     { scale: 1, duration: 0.2, ease: 'back.out(2)' }
   );
 
-  // Badge de nivel (usa traducción del mercado actual)
-  const m = MARKETS[currentMarket];
-  const levelNames = m?.levelNames ?? [
-    'Lv.1 · Inicio',
-    'Lv.2 · Comunidad',
-    'Lv.3 · Leales',
-    'Lv.4 · ¡CIMA!',
-  ];
+  // Badge de nivel (usa traducción basada en el mercado actual)
+  const levelNames = currentMarket === 'BR'
+    ? ['Lv.1 · Início', 'Lv.2 · Comunidade', 'Lv.3 · Fiéis', 'Lv.4 · TOPO!']
+    : ['Lv.1 · Inicio', 'Lv.2 · Comunidad', 'Lv.3 · Leales', 'Lv.4 · ¡CIMA!'];
   const badgesText = DOM.badgeText[player] || [];
   badgesText.forEach(badge => {
     if (badge) {
@@ -1054,8 +991,8 @@ function finishGame(winner, players) {
     showAll(DOM.overlays);
     hideAll(DOM.overlayCountdowns);
     showAll(DOM.overlayWinners);
-    const mWinner = MARKETS[currentMarket];
-    const winnerLabel = `${mWinner?.playerLabel ?? 'JUGADOR'} ${winner}`;
+    const playerLabelText = currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR';
+    const winnerLabel = `${playerLabelText} ${winner}`;
     DOM.winnerNames.forEach(el => {
       el.textContent = winnerLabel;
       el.dataset.winner = winner;
@@ -1117,8 +1054,7 @@ function resetUI() {
   // Limpia el ganador almacenado en cada winner-name
   DOM.winnerNames.forEach(el => { delete el.dataset.winner; });
 
-  const mReset = MARKETS[currentMarket];
-  const resetLevel = mReset?.levelNames?.[0] ?? 'Lv.1 · Inicio';
+  const resetLevel = currentMarket === 'BR' ? 'Lv.1 · Início' : 'Lv.1 · Inicio';
   (DOM.badgeText[1] || []).forEach(el => { if (el) { el.textContent = resetLevel; delete el.dataset.active; } });
   (DOM.badgeText[2] || []).forEach(el => { if (el) { el.textContent = resetLevel; delete el.dataset.active; } });
 }
@@ -1220,8 +1156,8 @@ function handleDebugRoute() {
     showAll(DOM.overlays);
     hideAll(DOM.overlayCountdowns);
     showAll(DOM.overlayWinners);
-    const mWinner = MARKETS[currentMarket];
-    const winnerLabel = `${mWinner?.playerLabel ?? 'JUGADOR'} ${winner}`;
+    const playerLabelText = currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR';
+    const winnerLabel = `${playerLabelText} ${winner}`;
     DOM.winnerNames.forEach(el => {
       el.textContent = winnerLabel;
       el.dataset.winner = winner;
