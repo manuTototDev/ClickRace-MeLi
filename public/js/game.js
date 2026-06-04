@@ -12,12 +12,14 @@ const MARKETS = {
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
+    winnerIntro: 'EL GANADOR ES:',
+    playerLabelText: 'JUGADOR',
     playAgain: '¡Otra ronda!',
     markers:   ['COMUNIDAD', 'FANS', 'COMPRADORES'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
     goLabel:        '¡YA!',
-    modalTitle:     'SELECCIONAR MERCADO',
+    modalTitle:     'SELECCIONA MERCADO',
     headerBanner:   'AUMENTA SEGUIDORES, CONSTRUYE TU COMUNIDAD Y VENDE MÁS',
     watermark:      '¡CRECE TU COMUNIDAD!',
     autoResetLabel: 'volviendo en',
@@ -40,13 +42,15 @@ const MARKETS = {
     countdown: '¡Bora aumentar seguidores!',
     btnLabel:  'Seguir',
     communityLabel: 'Sua comunidade:',
-    winner:    'A MAIOR\nCOMUNIDADE!',
-    playAgain: '¡Mais uma rodada!',
+    winner:    '¡A MAIOR\nCOMUNIDADE!',
+    winnerIntro: 'O VENCEDOR É:',
+    playerLabelText: 'JOGADOR',
+    playAgain: 'Mais uma rodada!',
     markers:   ['COMUNIDADE', 'FIÉIS', 'COMPRADORES'],
     splashHeadline: '¡AUMENTE\nSEGUIDORES!',
     splashSub:      'CRESÇA SUA COMUNIDADE\nE GERE MAIS VENDAS',
     goLabel:        'JÁ!',
-    modalTitle:     'SELECIONAR MERCADO',
+    modalTitle:     'SELECIONE O MERCADO',
     headerBanner:   'AUMENTE SEGUIDORES, CONSTRUA SUA COMUNIDADE E VENDA MAIS',
     watermark:      '¡CRESÇA SUA COMUNIDADE!',
     autoResetLabel: 'voltando em',
@@ -70,14 +74,16 @@ const MARKETS = {
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
+    winnerIntro: 'EL GANADOR ES:',
+    playerLabelText: 'JUGADOR',
     playAgain: '¡Jugá de nuevo!',
     markers:   ['COMUNIDAD', 'FIELES', 'COMPRADORES'],
-    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
-    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
+    splashHeadline: '¡AUMENTÁ\nSEGUIDORES!',
+    splashSub:      'HACÉ CRECER TU COMUNIDAD\nY GENERÁ MÁS VENTAS',
     goLabel:        '¡YA!',
-    modalTitle:     'SELECCIONAR MERCADO',
-    headerBanner:   'AUMENTA SEGUIDORES, CONSTRUYE TU COMUNIDAD Y VENDE MÁS',
-    watermark:      '¡CRECE TU COMUNIDAD!',
+    modalTitle:     'SELECCIONÁ MERCADO',
+    headerBanner:   'AUMENTÁ SEGUIDORES, CONSTRUÍ TU COMUNIDAD Y VENDÉ MÁS',
+    watermark:      '¡HACÉ CRECER TU COMUNIDAD!',
     autoResetLabel: 'volviendo en',
     difficultyTitle: 'DIFICULTAD',
     difficultyEasy:   'FÁCIL',
@@ -99,12 +105,14 @@ const MARKETS = {
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
-    playAgain: '¡Otra patita!',
+    winnerIntro: 'EL GANADOR ES:',
+    playerLabelText: 'JUGADOR',
+    playAgain: '¡Otra ronda!',
     markers:   ['COMUNIDAD', 'CAMISETEADOS', 'COMPRADORES'],
     splashHeadline: '¡AUMENTA\nSEGUIDORES!',
     splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
-    goLabel:        '¡AL TIRO!',
-    modalTitle:     'SELECCIONAR MERCADO',
+    goLabel:        '¡YA!',
+    modalTitle:     'SELECCIONA MERCADO',
     headerBanner:   'AUMENTA SEGUIDORES, CONSTRUYE TU COMUNIDAD Y VENDE MÁS',
     watermark:      '¡CRECE TU COMUNIDAD!',
     autoResetLabel: 'volviendo en',
@@ -128,14 +136,16 @@ const MARKETS = {
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
+    winnerIntro: 'EL GANADOR ES:',
+    playerLabelText: 'JUGADOR',
     playAgain: '¡Otra ronda!',
     markers:   ['COMUNIDAD', 'FIELES', 'COMPRADORES'],
-    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
-    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
+    splashHeadline: '¡AUMENTE\nSEGUIDORES!',
+    splashSub:      'HAGA CRECER SU COMUNIDAD\nY GENERE MÁS VENTAS',
     goLabel:        '¡YA!',
-    modalTitle:     'SELECCIONAR MERCADO',
-    headerBanner:   'AUMENTA SEGUIDORES, CONSTRUYE TU COMUNIDAD Y VENDE MÁS',
-    watermark:      '¡CRECE TU COMUNIDAD!',
+    modalTitle:     'SELECCIONE MERCADO',
+    headerBanner:   'AUMENTE SEGUIDORES, CONSTRUYA SU COMUNIDAD Y VENDA MÁS',
+    watermark:      '¡HAGA CRECER SU COMUNIDAD!',
     autoResetLabel: 'volviendo en',
     difficultyTitle: 'DIFICULTAD',
     difficultyEasy:   'FÁCIL',
@@ -157,14 +167,16 @@ const MARKETS = {
     btnLabel:  'Seguir',
     communityLabel: 'Tu comunidad:',
     winner:    '¡LA COMUNIDAD\nMÁS GRANDE!',
+    winnerIntro: 'EL GANADOR ES:',
+    playerLabelText: 'JUGADOR',
     playAgain: '¡Jugá de nuevo!',
     markers:   ['COMUNIDAD', 'FIELES', 'COMPRADORES'],
-    splashHeadline: '¡AUMENTA\nSEGUIDORES!',
-    splashSub:      'CRECE TU COMUNIDAD\nY GENERA MÁS VENTAS',
+    splashHeadline: '¡AUMENTÁ\nSEGUIDORES!',
+    splashSub:      'HACÉ CRECER TU COMUNIDAD\nY GENERÁ MÁS VENTAS',
     goLabel:        '¡YA!',
-    modalTitle:     'SELECCIONAR MERCADO',
-    headerBanner:   'AUMENTA SEGUIDORES, CONSTRUYE TU COMUNIDAD Y VENDE MÁS',
-    watermark:      '¡CRECE TU COMUNIDAD!',
+    modalTitle:     'SELECCIONÁ MERCADO',
+    headerBanner:   'AUMENTÁ SEGUIDORES, CONSTRUÍ TU COMUNIDAD Y VENDÉ MÁS',
+    watermark:      '¡HACÉ CRECER TU COMUNIDAD!',
     autoResetLabel: 'volviendo en',
     difficultyTitle: 'DIFICULTAD',
     difficultyEasy:   'FÁCIL',
@@ -247,7 +259,7 @@ function applyMarket(code) {
   // ── Winner name si ya hay ganador (refleja en todos los tótems) ──
   document.querySelectorAll('.winner-name').forEach(el => {
     if (el.dataset.winner) {
-      const playerLabelText = code === 'BR' ? 'JOGADOR' : 'JUGADOR';
+      const playerLabelText = m.playerLabelText || (code === 'BR' ? 'JOGADOR' : 'JUGADOR');
       el.textContent = `${playerLabelText} ${el.dataset.winner}`;
     }
   });
@@ -294,7 +306,7 @@ function applyMarket(code) {
   setAllHTML('.game-watermark', m.watermark);
   setAllText('.auto-reset-text', m.autoResetLabel);
   setAllText('.difficulty-title', m.difficultyTitle);
-  setAllText('.winner-intro', code === 'BR' ? 'O VENCEDOR É:' : 'EL GANADOR ES:');
+  setAllText('.winner-intro', m.winnerIntro || (code === 'BR' ? 'O VENCEDOR É:' : 'EL GANADOR ES:'));
 }
 
 // ─── Config ───────────────────────────────────────────────────
@@ -1024,7 +1036,7 @@ function finishGame(winner, players) {
     showAll(DOM.overlays);
     hideAll(DOM.overlayCountdowns);
     showAll(DOM.overlayWinners);
-    const playerLabelText = currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR';
+    const playerLabelText = MARKETS[currentMarket]?.playerLabelText || (currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR');
     const winnerLabel = `${playerLabelText} ${winner}`;
     DOM.winnerNames.forEach(el => {
       el.textContent = winnerLabel;
@@ -1586,7 +1598,7 @@ function handleDebugRoute() {
       showAll(DOM.overlays);
       hideAll(DOM.overlayCountdowns);
       showAll(DOM.overlayWinners);
-      const playerLabelText = currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR';
+      const playerLabelText = MARKETS[currentMarket]?.playerLabelText || (currentMarket === 'BR' ? 'JOGADOR' : 'JUGADOR');
       const winnerLabel = `${playerLabelText} ${winner}`;
       DOM.winnerNames.forEach(el => {
         el.textContent = winnerLabel;
