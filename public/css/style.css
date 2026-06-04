@@ -128,7 +128,7 @@ body {
 /* ── Watermark "¡AUMENTA SEGUIDORES!" en el bottom ── */
 .game-watermark {
   position: absolute;
-  bottom: 0;
+  bottom: -25px;
   left: 0;
   right: 0;
   font-size: clamp(20px, 16.5cqw, 260px);
@@ -820,6 +820,8 @@ body {
   justify-content: center;
   flex-shrink: 0;
   padding: 2vmin 0 4.5vmin;
+  position: relative;
+  z-index: 10;
 }
 
 .big-button {
@@ -1070,7 +1072,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  line-height: 1.15;
   margin-top: 2cqw;
 }
 .btn-play-again:hover {
@@ -1295,12 +1297,12 @@ body {
   font-weight: 900;
   color: #000000;
   letter-spacing: -0.01em;
-  line-height: 0.92;
+  line-height: 1.05;
   text-transform: uppercase;
   width: 100%;
   text-align: center;
   word-break: break-word;
-  overflow: hidden;
+  overflow: visible;
 }
 .splash-headline-sub {
   font-size: clamp(9px, 3.6cqw, 52px);
@@ -1406,6 +1408,8 @@ body {
   height: auto;
   padding: 0;
   margin-bottom: 35cqw; /* Regresa a su posición original al pie */
+  position: relative;
+  z-index: 10;
 }
 .button-zone--solo .big-button {
   border-left: none;
@@ -1469,7 +1473,7 @@ body {
   text-transform: uppercase;
   text-align: center;
   letter-spacing: -0.01em;
-  line-height: 1;
+  line-height: 1.15;
 }
 
 .game-header-logo {
