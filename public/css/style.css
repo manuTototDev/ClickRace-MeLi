@@ -135,7 +135,7 @@ body {
   font-weight: 900;
   line-height: 0.88;
   text-transform: uppercase;
-  color: rgba(218, 145, 0, 0.38);
+  color: rgba(255, 255, 255, 0.42);
   letter-spacing: -0.02em;
   padding: 0 3cqw 3cqw;
   pointer-events: none;
@@ -484,9 +484,7 @@ body {
 
 /* ── Markers de nivel ───────────────────────────────────────── */
 .bar-level-markers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  display: none !important;
 }
 
 .bar-marker:not(.bar-marker--start) {
@@ -708,7 +706,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: none;
-  color: #5333B4 !important;
+  color: #A87EE8 !important;
   white-space: nowrap;
   overflow: visible;
   text-overflow: clip;
@@ -720,7 +718,7 @@ body {
 .player-info--dynamic .click-counter {
   font-size: 11cqw !important;
   font-weight: 900;
-  color: #5333B4 !important;
+  color: #A87EE8 !important;
   letter-spacing: -0.02em;
   line-height: 0.9;
   text-align: left;
@@ -747,26 +745,26 @@ body {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: none;
-  color: #5333B4;
+  color: #A87EE8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
 }
-.player-name--2 { color: #5333B4; }
+.player-name--2 { color: #A87EE8; }
 
 /* ── Click Counter ──────────────────────────────────────────── */
 .click-counter {
   font-size: 11vmin;
   font-weight: 900;
-  color: #5333B4;
+  color: #A87EE8;
   letter-spacing: -0.02em;
   line-height: 1;
   text-align: center;
   width: 100%;
   overflow: hidden;
 }
-.click-counter--2 { color: #5333B4; }
+.click-counter--2 { color: #A87EE8; }
 
 /* ── Level Badge ────────────────────────────────────────────── */
 .level-badge {
@@ -839,23 +837,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #EDE9FF;
+  background: #3483FA;
   transition: transform 0.1s var(--ease-bounce), background 0.08s;
-  box-shadow: 0 4px 20px rgba(74, 53, 176, 0.15);
+  box-shadow: 0 4px 20px rgba(52, 131, 250, 0.15);
 }
 .big-button--2 {
-  background: #EDE9FF;
+  background: #3483FA;
 }
 
 .big-button:active {
-  background: #DDD5F5;
+  background: #1E6DDF;
   transform: scale(0.97);
 }
 
 .button-label {
   font-size: clamp(16px, 5.2cqw, 88px);
   font-weight: 700;
-  color: #4A35B0;
+  color: #FFFFFF;
   letter-spacing: 0.01em;
   pointer-events: none;
   line-height: 1;
@@ -922,13 +920,25 @@ body {
 }
 
 .winner-slogan {
-  color: #1A1F6C !important;
+  color: #000000 !important;
   font-size: clamp(18px, 7.2cqw, 104px) !important;
+}
+
+.winner-intro {
+  font-size: clamp(10px, 3.8cqw, 55px);
+  font-weight: 700;
+  color: #000000 !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-align: center;
+  margin-top: 1cqw;
+  margin-bottom: 1cqw;
 }
 
 .splash-card .winner-name {
   font-size: clamp(16px, 6.8cqw, 110px) !important;
-  color: #1A1F6C !important;
+  color: #000000 !important;
 }
 
 .overlay-winner .splash-card .winner-name {
@@ -989,6 +999,10 @@ body {
   letter-spacing: 0.2em;
   color: var(--text-muted);
   text-transform: uppercase;
+}
+
+.overlay-countdown .overlay-label {
+  color: #000000;
 }
 
 .countdown-number {
@@ -1083,7 +1097,7 @@ body {
 .auto-reset-bar {
   width: 100%;
   height: 5px;
-  background: rgba(74, 53, 176, 0.15);
+  background: rgba(168, 126, 232, 0.2);
   border-radius: 99px;
   overflow: hidden;
   position: relative;
@@ -1092,7 +1106,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #A87EE8, #4A35B0);
+  background: #A87EE8;
   border-radius: 99px;
   transform-origin: left;
   transform: scaleX(1);
@@ -1111,13 +1125,13 @@ body {
   font-family: 'Proxima Nova', sans-serif;
   font-size: 2.8cqw;
   font-weight: 700;
-  color: rgba(74, 53, 176, 0.65);
+  color: #000000;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .auto-reset-label strong {
   font-weight: 800;
-  color: #4A35B0;
+  color: #000000;
 }
 
 
@@ -1279,7 +1293,7 @@ body {
 .splash-headline-main {
   font-size: clamp(16px, 6.8cqw, 110px);
   font-weight: 900;
-  color: #1A1F6C;
+  color: #000000;
   letter-spacing: -0.01em;
   line-height: 0.92;
   text-transform: uppercase;
@@ -1291,7 +1305,7 @@ body {
 .splash-headline-sub {
   font-size: clamp(9px, 3.6cqw, 52px);
   font-weight: 700;
-  color: #5a6080;
+  color: #000000;
   letter-spacing: 0.10em;
   text-transform: uppercase;
   line-height: 1.4;
@@ -1371,7 +1385,7 @@ body {
 .viewport-shell[data-totem="2"] .player-name--2,
 .viewport-shell[data-totem="2"] .click-counter--2,
 .viewport-shell[data-totem="2"] .player-name {
-  color: #5333B4;
+  color: #A87EE8;
 }
 
 /* Counter grande, badge centrado */
@@ -1444,10 +1458,14 @@ body {
   z-index: 10;
 }
 
+.splash .game-header-banner {
+  visibility: hidden;
+}
+
 .game-header-text {
   font-size: clamp(14px, 3.7cqw, 40px); /* 40px bold responsive */
   font-weight: 800; /* Bold/Extrabold */
-  color: #1A1F6C;
+  color: #000000;
   text-transform: uppercase;
   text-align: center;
   letter-spacing: -0.01em;
@@ -1636,14 +1654,14 @@ body {
 .player-name-single {
   font-size: clamp(9px, 2.8cqw, 12px);
   font-weight: 700;
-  color: #1A1F6C;
+  color: #A87EE8;
   opacity: 0.8;
 }
 
 .click-counter-single {
   font-size: clamp(20px, 9.5cqw, 40px);
   font-weight: 900;
-  color: #1A1F6C;
+  color: #A87EE8;
   letter-spacing: -0.02em;
   line-height: 1;
   transition: transform 0.2s var(--ease-bounce);
@@ -1697,18 +1715,18 @@ body {
 
 #btn-player-1-single,
 #btn-player-2-single {
-  background: #EDE9FF !important;
-  box-shadow: 0 4px 20px rgba(74, 53, 176, 0.15) !important;
+  background: #3483FA !important;
+  box-shadow: 0 4px 20px rgba(52, 131, 250, 0.15) !important;
 }
 
 #btn-player-1-single:active,
 #btn-player-2-single:active {
-  background: #DDD5F5 !important;
+  background: #1E6DDF !important;
 }
 
 #btn-player-1-single .button-label,
 #btn-player-2-single .button-label {
-  color: #4A35B0 !important;
+  color: #FFFFFF !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
