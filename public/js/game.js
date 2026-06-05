@@ -307,9 +307,62 @@ function applyMarket(code) {
   setAllText('.auto-reset-text', m.autoResetLabel);
   setAllText('.difficulty-title', m.difficultyTitle);
   setAllText('.winner-intro', m.winnerIntro || (code === 'BR' ? 'O VENCEDOR É:' : 'EL GANADOR ES:'));
+  refreshFollowButtonsState();
 }
 
 // ─── Config ───────────────────────────────────────────────────
+// ─── Configuración de los Modos del Botón Seguir ────────────────
+// Localizar "Siguiendo" dinámicamente en los mercados
+if (MARKETS.MX) MARKETS.MX.btnFollowingLabel = 'Siguiendo';
+if (MARKETS.BR) MARKETS.BR.btnFollowingLabel = 'Seguindo';
+if (MARKETS.AR) MARKETS.AR.btnFollowingLabel = 'Siguiendo';
+if (MARKETS.CL) MARKETS.CL.btnFollowingLabel = 'Siguiendo';
+if (MARKETS.CO) MARKETS.CO.btnFollowingLabel = 'Siguiendo';
+if (MARKETS.UY) MARKETS.UY.btnFollowingLabel = 'Siguiendo';
+
+const urlParams = new URLSearchParams(window.location.search);
+let currentFollowMode = Number(urlParams.get('mode')) || 1;
+if (![1, 2, 3].includes(currentFollowMode)) {
+  currentFollowMode = 1;
+}
+
+function updateButtonState(player, clicks) {
+  let isFollowing = false;
+  
+  if (currentFollowMode === 1) {
+    isFollowing = (clicks % 2 !== 0);
+  } else if (currentFollowMode === 2) {
+    isFollowing = (clicks >= 1);
+  } else if (currentFollowMode === 3) {
+    isFollowing = (clicks > GAME_CONFIG.CLICKS_TO_WIN / 2);
+  }
+
+  const buttons = [
+    document.getElementById(`btn-player-${player}`),
+    document.getElementById(`btn-player-${player}-single`)
+  ].filter(Boolean);
+
+  const m = MARKETS[currentMarket] || MARKETS.AR;
+  const labelText = isFollowing 
+    ? (m.btnFollowingLabel || (currentMarket === 'BR' ? 'Seguindo' : 'Siguiendo'))
+    : m.btnLabel;
+
+  buttons.forEach(btn => {
+    btn.classList.toggle('following', isFollowing);
+    const labelSpan = btn.querySelector('.button-label');
+    if (labelSpan) {
+      labelSpan.textContent = labelText;
+    }
+  });
+}
+
+function refreshFollowButtonsState() {
+  [1, 2].forEach(p => {
+    const clicks = (gameState.players && gameState.players[p]) ? gameState.players[p].clicks : 0;
+    updateButtonState(p, clicks);
+  });
+}
+
 const DIFFICULTY_CLICKS = { easy: 60, medium: 80, hard: 120 };
 
 let currentDifficulty = localStorage.getItem('clickrace_difficulty') || 'medium';
@@ -643,6 +696,8 @@ applyDifficulty(currentDifficulty);
 
 
 
+
+
 // ─── Game Actions ─────────────────────────────────────────────
 
 function actionStart() {
@@ -747,6 +802,7 @@ function animateButtonPress(player) {
 }
 
 function updatePlayerUI(player, data) {
+  updateButtonState(player, data.clicks);
   const pct      = data.progress * 100;
   const followers = progressToFollowers(data.progress);
   const display   = formatFollowers(followers);
@@ -1084,6 +1140,9 @@ function resetUI() {
     // Resetear opacidad de marcadores
     const markers = document.querySelectorAll(`#totem-${p} .bar-marker[data-threshold], #totem-${p}-single .bar-marker[data-threshold]`);
     markers.forEach(marker => gsap.to(marker, { opacity: 0.3, duration: 0.5, ease: 'power2.inOut' }));
+
+    // Resetear estado del botón Seguir/Siguiendo
+    updateButtonState(p, 0);
   });
 
   // Limpiar capas de celebración
@@ -1525,7 +1584,7 @@ function handleDebugRoute() {
     showLobbyView('lobby-spectator-view');
     const qrImg = document.getElementById('qr-code-img');
     if (qrImg) {
-      const joinUrl = window.location.origin + window.location.pathname;
+      const joinUrl = window.location.origin + window.location.pathname + window.location.search;
       qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=10&data=' + encodeURIComponent(joinUrl);
     }
     // Bind spectator sync initiation

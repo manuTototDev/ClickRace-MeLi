@@ -1989,3 +1989,25 @@ body {
   max-width: 380px;
 }
 
+/* ==========================================================================
+   FOLLOWING STATE BUTTON & MODE SELECTOR
+   ========================================================================== */
+
+/* Estado "Siguiendo" */
+.big-button.following {
+  background: #E3EDFC !important; /* Celeste claro similar al de la imagen */
+  box-shadow: 0 4px 15px rgba(52, 131, 250, 0.08) !important;
+}
+
+.big-button.following:active {
+  background: #D2E3FC !important; /* Ligeramente más oscuro al hacer clic */
+}
+
+.big-button.following .button-label {
+  color: #3483FA !important; /* Texto azul de Mercado Libre */
+}
+
+
+
+
+
